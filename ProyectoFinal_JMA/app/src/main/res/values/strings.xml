@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">ProyectoFinal_JMA</string>
+    <string name="search">Search</string>
+    <string name="buscar">Buscar</string>
     <string name="title">Title</string>
     <string name="homeworkDescription">Homework:</string>
     <string name="noteDescription">Note:</string>

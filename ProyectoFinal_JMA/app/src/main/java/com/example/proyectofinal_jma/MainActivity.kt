@@ -1,6 +1,5 @@
 package com.example.proyectofinal_jma
 
-import android.graphics.drawable.shapes.Shape
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -32,7 +31,9 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
@@ -148,7 +149,7 @@ fun HomeworkCard(homework: Homework, modifier: Modifier= Modifier){
                     modifier=modifier
                         .padding( top = dimensionResource(id = R.dimen.padding_8)))
                 Text(
-                    text = stringResource(id = R.string.notaDescripcion),
+                    text = stringResource(id = R.string.tareaDescripcion),
                     style = MaterialTheme.typography.bodyMedium)
             }
             Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_8)))
@@ -195,7 +196,7 @@ fun NotePreview() {
 @Composable
 fun HomeworkPreview() {
     ProyectoFinal_JMATheme {
-        HomeworkCard(Homework(R.drawable.image,R.string.title,R.string.notaDescripcion,R.string.date,R.drawable.star,R.drawable.bell_outlined))
+        HomeworkCard(Homework(R.drawable.image,R.string.title,R.string.homeworkDescription,R.string.date,R.drawable.star,R.drawable.bell_outlined))
     }
 }
 
@@ -222,7 +223,7 @@ fun App(modifier: Modifier= Modifier) {
             .fillMaxSize(),
         topBar = {
             Row(
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = CenterVertically,
                 modifier = modifier.padding(end = 8.dp)
             ){
                 Box (modifier=modifier.wrapContentHeight()){
@@ -254,6 +255,142 @@ fun App(modifier: Modifier= Modifier) {
                     textStyle = MaterialTheme.typography.bodyMedium)
 
             }
+        },
+        bottomBar = {
+            Row (
+                modifier = modifier.padding(
+                    start = dimensionResource(id = R.dimen.padding_8),
+                    end = dimensionResource(id = R.dimen.padding_8)),
+            ){
+                Card (
+                    modifier = modifier
+                        .padding(
+                            bottom = dimensionResource(id = R.dimen.padding_anchor_16)
+                        )
+                        .clip(Shapes.small)
+                        .fillMaxWidth()
+                        .align(CenterVertically)
+                ){
+                    Row (
+                        modifier = modifier
+                            .padding(dimensionResource(id = R.dimen.padding_4))
+                            .fillMaxWidth(),
+                        verticalAlignment = CenterVertically
+                    ){
+                        Column (
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = modifier.padding(
+                                end = dimensionResource(id = R.dimen.padding_8))
+                        ){
+                            Box{
+                                Image(
+                                    painter = painterResource(id = R.drawable.settings),
+                                    contentDescription =null,
+                                    modifier = modifier
+                                        .size(
+                                            width = dimensionResource(id = R.dimen.anchor_40),
+                                            height = dimensionResource(id = R.dimen.anchor_40)
+                                        )
+                                        .aspectRatio(1f),
+                                    contentScale = ContentScale.Crop)
+
+                            }
+                            Text(
+                                text = stringResource(id = R.string.ajustes),
+                                style = MaterialTheme.typography.bodyLarge)
+                        }
+                        Column (
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = modifier.padding(
+                                end = dimensionResource(id = R.dimen.padding_8))
+                        ){
+                            Box{
+                                Image(
+                                    painter = painterResource(id = R.drawable.star),
+                                    contentDescription =null,
+                                    modifier = modifier
+                                        .size(
+                                            width = dimensionResource(id = R.dimen.anchor_40),
+                                            height = dimensionResource(id = R.dimen.anchor_40)
+                                        )
+                                        .aspectRatio(1f),
+                                    contentScale = ContentScale.Crop)
+
+                            }
+                            Text(
+                                text = stringResource(id = R.string.favoritos),
+                                style = MaterialTheme.typography.bodyLarge)
+                        }
+                        Column (
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = modifier.padding(
+                                start = dimensionResource(id = R.dimen.padding_8),
+                                end = dimensionResource(id = R.dimen.padding_8))
+                        ){
+                            Box{
+                                Image(
+                                    painter = painterResource(id = R.drawable.plus),
+                                    contentDescription =null,
+                                    modifier = modifier
+                                        .size(
+                                            width = dimensionResource(id = R.dimen.anchor_64),
+                                            height = dimensionResource(id = R.dimen.anchor_64)
+                                        )
+                                        .aspectRatio(1f),
+                                    contentScale = ContentScale.Crop)
+
+                            }
+                            Text(
+                                text = stringResource(id = R.string.añadir),
+                                style = MaterialTheme.typography.bodyLarge)
+                        }
+                        Column (
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = modifier.padding(
+                                start = dimensionResource(id = R.dimen.padding_8),
+                                end = dimensionResource(id = R.dimen.padding_8))
+                        ){
+                            Box{
+                                Image(
+                                    painter = painterResource(id = R.drawable.done),
+                                    contentDescription =null,
+                                    modifier = modifier
+                                        .size(
+                                            width = dimensionResource(id = R.dimen.anchor_40),
+                                            height = dimensionResource(id = R.dimen.anchor_40)
+                                        )
+                                        .aspectRatio(1f),
+                                    contentScale = ContentScale.Crop)
+
+                            }
+                            Text(
+                                text = stringResource(id = R.string.hecho),
+                                style = MaterialTheme.typography.bodyLarge)
+                        }
+                        Column (
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ){
+                            Box{
+                                Image(
+                                    painter = painterResource(id = R.drawable.home),
+                                    contentDescription =null,
+                                    modifier = modifier
+                                        .size(
+                                            width = dimensionResource(id = R.dimen.anchor_40),
+                                            height = dimensionResource(id = R.dimen.anchor_40)
+                                        )
+                                        .aspectRatio(1f),
+                                    contentScale = ContentScale.Crop)
+
+                            }
+                            Text(
+                                text = stringResource(id = R.string.principal),
+                                style = MaterialTheme.typography.bodyLarge)
+                        }
+                    }
+                }
+            }
+
         }
     ) {
         ListElements(contentPadding = it)

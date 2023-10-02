@@ -10,7 +10,7 @@
     <string name="add">Add</string>
     <string name="done">Done</string>
     <string name="home">Home</string>
-    <string name="spanish">Español</string>
+    <string name="spanish">Spanish</string>
     <string name="english">English</string>
     <string name="titulo">Titulo</string>
     <string name="tareaDescripcion">Tarea:xxxxxxxxxxxxxxxxx</string>
@@ -21,6 +21,7 @@
     <string name="añadir">Añadir</string>
     <string name="hecho">Hecho</string>
     <string name="principal">Principal</string>
+    <string name="espanol">Español</string>
     <string name="ingles">Inglés</string>
     <string name="temas">Temas</string>
     <string name="papelera">Papelera</string>

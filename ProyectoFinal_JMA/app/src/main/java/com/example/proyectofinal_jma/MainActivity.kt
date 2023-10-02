@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -20,6 +21,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -275,25 +278,28 @@ fun App(modifier: Modifier= Modifier) {
                         modifier = modifier
                             .padding(dimensionResource(id = R.dimen.padding_4))
                             .fillMaxWidth(),
-                        verticalAlignment = CenterVertically
+                        verticalAlignment = CenterVertically,
+                        horizontalArrangement = Arrangement.Center
                     ){
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = modifier.padding(
                                 end = dimensionResource(id = R.dimen.padding_8))
                         ){
-                            Box{
+                            Button(
+                                onClick = { /*TODO*/ },
+                                modifier = modifier
+                                    .height(40.dp)
+                                    .width(60.dp),
+                                contentPadding = PaddingValues(0.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                            ) {
                                 Image(
                                     painter = painterResource(id = R.drawable.settings),
                                     contentDescription =null,
                                     modifier = modifier
-                                        .size(
-                                            width = dimensionResource(id = R.dimen.anchor_40),
-                                            height = dimensionResource(id = R.dimen.anchor_40)
-                                        )
                                         .aspectRatio(1f),
                                     contentScale = ContentScale.Crop)
-
                             }
                             Text(
                                 text = stringResource(id = R.string.ajustes),
@@ -304,18 +310,20 @@ fun App(modifier: Modifier= Modifier) {
                             modifier = modifier.padding(
                                 end = dimensionResource(id = R.dimen.padding_8))
                         ){
-                            Box{
+                            Button(
+                                onClick = { /*TODO*/ },
+                                modifier = modifier
+                                    .height(40.dp)
+                                    .width(60.dp),
+                                contentPadding = PaddingValues(0.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                            ) {
                                 Image(
                                     painter = painterResource(id = R.drawable.star),
                                     contentDescription =null,
                                     modifier = modifier
-                                        .size(
-                                            width = dimensionResource(id = R.dimen.anchor_40),
-                                            height = dimensionResource(id = R.dimen.anchor_40)
-                                        )
                                         .aspectRatio(1f),
                                     contentScale = ContentScale.Crop)
-
                             }
                             Text(
                                 text = stringResource(id = R.string.favoritos),
@@ -327,22 +335,21 @@ fun App(modifier: Modifier= Modifier) {
                                 start = dimensionResource(id = R.dimen.padding_8),
                                 end = dimensionResource(id = R.dimen.padding_8))
                         ){
-                            Box{
+                            Button(
+                                onClick = { /*TODO*/ },
+                                modifier = modifier
+                                    .height(60.dp)
+                                    .width(60.dp),
+                                contentPadding = PaddingValues(0.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                            ) {
                                 Image(
                                     painter = painterResource(id = R.drawable.plus),
                                     contentDescription =null,
                                     modifier = modifier
-                                        .size(
-                                            width = dimensionResource(id = R.dimen.anchor_64),
-                                            height = dimensionResource(id = R.dimen.anchor_64)
-                                        )
                                         .aspectRatio(1f),
                                     contentScale = ContentScale.Crop)
-
                             }
-                            Text(
-                                text = stringResource(id = R.string.añadir),
-                                style = MaterialTheme.typography.bodyLarge)
                         }
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -350,18 +357,20 @@ fun App(modifier: Modifier= Modifier) {
                                 start = dimensionResource(id = R.dimen.padding_8),
                                 end = dimensionResource(id = R.dimen.padding_8))
                         ){
-                            Box{
+                            Button(
+                                onClick = { /*TODO*/ },
+                                modifier = modifier
+                                    .height(40.dp)
+                                    .width(60.dp),
+                                contentPadding = PaddingValues(0.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                            ) {
                                 Image(
                                     painter = painterResource(id = R.drawable.done),
                                     contentDescription =null,
                                     modifier = modifier
-                                        .size(
-                                            width = dimensionResource(id = R.dimen.anchor_40),
-                                            height = dimensionResource(id = R.dimen.anchor_40)
-                                        )
                                         .aspectRatio(1f),
                                     contentScale = ContentScale.Crop)
-
                             }
                             Text(
                                 text = stringResource(id = R.string.hecho),
@@ -370,18 +379,20 @@ fun App(modifier: Modifier= Modifier) {
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally
                         ){
-                            Box{
+                            Button(
+                                onClick = { /*TODO*/ },
+                                modifier = modifier
+                                    .height(40.dp)
+                                    .width(60.dp),
+                                contentPadding = PaddingValues(0.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                            ) {
                                 Image(
                                     painter = painterResource(id = R.drawable.home),
                                     contentDescription =null,
                                     modifier = modifier
-                                        .size(
-                                            width = dimensionResource(id = R.dimen.anchor_40),
-                                            height = dimensionResource(id = R.dimen.anchor_40)
-                                        )
                                         .aspectRatio(1f),
                                     contentScale = ContentScale.Crop)
-
                             }
                             Text(
                                 text = stringResource(id = R.string.principal),

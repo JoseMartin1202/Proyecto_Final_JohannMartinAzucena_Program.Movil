@@ -24,16 +24,12 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -43,14 +39,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.proyectofinal_jma.data.DataSourceNotesOrHomework.cardsHomeworks
-import com.example.proyectofinal_jma.data.DataSourceNotesOrHomework.cardsNotes
-import com.example.proyectofinal_jma.model.Homework
-import com.example.proyectofinal_jma.model.Note
+import com.example.proyectofinal_jma.data.DataSourceNotesOrHomework.notesHomeworksDone
+import com.example.proyectofinal_jma.model.HomeworkNoteDone
 import com.example.proyectofinal_jma.ui.theme.ProyectoFinal_JMATheme
 import com.example.proyectofinal_jma.ui.theme.Shapes
 
-class MainActivity : ComponentActivity() {
+class DoneActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -59,7 +53,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    App()
+
                 }
             }
         }
@@ -67,7 +61,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun NoteCard(note: Note, modifier: Modifier= Modifier){
+fun CardDone(homeworkNoteDone: HomeworkNoteDone, modifier: Modifier= Modifier){
     Card (modifier = modifier.padding(dimensionResource(id = R.dimen.padding_4))){
         Row (
             modifier= modifier
@@ -78,7 +72,7 @@ fun NoteCard(note: Note, modifier: Modifier= Modifier){
         ){
             Box{
                 Image(
-                    painter = painterResource(id = note.miniature),
+                    painter = painterResource(id = homeworkNoteDone.miniature),
                     contentDescription =null,
                     modifier = modifier
                         .size(
@@ -90,98 +84,19 @@ fun NoteCard(note: Note, modifier: Modifier= Modifier){
             }
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = stringResource(id = note.titleCard),
+                    text = stringResource(id = homeworkNoteDone.titleCard),
                     style = MaterialTheme.typography.bodyLarge,
                     modifier=modifier
                         .padding( top = dimensionResource(id = R.dimen.padding_8)))
                 Text(
-                    text = stringResource(id = note.descriptionCard),
+                    text = stringResource(id = homeworkNoteDone.descriptionCard),
                     style = MaterialTheme.typography.bodyMedium)
             }
             Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_8)))
             Column(horizontalAlignment = Alignment.End){
                 Text(
-                    text = stringResource(id = note.dateCard),
+                    text = stringResource(id = homeworkNoteDone.dateCard),
                     style = MaterialTheme.typography.bodySmall)
-                Box(
-                    modifier= modifier.padding(top = dimensionResource(id = R.dimen.padding_anchor_16))
-                ){
-                    Image(
-                        painter = painterResource(id = note.favoriteImage),
-                        contentDescription =null,
-                        modifier = modifier
-                            .size(
-                                width = dimensionResource(id = R.dimen.padding_anchor_24),
-                                height = dimensionResource(id = R.dimen.padding_anchor_24)
-                            )
-                            .aspectRatio(1f),
-                        contentScale = ContentScale.Crop)
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun HomeworkCard(homework: Homework, modifier: Modifier= Modifier){
-    Card (modifier = modifier.padding(dimensionResource(id = R.dimen.padding_4))){
-        Row (
-            modifier= modifier
-                .fillMaxWidth()
-                .padding(dimensionResource(id = R.dimen.padding_4))
-                .padding(end = dimensionResource(id = R.dimen.padding_4))
-                .sizeIn(minHeight = dimensionResource(id = R.dimen.anchor_64))
-        ){
-            Box{
-                Image(
-                    painter = painterResource(id = homework.miniature),
-                    contentDescription =null,
-                    modifier = modifier
-                        .size(
-                            width = dimensionResource(id = R.dimen.anchor_64),
-                            height = dimensionResource(id = R.dimen.anchor_64)
-                        )
-                        .aspectRatio(1f),
-                    contentScale = ContentScale.Crop)
-            }
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = stringResource(id = homework.titleCard),
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier=modifier
-                        .padding( top = dimensionResource(id = R.dimen.padding_8)))
-                Text(
-                    text = stringResource(id = homework.descriptionCard),
-                    style = MaterialTheme.typography.bodyMedium)
-            }
-            Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_8)))
-            Column(horizontalAlignment = Alignment.End){
-                Text(
-                    text = stringResource(id = homework.dateCard),
-                    style = MaterialTheme.typography.bodySmall)
-                Row (modifier=modifier.padding(top = dimensionResource(id = R.dimen.padding_anchor_16))){
-                    Image(
-                        painter = painterResource(id = homework.favoriteImage),
-                        contentDescription =null,
-                        modifier = modifier
-                            .size(
-                                width = dimensionResource(id = R.dimen.padding_anchor_24),
-                                height = dimensionResource(id = R.dimen.padding_anchor_24)
-                            )
-                            .aspectRatio(1f),
-                        contentScale = ContentScale.Crop)
-                    Image(
-                        painter = painterResource(id = homework.reminderImage),
-                        contentDescription =null,
-                        modifier = modifier
-                            .size(
-                                width = dimensionResource(id = R.dimen.padding_anchor_24),
-                                height = dimensionResource(id = R.dimen.padding_anchor_24)
-                            )
-                            .aspectRatio(1f),
-                        contentScale = ContentScale.Crop)
-                }
-
             }
         }
     }
@@ -189,29 +104,19 @@ fun HomeworkCard(homework: Homework, modifier: Modifier= Modifier){
 
 @Preview(showBackground = true)
 @Composable
-fun NotePreview() {
+fun CardDonePreview() {
     ProyectoFinal_JMATheme {
-       NoteCard(Note(R.drawable.image,R.string.title,R.string.notaDescripcion,R.string.date,R.drawable.star))
-    }
-}
-@Preview(showBackground = true)
-@Composable
-fun HomeworkPreview() {
-    ProyectoFinal_JMATheme {
-        HomeworkCard(Homework(R.drawable.image,R.string.title,R.string.homeworkDescription,R.string.date,R.drawable.star,R.drawable.bell_outlined))
+       CardDone(HomeworkNoteDone(R.drawable.image,R.string.title,R.string.notaDescripcion,R.string.date))
     }
 }
 
 @Composable
-fun ListElements(
+fun ElementsDone(
     contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
     LazyColumn(contentPadding=contentPadding, modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_4))){
-        items(cardsHomeworks){
-            HomeworkCard(homework= it)
-        }
-        items(cardsNotes){
-            NoteCard(note= it)
+        items(notesHomeworksDone){
+            CardDone(homeworkNoteDone= it)
         }
     }
 }
@@ -219,51 +124,10 @@ fun ListElements(
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
-fun App(modifier: Modifier= Modifier) {
+fun Done(modifier: Modifier= Modifier) {
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
-        topBar = {
-            Row(
-                verticalAlignment = CenterVertically,
-                modifier = modifier.padding(end = 8.dp, start = 8.dp),
-                horizontalArrangement = Arrangement.Center
-            ){
-                Button(
-                    onClick = { /*TODO*/ },
-                    modifier = modifier
-                        .height(50.dp)
-                        .width(50.dp),
-                    contentPadding = PaddingValues(0.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.filter),
-                        contentDescription =null,
-                        modifier = modifier
-                            .aspectRatio(1f),
-                        contentScale = ContentScale.Crop)
-                }
-                Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_2)))
-                TextField(
-                    value = stringResource(id = R.string.buscar),
-                    onValueChange = {},
-                    modifier = Modifier
-                        .padding(top = 4.dp)
-                        .height(50.dp)
-                        .fillMaxWidth(),
-                    trailingIcon = { Icon(
-                        painter = painterResource(id = R.drawable.search) ,
-                        contentDescription = null)},
-                    shape = Shapes.large,
-                    colors = TextFieldDefaults.textFieldColors(
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent
-                    ),
-                    textStyle = MaterialTheme.typography.bodyMedium)
-
-            }
-        },
         bottomBar = {
             Row (
                 modifier = modifier.padding(
@@ -277,13 +141,13 @@ fun App(modifier: Modifier= Modifier) {
                         )
                         .clip(Shapes.small)
                         .fillMaxWidth()
-                        .align(CenterVertically)
+                        .align(Alignment.CenterVertically)
                 ){
                     Row (
                         modifier = modifier
                             .padding(dimensionResource(id = R.dimen.padding_4))
                             .fillMaxWidth(),
-                        verticalAlignment = CenterVertically,
+                        verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
                     ){
                         Column (
@@ -308,7 +172,7 @@ fun App(modifier: Modifier= Modifier) {
                             }
                             Text(
                                 text = stringResource(id = R.string.ajustes),
-                                style = MaterialTheme.typography.bodyMedium)
+                                style = MaterialTheme.typography.bodyLarge)
                         }
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -332,7 +196,7 @@ fun App(modifier: Modifier= Modifier) {
                             }
                             Text(
                                 text = stringResource(id = R.string.favoritos),
-                                style = MaterialTheme.typography.bodyMedium)
+                                style = MaterialTheme.typography.bodyLarge)
                         }
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -379,7 +243,7 @@ fun App(modifier: Modifier= Modifier) {
                             }
                             Text(
                                 text = stringResource(id = R.string.hecho),
-                                style = MaterialTheme.typography.bodyMedium)
+                                style = MaterialTheme.typography.bodyLarge)
                         }
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally
@@ -401,7 +265,7 @@ fun App(modifier: Modifier= Modifier) {
                             }
                             Text(
                                 text = stringResource(id = R.string.principal),
-                                style = MaterialTheme.typography.bodyMedium)
+                                style = MaterialTheme.typography.bodyLarge)
                         }
                     }
                 }
@@ -409,6 +273,6 @@ fun App(modifier: Modifier= Modifier) {
 
         }
     ) {
-        ListElements(contentPadding = it)
+       ElementsDone(contentPadding=it)
     }
 }

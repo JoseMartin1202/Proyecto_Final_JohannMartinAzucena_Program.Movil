@@ -58,7 +58,10 @@ class LanguageSettingsActivity : ComponentActivity() {
 
 @Preview(showBackground = true)
 @Composable
-fun Language(modifier: Modifier=Modifier){
+fun Language(
+    contentPadding: PaddingValues = PaddingValues(0.dp),
+    modifier: Modifier=Modifier
+){
     Column (
         verticalArrangement = Arrangement.Center,
         modifier = modifier.padding(
@@ -105,7 +108,6 @@ fun Language(modifier: Modifier=Modifier){
 }
 
 @Preview(showBackground = true)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LanguageSettings(modifier: Modifier= Modifier) {
@@ -262,6 +264,6 @@ fun LanguageSettings(modifier: Modifier= Modifier) {
 
         }
     ) {
-        Language()
+        Language(contentPadding = it)
     }
 }

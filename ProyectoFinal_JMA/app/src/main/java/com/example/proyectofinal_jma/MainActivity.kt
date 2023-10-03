@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
@@ -227,19 +226,25 @@ fun App(modifier: Modifier= Modifier) {
         topBar = {
             Row(
                 verticalAlignment = CenterVertically,
-                modifier = modifier.padding(end = 8.dp)
+                modifier = modifier.padding(end = 8.dp, start = 8.dp),
+                horizontalArrangement = Arrangement.Center
             ){
-                Box (modifier=modifier.wrapContentHeight()){
+                Button(
+                    onClick = { /*TODO*/ },
+                    modifier = modifier
+                        .height(50.dp)
+                        .width(50.dp),
+                    contentPadding = PaddingValues(0.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                ) {
                     Image(
                         painter = painterResource(id = R.drawable.filter),
-                        contentDescription = null,
+                        contentDescription =null,
                         modifier = modifier
-                            .height(45.dp)
-                            .aspectRatio(1f)
-                            .padding(start = dimensionResource(id = R.dimen.padding_8))
-                    )
+                            .aspectRatio(1f),
+                        contentScale = ContentScale.Crop)
                 }
-                Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_8)))
+                Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_2)))
                 TextField(
                     value = stringResource(id = R.string.buscar),
                     onValueChange = {},

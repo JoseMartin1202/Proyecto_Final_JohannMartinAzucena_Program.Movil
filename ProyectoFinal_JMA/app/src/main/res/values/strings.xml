@@ -37,4 +37,10 @@
     <string name="dark">Dark</string>
     <string name="ligth">Ligth</string>
     <string name="dynamic">Dynamic</string>
+    <string name="nota">Nota</string>
+    <string name="tarea">Tarea</string>
+    <string name="note">Note</string>
+    <string name="homework">Homework</string>
+    <string name="escribirTexto">Escribir texto</string>
+    <string name="writeText">Write Text</string>
 </resources>

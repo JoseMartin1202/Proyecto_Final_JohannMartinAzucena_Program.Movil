@@ -123,7 +123,7 @@ fun Options(
                 Divider(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_anchor_16)),
                     color = Color.Transparent)
                 Text(
-                    text = stringResource(id = R.string.papelera),
+                    text = stringResource(id = R.string.idioma),
                     style = MaterialTheme.typography.bodyLarge,
                     textAlign = TextAlign.Left,
                     modifier = modifier.weight(1f),

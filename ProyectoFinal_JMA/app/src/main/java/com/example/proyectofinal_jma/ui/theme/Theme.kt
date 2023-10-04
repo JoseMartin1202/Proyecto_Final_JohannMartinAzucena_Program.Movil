@@ -109,7 +109,7 @@ fun ProyectoFinal_JMATheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography2,
+        typography = Typography,
         shapes= Shapes,
         content = content
     )

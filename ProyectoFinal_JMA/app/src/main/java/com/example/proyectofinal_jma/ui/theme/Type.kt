@@ -14,7 +14,7 @@ val nunito= FontFamily(
     Font(R.font.nunito_bold, FontWeight.Bold)
 )
 
-val Typography2 = Typography(
+val Typography = Typography(
     displayMedium = TextStyle(
         fontFamily = nunito,
         fontWeight = FontWeight.Normal,

@@ -206,7 +206,9 @@ fun HomeworkPreview() {
 fun ListElements(
     contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
-    LazyColumn(contentPadding=contentPadding, modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_4))){
+    LazyColumn(
+        contentPadding=contentPadding,
+        modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_4))){
         items(cardsHomeworks){
             HomeworkCard(homework= it)
         }
@@ -222,7 +224,8 @@ fun ListElements(
 fun App(modifier: Modifier= Modifier) {
     Scaffold(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .padding(top = dimensionResource(id = R.dimen.padding_4)),
         topBar = {
             Row(
                 verticalAlignment = CenterVertically,
@@ -406,7 +409,6 @@ fun App(modifier: Modifier= Modifier) {
                     }
                 }
             }
-
         }
     ) {
         ListElements(contentPadding = it)

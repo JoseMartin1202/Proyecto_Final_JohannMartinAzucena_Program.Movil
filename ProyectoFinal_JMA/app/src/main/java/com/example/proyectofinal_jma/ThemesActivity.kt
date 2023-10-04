@@ -84,7 +84,7 @@ fun ThemeCard( theme: Theme, modifier: Modifier= Modifier){
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.image),
+                    painter = painterResource(id = theme.miniature),
                     contentDescription =null,
                     modifier = modifier
                         .aspectRatio(1f),
@@ -100,7 +100,7 @@ fun ThemeCard( theme: Theme, modifier: Modifier= Modifier){
                 Row {
                     Column {
                         Text(
-                            text = stringResource(id = R.string.oscuro),
+                            text = stringResource(id = theme.titleCard),
                             style = MaterialTheme.typography.bodyLarge,
                             textAlign = TextAlign.Left,
                             color = Color.Black)
@@ -113,7 +113,7 @@ fun ThemeCard( theme: Theme, modifier: Modifier= Modifier){
                     ) {
                         Box{
                             Image(
-                                painter = painterResource(id = R.drawable.check),
+                                painter = painterResource(id = theme.check),
                                 contentDescription =null,
                                 modifier = modifier
                                     .width(30.dp)

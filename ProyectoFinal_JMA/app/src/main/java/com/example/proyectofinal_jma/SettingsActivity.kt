@@ -97,26 +97,6 @@ fun Options(
         ) {
             Row {
                 Icon(
-                    painter = painterResource(id = R.drawable.trash),
-                    contentDescription = null,
-                    tint = Color.Black)
-                Divider(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_anchor_16)),
-                    color = Color.Transparent)
-                Text(
-                    text = stringResource(id = R.string.papelera),
-                    style = MaterialTheme.typography.bodyLarge,
-                    textAlign = TextAlign.Left,
-                    modifier = modifier.weight(1f),
-                    color = Color.Black)
-            }
-        }
-        OutlinedButton(
-            onClick = { /*TODO*/ },
-            modifier = modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
-        ) {
-            Row {
-                Icon(
                     painter = painterResource(id = R.drawable.translate),
                     contentDescription = null,
                     tint = Color.Black)

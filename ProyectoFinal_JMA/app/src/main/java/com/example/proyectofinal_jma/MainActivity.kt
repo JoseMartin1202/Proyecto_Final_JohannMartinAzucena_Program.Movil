@@ -327,14 +327,14 @@ fun App(modifier: Modifier= Modifier) {
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                             ) {
                                 Image(
-                                    painter = painterResource(id = R.drawable.star),
+                                    painter = painterResource(id = R.drawable.trash),
                                     contentDescription =null,
                                     modifier = modifier
                                         .aspectRatio(1f),
                                     contentScale = ContentScale.Crop)
                             }
                             Text(
-                                text = stringResource(id = R.string.favoritos),
+                                text = stringResource(id = R.string.papelera),
                                 style = MaterialTheme.typography.bodyMedium)
                         }
                         Column (

@@ -71,7 +71,6 @@ class Add : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Add(contentPadding: PaddingValues = PaddingValues(0.dp)){
     LazyColumn(
@@ -202,7 +201,8 @@ fun AddNoteHomework(modifier: Modifier = Modifier){
                     )
                     Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_2)))
                     ExposedDropdownMenuBox(
-                        modifier = modifier.height(50.dp),
+                        modifier = modifier.height(50.dp)
+                            .padding(top = 4.dp),
                         expanded = false,
                         onExpandedChange = {}
                     ) {

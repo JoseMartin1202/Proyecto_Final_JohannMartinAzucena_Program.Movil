@@ -1,5 +1,6 @@
 package com.example.proyectofinal_jma
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -38,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -222,6 +224,7 @@ fun ListElements(
 @Preview(showBackground = true)
 @Composable
 fun App(modifier: Modifier= Modifier) {
+    val mContext = LocalContext.current
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -295,7 +298,7 @@ fun App(modifier: Modifier= Modifier) {
                                 end = dimensionResource(id = R.dimen.padding_8))
                         ){
                             Button(
-                                onClick = { /*TODO*/ },
+                                onClick = {},
                                 modifier = modifier
                                     .height(40.dp)
                                     .width(60.dp),
@@ -414,3 +417,7 @@ fun App(modifier: Modifier= Modifier) {
         ListElements(contentPadding = it)
     }
 }
+
+/*NOTA: SI NO FUNCIONA EL ON CLICK CUANDO SE QUIERE MOSTRAR OTRA ACTIVITY
+* SE DEBE A QUE SE AGREGARON ARCHIVOS KOTLIN, EN LUGAR DE INDICARLOS COMO
+* ACTIVYTY A LA HORA DE INSERTAR*/

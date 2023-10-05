@@ -15,8 +15,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -25,13 +23,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -128,7 +123,7 @@ fun ThemeCard( theme: Theme, modifier: Modifier= Modifier){
 }
 
 @Composable
-fun items(contentPadding: PaddingValues = PaddingValues(0.dp)){
+fun Items(contentPadding: PaddingValues = PaddingValues(0.dp)){
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         contentPadding=contentPadding,
@@ -206,7 +201,7 @@ fun ThemesList(modifier: Modifier= Modifier) {
                                 end = dimensionResource(id = R.dimen.padding_8))
                         ){
                             Button(
-                                onClick = { /*TODO*/ },
+                                onClick = {},
                                 modifier = modifier
                                     .height(40.dp)
                                     .width(60.dp),
@@ -238,14 +233,14 @@ fun ThemesList(modifier: Modifier= Modifier) {
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                             ) {
                                 Image(
-                                    painter = painterResource(id = R.drawable.star),
+                                    painter = painterResource(id = R.drawable.trash),
                                     contentDescription =null,
                                     modifier = modifier
                                         .aspectRatio(1f),
                                     contentScale = ContentScale.Crop)
                             }
                             Text(
-                                text = stringResource(id = R.string.favoritos),
+                                text = stringResource(id = R.string.papelera),
                                 style = MaterialTheme.typography.bodyMedium)
                         }
                         Column (
@@ -322,6 +317,6 @@ fun ThemesList(modifier: Modifier= Modifier) {
             }
         }
     ) {
-        items(contentPadding = it)
+        Items(contentPadding = it)
     }
 }

@@ -1,6 +1,5 @@
 package com.example.proyectofinal_jma
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -49,7 +48,7 @@ class LanguageSettingsActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-
+                    LanguageSettings()
                 }
             }
         }
@@ -59,8 +58,8 @@ class LanguageSettingsActivity : ComponentActivity() {
 @Preview(showBackground = true)
 @Composable
 fun Language(
-    contentPadding: PaddingValues = PaddingValues(0.dp),
-    modifier: Modifier=Modifier
+    modifier: Modifier=Modifier,
+    contentPadding: PaddingValues = PaddingValues(0.dp)
 ){
     Column (
         verticalArrangement = Arrangement.Center,
@@ -118,8 +117,7 @@ fun LanguageSettings(modifier: Modifier= Modifier) {
             Row (
                 modifier = modifier.padding(
                     start = dimensionResource(id = R.dimen.padding_8),
-                    end = dimensionResource(id = R.dimen.padding_8)
-                ),
+                    end = dimensionResource(id = R.dimen.padding_8)),
             ){
                 Card (
                     modifier = modifier
@@ -140,11 +138,10 @@ fun LanguageSettings(modifier: Modifier= Modifier) {
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = modifier.padding(
-                                end = dimensionResource(id = R.dimen.padding_8)
-                            )
+                                end = dimensionResource(id = R.dimen.padding_8))
                         ){
                             Button(
-                                onClick = { /*TODO*/ },
+                                onClick = {},
                                 modifier = modifier
                                     .height(40.dp)
                                     .width(60.dp),
@@ -160,13 +157,12 @@ fun LanguageSettings(modifier: Modifier= Modifier) {
                             }
                             Text(
                                 text = stringResource(id = R.string.ajustes),
-                                style = MaterialTheme.typography.bodyLarge)
+                                style = MaterialTheme.typography.bodyMedium)
                         }
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = modifier.padding(
-                                end = dimensionResource(id = R.dimen.padding_8)
-                            )
+                                end = dimensionResource(id = R.dimen.padding_8))
                         ){
                             Button(
                                 onClick = { /*TODO*/ },
@@ -177,22 +173,21 @@ fun LanguageSettings(modifier: Modifier= Modifier) {
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                             ) {
                                 Image(
-                                    painter = painterResource(id = R.drawable.star),
+                                    painter = painterResource(id = R.drawable.trash),
                                     contentDescription =null,
                                     modifier = modifier
                                         .aspectRatio(1f),
                                     contentScale = ContentScale.Crop)
                             }
                             Text(
-                                text = stringResource(id = R.string.favoritos),
-                                style = MaterialTheme.typography.bodyLarge)
+                                text = stringResource(id = R.string.papelera),
+                                style = MaterialTheme.typography.bodyMedium)
                         }
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = modifier.padding(
                                 start = dimensionResource(id = R.dimen.padding_8),
-                                end = dimensionResource(id = R.dimen.padding_8)
-                            )
+                                end = dimensionResource(id = R.dimen.padding_8))
                         ){
                             Button(
                                 onClick = { /*TODO*/ },
@@ -214,8 +209,7 @@ fun LanguageSettings(modifier: Modifier= Modifier) {
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = modifier.padding(
                                 start = dimensionResource(id = R.dimen.padding_8),
-                                end = dimensionResource(id = R.dimen.padding_8)
-                            )
+                                end = dimensionResource(id = R.dimen.padding_8))
                         ){
                             Button(
                                 onClick = { /*TODO*/ },
@@ -234,7 +228,7 @@ fun LanguageSettings(modifier: Modifier= Modifier) {
                             }
                             Text(
                                 text = stringResource(id = R.string.hecho),
-                                style = MaterialTheme.typography.bodyLarge)
+                                style = MaterialTheme.typography.bodyMedium)
                         }
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally
@@ -256,12 +250,11 @@ fun LanguageSettings(modifier: Modifier= Modifier) {
                             }
                             Text(
                                 text = stringResource(id = R.string.principal),
-                                style = MaterialTheme.typography.bodyLarge)
+                                style = MaterialTheme.typography.bodyMedium)
                         }
                     }
                 }
             }
-
         }
     ) {
         Language(contentPadding = it)

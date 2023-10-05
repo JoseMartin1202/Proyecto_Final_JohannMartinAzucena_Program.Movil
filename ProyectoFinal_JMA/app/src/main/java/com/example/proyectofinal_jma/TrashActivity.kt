@@ -19,22 +19,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,7 +40,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.proyectofinal_jma.data.DataSourceNotesOrHomework
 import com.example.proyectofinal_jma.data.DataSourceNotesOrHomework.notesHomeworksDone
 import com.example.proyectofinal_jma.model.HomeworkNoteDone
 import com.example.proyectofinal_jma.ui.theme.ProyectoFinal_JMATheme
@@ -61,7 +54,7 @@ class TrashActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-
+                    Trash()
                 }
             }
         }
@@ -127,7 +120,7 @@ fun CardTrash(homeworkNoteDone: HomeworkNoteDone, modifier: Modifier= Modifier){
 }
 
 @Composable
-fun trashCards(
+fun TrashCards(
     contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
     LazyColumn(
@@ -143,7 +136,7 @@ fun trashCards(
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
-fun trash(modifier: Modifier= Modifier) {
+fun Trash(modifier: Modifier= Modifier) {
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -221,8 +214,7 @@ fun trash(modifier: Modifier= Modifier) {
             Row (
                 modifier = modifier.padding(
                     start = dimensionResource(id = R.dimen.padding_8),
-                    end = dimensionResource(id = R.dimen.padding_8)
-                ),
+                    end = dimensionResource(id = R.dimen.padding_8)),
             ){
                 Card (
                     modifier = modifier
@@ -243,11 +235,10 @@ fun trash(modifier: Modifier= Modifier) {
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = modifier.padding(
-                                end = dimensionResource(id = R.dimen.padding_8)
-                            )
+                                end = dimensionResource(id = R.dimen.padding_8))
                         ){
                             Button(
-                                onClick = { /*TODO*/ },
+                                onClick = {},
                                 modifier = modifier
                                     .height(40.dp)
                                     .width(60.dp),
@@ -268,8 +259,7 @@ fun trash(modifier: Modifier= Modifier) {
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = modifier.padding(
-                                end = dimensionResource(id = R.dimen.padding_8)
-                            )
+                                end = dimensionResource(id = R.dimen.padding_8))
                         ){
                             Button(
                                 onClick = { /*TODO*/ },
@@ -294,8 +284,7 @@ fun trash(modifier: Modifier= Modifier) {
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = modifier.padding(
                                 start = dimensionResource(id = R.dimen.padding_8),
-                                end = dimensionResource(id = R.dimen.padding_8)
-                            )
+                                end = dimensionResource(id = R.dimen.padding_8))
                         ){
                             Button(
                                 onClick = { /*TODO*/ },
@@ -317,8 +306,7 @@ fun trash(modifier: Modifier= Modifier) {
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = modifier.padding(
                                 start = dimensionResource(id = R.dimen.padding_8),
-                                end = dimensionResource(id = R.dimen.padding_8)
-                            )
+                                end = dimensionResource(id = R.dimen.padding_8))
                         ){
                             Button(
                                 onClick = { /*TODO*/ },
@@ -366,6 +354,6 @@ fun trash(modifier: Modifier= Modifier) {
             }
         }
     ) {
-        trashCards(contentPadding = it)
+        TrashCards(contentPadding = it)
     }
 }

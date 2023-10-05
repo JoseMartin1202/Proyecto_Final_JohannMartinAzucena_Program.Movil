@@ -53,7 +53,7 @@ class DoneActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-
+                    Done()
                 }
             }
         }
@@ -156,7 +156,7 @@ fun Done(modifier: Modifier= Modifier) {
                                 end = dimensionResource(id = R.dimen.padding_8))
                         ){
                             Button(
-                                onClick = { /*TODO*/ },
+                                onClick = {},
                                 modifier = modifier
                                     .height(40.dp)
                                     .width(60.dp),
@@ -172,7 +172,7 @@ fun Done(modifier: Modifier= Modifier) {
                             }
                             Text(
                                 text = stringResource(id = R.string.ajustes),
-                                style = MaterialTheme.typography.bodyLarge)
+                                style = MaterialTheme.typography.bodyMedium)
                         }
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -188,15 +188,15 @@ fun Done(modifier: Modifier= Modifier) {
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                             ) {
                                 Image(
-                                    painter = painterResource(id = R.drawable.star),
+                                    painter = painterResource(id = R.drawable.trash),
                                     contentDescription =null,
                                     modifier = modifier
                                         .aspectRatio(1f),
                                     contentScale = ContentScale.Crop)
                             }
                             Text(
-                                text = stringResource(id = R.string.favoritos),
-                                style = MaterialTheme.typography.bodyLarge)
+                                text = stringResource(id = R.string.papelera),
+                                style = MaterialTheme.typography.bodyMedium)
                         }
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -243,7 +243,7 @@ fun Done(modifier: Modifier= Modifier) {
                             }
                             Text(
                                 text = stringResource(id = R.string.hecho),
-                                style = MaterialTheme.typography.bodyLarge)
+                                style = MaterialTheme.typography.bodyMedium)
                         }
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally
@@ -265,12 +265,11 @@ fun Done(modifier: Modifier= Modifier) {
                             }
                             Text(
                                 text = stringResource(id = R.string.principal),
-                                style = MaterialTheme.typography.bodyLarge)
+                                style = MaterialTheme.typography.bodyMedium)
                         }
                     }
                 }
             }
-
         }
     ) {
        ElementsDone(contentPadding=it)

@@ -1,7 +1,6 @@
 package com.example.proyectofinal_jma
 
 import android.os.Bundle
-import android.widget.Spinner
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -12,26 +11,20 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.Divider
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -46,10 +39,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.proyectofinal_jma.data.DataSourceNotesOrHomework
 import com.example.proyectofinal_jma.data.DataSourceNotesOrHomework.text
 import com.example.proyectofinal_jma.model.Content
 import com.example.proyectofinal_jma.ui.theme.ProyectoFinal_JMATheme
@@ -64,7 +55,7 @@ class Add : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-
+                    AddNoteHomework()
                 }
             }
         }
@@ -75,16 +66,16 @@ class Add : ComponentActivity() {
 fun Add(contentPadding: PaddingValues = PaddingValues(0.dp)){
     LazyColumn(
         contentPadding=contentPadding,
-        modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_4))){
+        modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_8))){
         items(text){
-            textCard(content = it)
+            TextCard(content = it)
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun textCard(content: Content){
+fun TextCard(content: Content){
     TextField(
         value = stringResource(content.text),
         onValueChange = {},
@@ -221,8 +212,7 @@ fun AddNoteHomework(modifier: Modifier = Modifier){
             Row (
                 modifier = modifier.padding(
                     start = dimensionResource(id = R.dimen.padding_8),
-                    end = dimensionResource(id = R.dimen.padding_8)
-                ),
+                    end = dimensionResource(id = R.dimen.padding_8)),
             ){
                 Card (
                     modifier = modifier
@@ -243,11 +233,10 @@ fun AddNoteHomework(modifier: Modifier = Modifier){
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = modifier.padding(
-                                end = dimensionResource(id = R.dimen.padding_8)
-                            )
+                                end = dimensionResource(id = R.dimen.padding_8))
                         ){
                             Button(
-                                onClick = { /*TODO*/ },
+                                onClick = {},
                                 modifier = modifier
                                     .height(40.dp)
                                     .width(60.dp),
@@ -263,13 +252,12 @@ fun AddNoteHomework(modifier: Modifier = Modifier){
                             }
                             Text(
                                 text = stringResource(id = R.string.ajustes),
-                                style = MaterialTheme.typography.bodyLarge)
+                                style = MaterialTheme.typography.bodyMedium)
                         }
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = modifier.padding(
-                                end = dimensionResource(id = R.dimen.padding_8)
-                            )
+                                end = dimensionResource(id = R.dimen.padding_8))
                         ){
                             Button(
                                 onClick = { /*TODO*/ },
@@ -280,22 +268,21 @@ fun AddNoteHomework(modifier: Modifier = Modifier){
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                             ) {
                                 Image(
-                                    painter = painterResource(id = R.drawable.star),
+                                    painter = painterResource(id = R.drawable.trash),
                                     contentDescription =null,
                                     modifier = modifier
                                         .aspectRatio(1f),
                                     contentScale = ContentScale.Crop)
                             }
                             Text(
-                                text = stringResource(id = R.string.favoritos),
-                                style = MaterialTheme.typography.bodyLarge)
+                                text = stringResource(id = R.string.papelera),
+                                style = MaterialTheme.typography.bodyMedium)
                         }
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = modifier.padding(
                                 start = dimensionResource(id = R.dimen.padding_8),
-                                end = dimensionResource(id = R.dimen.padding_8)
-                            )
+                                end = dimensionResource(id = R.dimen.padding_8))
                         ){
                             Button(
                                 onClick = { /*TODO*/ },
@@ -317,8 +304,7 @@ fun AddNoteHomework(modifier: Modifier = Modifier){
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = modifier.padding(
                                 start = dimensionResource(id = R.dimen.padding_8),
-                                end = dimensionResource(id = R.dimen.padding_8)
-                            )
+                                end = dimensionResource(id = R.dimen.padding_8))
                         ){
                             Button(
                                 onClick = { /*TODO*/ },
@@ -337,7 +323,7 @@ fun AddNoteHomework(modifier: Modifier = Modifier){
                             }
                             Text(
                                 text = stringResource(id = R.string.hecho),
-                                style = MaterialTheme.typography.bodyLarge)
+                                style = MaterialTheme.typography.bodyMedium)
                         }
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally
@@ -359,12 +345,11 @@ fun AddNoteHomework(modifier: Modifier = Modifier){
                             }
                             Text(
                                 text = stringResource(id = R.string.principal),
-                                style = MaterialTheme.typography.bodyLarge)
+                                style = MaterialTheme.typography.bodyMedium)
                         }
                     }
                 }
             }
-
         }
     ) {
         Add(contentPadding = it)

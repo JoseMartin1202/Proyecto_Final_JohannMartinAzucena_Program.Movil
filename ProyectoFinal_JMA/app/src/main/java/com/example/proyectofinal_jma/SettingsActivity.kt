@@ -40,7 +40,7 @@ import androidx.compose.ui.unit.dp
 import com.example.proyectofinal_jma.ui.theme.ProyectoFinal_JMATheme
 import com.example.proyectofinal_jma.ui.theme.Shapes
 
-class Settings : ComponentActivity() {
+class SettingsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -49,7 +49,7 @@ class Settings : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-
+                    SettingsApp()
                 }
             }
         }
@@ -124,8 +124,7 @@ fun SettingsApp(modifier: Modifier=Modifier){
             Row (
                 modifier = modifier.padding(
                     start = dimensionResource(id = R.dimen.padding_8),
-                    end = dimensionResource(id = R.dimen.padding_8)
-                ),
+                    end = dimensionResource(id = R.dimen.padding_8)),
             ){
                 Card (
                     modifier = modifier
@@ -146,11 +145,10 @@ fun SettingsApp(modifier: Modifier=Modifier){
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = modifier.padding(
-                                end = dimensionResource(id = R.dimen.padding_8)
-                            )
+                                end = dimensionResource(id = R.dimen.padding_8))
                         ){
                             Button(
-                                onClick = { /*TODO*/ },
+                                onClick = {},
                                 modifier = modifier
                                     .height(40.dp)
                                     .width(60.dp),
@@ -166,13 +164,12 @@ fun SettingsApp(modifier: Modifier=Modifier){
                             }
                             Text(
                                 text = stringResource(id = R.string.ajustes),
-                                style = MaterialTheme.typography.bodyLarge)
+                                style = MaterialTheme.typography.bodyMedium)
                         }
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = modifier.padding(
-                                end = dimensionResource(id = R.dimen.padding_8)
-                            )
+                                end = dimensionResource(id = R.dimen.padding_8))
                         ){
                             Button(
                                 onClick = { /*TODO*/ },
@@ -183,22 +180,21 @@ fun SettingsApp(modifier: Modifier=Modifier){
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                             ) {
                                 Image(
-                                    painter = painterResource(id = R.drawable.star),
+                                    painter = painterResource(id = R.drawable.trash),
                                     contentDescription =null,
                                     modifier = modifier
                                         .aspectRatio(1f),
                                     contentScale = ContentScale.Crop)
                             }
                             Text(
-                                text = stringResource(id = R.string.favoritos),
-                                style = MaterialTheme.typography.bodyLarge)
+                                text = stringResource(id = R.string.papelera),
+                                style = MaterialTheme.typography.bodyMedium)
                         }
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = modifier.padding(
                                 start = dimensionResource(id = R.dimen.padding_8),
-                                end = dimensionResource(id = R.dimen.padding_8)
-                            )
+                                end = dimensionResource(id = R.dimen.padding_8))
                         ){
                             Button(
                                 onClick = { /*TODO*/ },
@@ -220,8 +216,7 @@ fun SettingsApp(modifier: Modifier=Modifier){
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = modifier.padding(
                                 start = dimensionResource(id = R.dimen.padding_8),
-                                end = dimensionResource(id = R.dimen.padding_8)
-                            )
+                                end = dimensionResource(id = R.dimen.padding_8))
                         ){
                             Button(
                                 onClick = { /*TODO*/ },
@@ -240,7 +235,7 @@ fun SettingsApp(modifier: Modifier=Modifier){
                             }
                             Text(
                                 text = stringResource(id = R.string.hecho),
-                                style = MaterialTheme.typography.bodyLarge)
+                                style = MaterialTheme.typography.bodyMedium)
                         }
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally
@@ -262,12 +257,11 @@ fun SettingsApp(modifier: Modifier=Modifier){
                             }
                             Text(
                                 text = stringResource(id = R.string.principal),
-                                style = MaterialTheme.typography.bodyLarge)
+                                style = MaterialTheme.typography.bodyMedium)
                         }
                     }
                 }
             }
-
         }
     ) {
         Options(contentPadding=it)

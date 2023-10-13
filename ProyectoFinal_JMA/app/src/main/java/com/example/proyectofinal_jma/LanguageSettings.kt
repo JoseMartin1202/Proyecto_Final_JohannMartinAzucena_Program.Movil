@@ -3,7 +3,6 @@ package com.example.proyectofinal_jma
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,11 +16,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -30,7 +29,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -40,16 +38,17 @@ import androidx.compose.ui.unit.dp
 import com.example.proyectofinal_jma.ui.theme.ProyectoFinal_JMATheme
 import com.example.proyectofinal_jma.ui.theme.Shapes
 
-class SettingsActivity : ComponentActivity() {
+class LanguageSettings : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             ProyectoFinal_JMATheme {
+                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    SettingsApp()
+
                 }
             }
         }
@@ -58,7 +57,7 @@ class SettingsActivity : ComponentActivity() {
 
 @Preview(showBackground = true)
 @Composable
-fun Options(
+fun Language(
     modifier: Modifier=Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp)
 ){
@@ -70,44 +69,38 @@ fun Options(
             top = 4.dp,
             bottom = 4.dp)
     ){
-        OutlinedButton(
+        Button(
             onClick = { /*TODO*/ },
-            modifier = modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+            modifier = modifier.fillMaxWidth()
         ) {
             Row {
-                Icon(
-                    painter = painterResource(id = R.drawable.edit),
-                    contentDescription = null,
-                    tint = Color.Black)
-                Divider(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_anchor_16)),
-                    color = Color.Transparent)
                 Text(
-                    text = stringResource(id = R.string.temas),
+                    text = stringResource(id = R.string.espanol),
                     style = MaterialTheme.typography.bodyLarge,
-                    textAlign = TextAlign.Left,
-                    modifier = modifier.weight(1f),
-                    color = Color.Black)
+                    textAlign = TextAlign.Center,
+                    modifier = modifier.weight(1f))
+                Divider(modifier = Modifier.width(1.dp),
+                    color = Color.Transparent)
+                Icon(
+                    painter = painterResource(id = R.drawable.check),
+                    contentDescription = null)
             }
         }
-        OutlinedButton(
+        Button(
             onClick = { /*TODO*/ },
-            modifier = modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+            modifier = modifier.fillMaxWidth()
         ) {
             Row {
-                Icon(
-                    painter = painterResource(id = R.drawable.translate),
-                    contentDescription = null,
-                    tint = Color.Black)
-                Divider(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_anchor_16)),
-                    color = Color.Transparent)
                 Text(
-                    text = stringResource(id = R.string.idioma),
+                    text = stringResource(id = R.string.ingles),
                     style = MaterialTheme.typography.bodyLarge,
-                    textAlign = TextAlign.Left,
-                    modifier = modifier.weight(1f),
-                    color = Color.Black)
+                    textAlign = TextAlign.Center,
+                    modifier = modifier.weight(1f))
+                Divider(modifier = Modifier.width(1.dp),
+                    color = Color.Transparent)
+                Icon(
+                    painter = painterResource(id = R.drawable.check),
+                    contentDescription = null)
             }
         }
     }
@@ -116,7 +109,7 @@ fun Options(
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
-fun SettingsApp(modifier: Modifier=Modifier){
+fun LanguageSettings(modifier: Modifier= Modifier) {
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
@@ -124,7 +117,8 @@ fun SettingsApp(modifier: Modifier=Modifier){
             Row (
                 modifier = modifier.padding(
                     start = dimensionResource(id = R.dimen.padding_8),
-                    end = dimensionResource(id = R.dimen.padding_8)),
+                    end = dimensionResource(id = R.dimen.padding_8)
+                ),
             ){
                 Card (
                     modifier = modifier
@@ -133,7 +127,8 @@ fun SettingsApp(modifier: Modifier=Modifier){
                         )
                         .clip(Shapes.small)
                         .fillMaxWidth()
-                        .align(Alignment.CenterVertically)
+                        .align(Alignment.CenterVertically),
+                    colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primaryContainer)
                 ){
                     Row (
                         modifier = modifier
@@ -145,7 +140,8 @@ fun SettingsApp(modifier: Modifier=Modifier){
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = modifier.padding(
-                                end = dimensionResource(id = R.dimen.padding_8))
+                                end = dimensionResource(id = R.dimen.padding_8)
+                            )
                         ){
                             Button(
                                 onClick = {},
@@ -155,12 +151,13 @@ fun SettingsApp(modifier: Modifier=Modifier){
                                 contentPadding = PaddingValues(0.dp),
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                             ) {
-                                Image(
+                                Icon(
                                     painter = painterResource(id = R.drawable.settings),
                                     contentDescription =null,
                                     modifier = modifier
                                         .aspectRatio(1f),
-                                    contentScale = ContentScale.Crop)
+                                    tint = MaterialTheme.colorScheme.secondary
+                                )
                             }
                             Text(
                                 text = stringResource(id = R.string.ajustes),
@@ -169,7 +166,8 @@ fun SettingsApp(modifier: Modifier=Modifier){
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = modifier.padding(
-                                end = dimensionResource(id = R.dimen.padding_8))
+                                end = dimensionResource(id = R.dimen.padding_8)
+                            )
                         ){
                             Button(
                                 onClick = { /*TODO*/ },
@@ -179,12 +177,13 @@ fun SettingsApp(modifier: Modifier=Modifier){
                                 contentPadding = PaddingValues(0.dp),
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                             ) {
-                                Image(
+                                Icon(
                                     painter = painterResource(id = R.drawable.trash),
                                     contentDescription =null,
                                     modifier = modifier
                                         .aspectRatio(1f),
-                                    contentScale = ContentScale.Crop)
+                                    tint = MaterialTheme.colorScheme.secondary
+                                )
                             }
                             Text(
                                 text = stringResource(id = R.string.papelera),
@@ -194,29 +193,30 @@ fun SettingsApp(modifier: Modifier=Modifier){
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = modifier.padding(
                                 start = dimensionResource(id = R.dimen.padding_8),
-                                end = dimensionResource(id = R.dimen.padding_8))
+                                end = dimensionResource(id = R.dimen.padding_8)
+                            )
                         ){
                             Button(
                                 onClick = { /*TODO*/ },
                                 modifier = modifier
                                     .height(60.dp)
                                     .width(60.dp),
-                                contentPadding = PaddingValues(0.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                                contentPadding = PaddingValues(0.dp)
                             ) {
-                                Image(
+                                Icon(
                                     painter = painterResource(id = R.drawable.plus),
-                                    contentDescription =null,
+                                    contentDescription = null,
                                     modifier = modifier
-                                        .aspectRatio(1f),
-                                    contentScale = ContentScale.Crop)
+                                        .aspectRatio(1f)
+                                )
                             }
                         }
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = modifier.padding(
                                 start = dimensionResource(id = R.dimen.padding_8),
-                                end = dimensionResource(id = R.dimen.padding_8))
+                                end = dimensionResource(id = R.dimen.padding_8)
+                            )
                         ){
                             Button(
                                 onClick = { /*TODO*/ },
@@ -226,12 +226,13 @@ fun SettingsApp(modifier: Modifier=Modifier){
                                 contentPadding = PaddingValues(0.dp),
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                             ) {
-                                Image(
+                                Icon(
                                     painter = painterResource(id = R.drawable.done),
                                     contentDescription =null,
                                     modifier = modifier
                                         .aspectRatio(1f),
-                                    contentScale = ContentScale.Crop)
+                                    tint = MaterialTheme.colorScheme.secondary
+                                )
                             }
                             Text(
                                 text = stringResource(id = R.string.hecho),
@@ -248,12 +249,13 @@ fun SettingsApp(modifier: Modifier=Modifier){
                                 contentPadding = PaddingValues(0.dp),
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                             ) {
-                                Image(
+                                Icon(
                                     painter = painterResource(id = R.drawable.home),
                                     contentDescription =null,
                                     modifier = modifier
                                         .aspectRatio(1f),
-                                    contentScale = ContentScale.Crop)
+                                    tint = MaterialTheme.colorScheme.secondary
+                                )
                             }
                             Text(
                                 text = stringResource(id = R.string.principal),
@@ -264,6 +266,6 @@ fun SettingsApp(modifier: Modifier=Modifier){
             }
         }
     ) {
-        Options(contentPadding=it)
+        Language(contentPadding = it)
     }
 }

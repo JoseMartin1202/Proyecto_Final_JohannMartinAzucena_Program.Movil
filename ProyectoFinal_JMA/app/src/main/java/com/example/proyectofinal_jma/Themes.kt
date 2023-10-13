@@ -15,20 +15,22 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,81 +40,87 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.proyectofinal_jma.data.DataSourceNotesOrHomework.notesHomeworksDone
-import com.example.proyectofinal_jma.model.HomeworkNoteDone
+import com.example.proyectofinal_jma.data.Themes
+import com.example.proyectofinal_jma.model.Theme
 import com.example.proyectofinal_jma.ui.theme.ProyectoFinal_JMATheme
 import com.example.proyectofinal_jma.ui.theme.Shapes
 
-class TrashActivity : ComponentActivity() {
+class Themes : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             ProyectoFinal_JMATheme {
+                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Trash()
+
                 }
             }
         }
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun CardTrashPreview() {
-    ProyectoFinal_JMATheme {
-        CardTrash(HomeworkNoteDone(R.drawable.image,R.string.title,R.string.notaDescripcion,R.string.date))
-    }
-}
-@Composable
-fun CardTrash(homeworkNoteDone: HomeworkNoteDone, modifier: Modifier= Modifier){
-    Row (
-        verticalAlignment = Alignment.CenterVertically
+fun ThemeCard(theme: Theme, modifier: Modifier= Modifier){
+    Card (
+        modifier = modifier
+            .padding(dimensionResource(id = R.dimen.padding_4))
+            .fillMaxWidth()
     ){
-        Checkbox(
-            checked = false ,
-            onCheckedChange = {})
-        Card (
-            modifier = modifier.padding(dimensionResource(id = R.dimen.padding_4))
+        Column (
+            modifier = Modifier.fillMaxWidth(),
         ){
-            Row (
-                modifier= modifier
+            Button(
+                onClick = { /*TODO*/ },
+                modifier = modifier
                     .fillMaxWidth()
-                    .padding(dimensionResource(id = R.dimen.padding_4))
-                    .padding(end = dimensionResource(id = R.dimen.padding_4))
-                    .sizeIn(minHeight = dimensionResource(id = R.dimen.anchor_64))
+                    .height(150.dp),
+                contentPadding = PaddingValues(0.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+            ) {
+                Image(
+                    painter = painterResource(id = theme.miniature),
+                    contentDescription =null,
+                    modifier = modifier
+                        .aspectRatio(1f),
+                    contentScale = ContentScale.Crop)
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(40.dp)
+                    .padding(start = 10.dp),
+                horizontalArrangement = Arrangement.Start
             ){
-                Box{
-                    Image(
-                        painter = painterResource(id = homeworkNoteDone.miniature),
-                        contentDescription =null,
-                        modifier = modifier
-                            .size(
-                                width = dimensionResource(id = R.dimen.anchor_64),
-                                height = dimensionResource(id = R.dimen.anchor_64)
-                            )
-                            .aspectRatio(1f),
-                        contentScale = ContentScale.Crop)
-                }
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = stringResource(id = homeworkNoteDone.titleCard),
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier=modifier
-                            .padding( top = dimensionResource(id = R.dimen.padding_8)))
-                    Text(
-                        text = stringResource(id = homeworkNoteDone.descriptionCard),
-                        style = MaterialTheme.typography.bodyMedium)
-                }
-                Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_8)))
-                Column(horizontalAlignment = Alignment.End){
-                    Text(
-                        text = stringResource(id = homeworkNoteDone.dateCard),
-                        style = MaterialTheme.typography.bodySmall)
+                Row {
+                    Column {
+                        Text(
+                            text = stringResource(id = theme.titleCard),
+                            style = MaterialTheme.typography.bodyLarge,
+                            textAlign = TextAlign.Left,
+                            color = Color.Black)
+                    }
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = dimensionResource(id = R.dimen.padding_8)),
+                        horizontalAlignment = Alignment.End
+                    ) {
+                        Box{
+                            Image(
+                                painter = painterResource(id = theme.check),
+                                contentDescription =null,
+                                modifier = modifier
+                                    .width(30.dp)
+                                    .aspectRatio(1f),
+                                contentScale = ContentScale.Crop)
+                        }
+                    }
                 }
             }
         }
@@ -120,15 +128,14 @@ fun CardTrash(homeworkNoteDone: HomeworkNoteDone, modifier: Modifier= Modifier){
 }
 
 @Composable
-fun TrashCards(
-    contentPadding: PaddingValues = PaddingValues(0.dp)
-) {
-    LazyColumn(
+fun Items(contentPadding: PaddingValues = PaddingValues(0.dp)){
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
         contentPadding=contentPadding,
         modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_4))
     ){
-        items(notesHomeworksDone){
-            CardTrash(homeworkNoteDone= it)
+        this.items(Themes.themes){
+            ThemeCard(theme = it)
         }
     }
 }
@@ -136,7 +143,7 @@ fun TrashCards(
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
-fun Trash(modifier: Modifier= Modifier) {
+fun ThemesList(modifier: Modifier= Modifier) {
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -144,69 +151,43 @@ fun Trash(modifier: Modifier= Modifier) {
         topBar = {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = modifier.padding(end = 8.dp, start = 4.dp),
+                modifier = modifier.padding(end = 8.dp, start = 8.dp),
                 horizontalArrangement = Arrangement.Center
             ){
-                Checkbox(
-                    checked = false,
-                    onCheckedChange ={} )
-                Spacer(Modifier.width(1.dp))
-                Text(
-                    text = stringResource(id = R.string.todas),
-                    style = MaterialTheme.typography.bodyLarge)
-                Row(
-                    modifier = modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
-                ){
-                    Button(
-                        onClick = { /*TODO*/ },
+                Button(
+                    onClick = { /*TODO*/ },
+                    modifier = modifier
+                        .height(50.dp)
+                        .width(50.dp),
+                    contentPadding = PaddingValues(0.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.filter),
+                        contentDescription =null,
                         modifier = modifier
-                            .height(40.dp)
-                            .width(60.dp),
-                        contentPadding = PaddingValues(0.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.delete),
-                            contentDescription = null,
-                            modifier = modifier
-                                .aspectRatio(1f),
-                            contentScale = ContentScale.Crop
-                        )
-                    }
-                    Button(
-                        onClick = { /*TODO*/ },
-                        modifier = modifier
-                            .height(40.dp)
-                            .width(60.dp),
-                        contentPadding = PaddingValues(0.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.information),
-                            contentDescription = null,
-                            modifier = modifier
-                                .aspectRatio(1f),
-                            contentScale = ContentScale.Crop
-                        )
-                    }
-                    Button(
-                        onClick = { /*TODO*/ },
-                        modifier = modifier
-                            .height(40.dp)
-                            .width(60.dp),
-                        contentPadding = PaddingValues(0.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.restore),
-                            contentDescription = null,
-                            modifier = modifier
-                                .aspectRatio(1f),
-                            contentScale = ContentScale.Crop
-                        )
-                    }
+                            .aspectRatio(1f),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
                 }
+                Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_2)))
+                TextField(
+                    value = stringResource(id = R.string.buscar),
+                    onValueChange = {},
+                    modifier = Modifier
+                        .padding(top = 4.dp)
+                        .height(50.dp)
+                        .fillMaxWidth(),
+                    trailingIcon = { Icon(
+                        painter = painterResource(id = R.drawable.search) ,
+                        contentDescription = null)
+                    },
+                    shape = Shapes.large,
+                    colors = TextFieldDefaults.textFieldColors(
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent
+                    ),
+                    textStyle = MaterialTheme.typography.bodyMedium)
 
             }
         },
@@ -223,7 +204,8 @@ fun Trash(modifier: Modifier= Modifier) {
                         )
                         .clip(Shapes.small)
                         .fillMaxWidth()
-                        .align(Alignment.CenterVertically)
+                        .align(Alignment.CenterVertically),
+                    colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primaryContainer)
                 ){
                     Row (
                         modifier = modifier
@@ -245,12 +227,13 @@ fun Trash(modifier: Modifier= Modifier) {
                                 contentPadding = PaddingValues(0.dp),
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                             ) {
-                                Image(
+                                Icon(
                                     painter = painterResource(id = R.drawable.settings),
                                     contentDescription =null,
                                     modifier = modifier
                                         .aspectRatio(1f),
-                                    contentScale = ContentScale.Crop)
+                                    tint = MaterialTheme.colorScheme.secondary
+                                )
                             }
                             Text(
                                 text = stringResource(id = R.string.ajustes),
@@ -269,12 +252,13 @@ fun Trash(modifier: Modifier= Modifier) {
                                 contentPadding = PaddingValues(0.dp),
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                             ) {
-                                Image(
+                                Icon(
                                     painter = painterResource(id = R.drawable.trash),
                                     contentDescription =null,
                                     modifier = modifier
                                         .aspectRatio(1f),
-                                    contentScale = ContentScale.Crop)
+                                    tint = MaterialTheme.colorScheme.secondary
+                                )
                             }
                             Text(
                                 text = stringResource(id = R.string.papelera),
@@ -291,15 +275,14 @@ fun Trash(modifier: Modifier= Modifier) {
                                 modifier = modifier
                                     .height(60.dp)
                                     .width(60.dp),
-                                contentPadding = PaddingValues(0.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                                contentPadding = PaddingValues(0.dp)
                             ) {
-                                Image(
+                                Icon(
                                     painter = painterResource(id = R.drawable.plus),
-                                    contentDescription =null,
+                                    contentDescription = null,
                                     modifier = modifier
-                                        .aspectRatio(1f),
-                                    contentScale = ContentScale.Crop)
+                                        .aspectRatio(1f)
+                                )
                             }
                         }
                         Column (
@@ -316,12 +299,13 @@ fun Trash(modifier: Modifier= Modifier) {
                                 contentPadding = PaddingValues(0.dp),
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                             ) {
-                                Image(
+                                Icon(
                                     painter = painterResource(id = R.drawable.done),
                                     contentDescription =null,
                                     modifier = modifier
                                         .aspectRatio(1f),
-                                    contentScale = ContentScale.Crop)
+                                    tint = MaterialTheme.colorScheme.secondary
+                                )
                             }
                             Text(
                                 text = stringResource(id = R.string.hecho),
@@ -338,12 +322,13 @@ fun Trash(modifier: Modifier= Modifier) {
                                 contentPadding = PaddingValues(0.dp),
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                             ) {
-                                Image(
+                                Icon(
                                     painter = painterResource(id = R.drawable.home),
                                     contentDescription =null,
                                     modifier = modifier
                                         .aspectRatio(1f),
-                                    contentScale = ContentScale.Crop)
+                                    tint = MaterialTheme.colorScheme.secondary
+                                )
                             }
                             Text(
                                 text = stringResource(id = R.string.principal),
@@ -354,6 +339,6 @@ fun Trash(modifier: Modifier= Modifier) {
             }
         }
     ) {
-        TrashCards(contentPadding = it)
+        Items(contentPadding = it)
     }
 }

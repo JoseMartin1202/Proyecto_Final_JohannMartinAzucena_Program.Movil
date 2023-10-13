@@ -5,19 +5,25 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.Divider
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -33,83 +39,97 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.proyectofinal_jma.data.DataSourceNotesOrHomework
+import com.example.proyectofinal_jma.model.HomeworkNoteDone
 import com.example.proyectofinal_jma.ui.theme.ProyectoFinal_JMATheme
 import com.example.proyectofinal_jma.ui.theme.Shapes
 
-class LanguageSettingsActivity : ComponentActivity() {
+class Done : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             ProyectoFinal_JMATheme {
+                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    LanguageSettings()
+
                 }
             }
         }
     }
 }
 
-@Preview(showBackground = true)
+
 @Composable
-fun Language(
-    modifier: Modifier=Modifier,
-    contentPadding: PaddingValues = PaddingValues(0.dp)
-){
-    Column (
-        verticalArrangement = Arrangement.Center,
-        modifier = modifier.padding(
-            start = 8.dp,
-            end = 8.dp,
-            top = 4.dp,
-            bottom = 4.dp)
-    ){
-        Button(
-            onClick = { /*TODO*/ },
-            modifier = modifier.fillMaxWidth()
-        ) {
-            Row {
-                Text(
-                    text = stringResource(id = R.string.espanol),
-                    style = MaterialTheme.typography.bodyLarge,
-                    textAlign = TextAlign.Center,
-                    modifier = modifier.weight(1f))
-                Divider(modifier = Modifier.width(1.dp),
-                    color = Color.Transparent)
-                Icon(
-                    painter = painterResource(id = R.drawable.check),
-                    contentDescription = null)
+fun CardDone(homeworkNoteDone: HomeworkNoteDone, modifier: Modifier= Modifier){
+    Card (modifier = modifier.padding(dimensionResource(id = R.dimen.padding_4))){
+        Row (
+            modifier= modifier
+                .fillMaxWidth()
+                .padding(dimensionResource(id = R.dimen.padding_4))
+                .padding(end = dimensionResource(id = R.dimen.padding_4))
+                .sizeIn(minHeight = dimensionResource(id = R.dimen.anchor_64))
+        ){
+            Box{
+                Image(
+                    painter = painterResource(id = homeworkNoteDone.miniature),
+                    contentDescription =null,
+                    modifier = modifier
+                        .size(
+                            width = dimensionResource(id = R.dimen.anchor_64),
+                            height = dimensionResource(id = R.dimen.anchor_64)
+                        )
+                        .aspectRatio(1f),
+                    contentScale = ContentScale.Crop)
             }
-        }
-        Button(
-            onClick = { /*TODO*/ },
-            modifier = modifier.fillMaxWidth()
-        ) {
-            Row {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = stringResource(id = R.string.ingles),
+                    text = stringResource(id = homeworkNoteDone.titleCard),
                     style = MaterialTheme.typography.bodyLarge,
-                    textAlign = TextAlign.Center,
-                    modifier = modifier.weight(1f))
-                Divider(modifier = Modifier.width(1.dp),
-                    color = Color.Transparent)
-                Icon(
-                    painter = painterResource(id = R.drawable.check),
-                    contentDescription = null)
+                    modifier=modifier
+                        .padding( top = dimensionResource(id = R.dimen.padding_8)))
+                Text(
+                    text = stringResource(id = homeworkNoteDone.descriptionCard),
+                    style = MaterialTheme.typography.bodyMedium)
+            }
+            Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_8)))
+            Column(horizontalAlignment = Alignment.End){
+                Text(
+                    text = stringResource(id = homeworkNoteDone.dateCard),
+                    style = MaterialTheme.typography.bodySmall)
             }
         }
     }
 }
 
 @Preview(showBackground = true)
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LanguageSettings(modifier: Modifier= Modifier) {
+fun CardDonePreview() {
+    ProyectoFinal_JMATheme {
+        CardDone(HomeworkNoteDone(R.drawable.image,R.string.title,R.string.notaDescripcion,R.string.date))
+    }
+}
+
+@Composable
+fun ElementsDone(
+    contentPadding: PaddingValues = PaddingValues(0.dp)
+) {
+    LazyColumn(contentPadding=contentPadding, modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_4))){
+        items(DataSourceNotesOrHomework.notesHomeworksDone){
+            CardDone(homeworkNoteDone= it)
+        }
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(showBackground = true)
+@Composable
+fun Done(modifier: Modifier= Modifier) {
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
@@ -126,7 +146,8 @@ fun LanguageSettings(modifier: Modifier= Modifier) {
                         )
                         .clip(Shapes.small)
                         .fillMaxWidth()
-                        .align(Alignment.CenterVertically)
+                        .align(Alignment.CenterVertically),
+                    colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primaryContainer)
                 ){
                     Row (
                         modifier = modifier
@@ -148,12 +169,13 @@ fun LanguageSettings(modifier: Modifier= Modifier) {
                                 contentPadding = PaddingValues(0.dp),
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                             ) {
-                                Image(
+                                Icon(
                                     painter = painterResource(id = R.drawable.settings),
                                     contentDescription =null,
                                     modifier = modifier
                                         .aspectRatio(1f),
-                                    contentScale = ContentScale.Crop)
+                                    tint = MaterialTheme.colorScheme.secondary
+                                )
                             }
                             Text(
                                 text = stringResource(id = R.string.ajustes),
@@ -172,12 +194,13 @@ fun LanguageSettings(modifier: Modifier= Modifier) {
                                 contentPadding = PaddingValues(0.dp),
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                             ) {
-                                Image(
+                                Icon(
                                     painter = painterResource(id = R.drawable.trash),
                                     contentDescription =null,
                                     modifier = modifier
                                         .aspectRatio(1f),
-                                    contentScale = ContentScale.Crop)
+                                    tint = MaterialTheme.colorScheme.secondary
+                                )
                             }
                             Text(
                                 text = stringResource(id = R.string.papelera),
@@ -194,15 +217,14 @@ fun LanguageSettings(modifier: Modifier= Modifier) {
                                 modifier = modifier
                                     .height(60.dp)
                                     .width(60.dp),
-                                contentPadding = PaddingValues(0.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                                contentPadding = PaddingValues(0.dp)
                             ) {
-                                Image(
+                                Icon(
                                     painter = painterResource(id = R.drawable.plus),
-                                    contentDescription =null,
+                                    contentDescription = null,
                                     modifier = modifier
-                                        .aspectRatio(1f),
-                                    contentScale = ContentScale.Crop)
+                                        .aspectRatio(1f)
+                                )
                             }
                         }
                         Column (
@@ -219,12 +241,13 @@ fun LanguageSettings(modifier: Modifier= Modifier) {
                                 contentPadding = PaddingValues(0.dp),
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                             ) {
-                                Image(
+                                Icon(
                                     painter = painterResource(id = R.drawable.done),
                                     contentDescription =null,
                                     modifier = modifier
                                         .aspectRatio(1f),
-                                    contentScale = ContentScale.Crop)
+                                    tint = MaterialTheme.colorScheme.secondary
+                                )
                             }
                             Text(
                                 text = stringResource(id = R.string.hecho),
@@ -241,12 +264,13 @@ fun LanguageSettings(modifier: Modifier= Modifier) {
                                 contentPadding = PaddingValues(0.dp),
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                             ) {
-                                Image(
+                                Icon(
                                     painter = painterResource(id = R.drawable.home),
                                     contentDescription =null,
                                     modifier = modifier
                                         .aspectRatio(1f),
-                                    contentScale = ContentScale.Crop)
+                                    tint = MaterialTheme.colorScheme.secondary
+                                )
                             }
                             Text(
                                 text = stringResource(id = R.string.principal),
@@ -257,6 +281,6 @@ fun LanguageSettings(modifier: Modifier= Modifier) {
             }
         }
     ) {
-        Language(contentPadding = it)
+        ElementsDone(contentPadding=it)
     }
 }

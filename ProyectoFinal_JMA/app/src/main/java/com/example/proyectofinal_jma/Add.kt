@@ -3,7 +3,6 @@ package com.example.proyectofinal_jma
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,119 +14,201 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.proyectofinal_jma.data.DataSourceNotesOrHomework.notesHomeworksDone
-import com.example.proyectofinal_jma.model.HomeworkNoteDone
+import com.example.proyectofinal_jma.data.DataSourceNotesOrHomework
+import com.example.proyectofinal_jma.model.Content
 import com.example.proyectofinal_jma.ui.theme.ProyectoFinal_JMATheme
 import com.example.proyectofinal_jma.ui.theme.Shapes
 
-class DoneActivity : ComponentActivity() {
+class Add : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             ProyectoFinal_JMATheme {
+                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Done()
+
                 }
             }
         }
     }
 }
 
-@Composable
-fun CardDone(homeworkNoteDone: HomeworkNoteDone, modifier: Modifier= Modifier){
-    Card (modifier = modifier.padding(dimensionResource(id = R.dimen.padding_4))){
-        Row (
-            modifier= modifier
-                .fillMaxWidth()
-                .padding(dimensionResource(id = R.dimen.padding_4))
-                .padding(end = dimensionResource(id = R.dimen.padding_4))
-                .sizeIn(minHeight = dimensionResource(id = R.dimen.anchor_64))
-        ){
-            Box{
-                Image(
-                    painter = painterResource(id = homeworkNoteDone.miniature),
-                    contentDescription =null,
-                    modifier = modifier
-                        .size(
-                            width = dimensionResource(id = R.dimen.anchor_64),
-                            height = dimensionResource(id = R.dimen.anchor_64)
-                        )
-                        .aspectRatio(1f),
-                    contentScale = ContentScale.Crop)
-            }
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = stringResource(id = homeworkNoteDone.titleCard),
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier=modifier
-                        .padding( top = dimensionResource(id = R.dimen.padding_8)))
-                Text(
-                    text = stringResource(id = homeworkNoteDone.descriptionCard),
-                    style = MaterialTheme.typography.bodyMedium)
-            }
-            Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_8)))
-            Column(horizontalAlignment = Alignment.End){
-                Text(
-                    text = stringResource(id = homeworkNoteDone.dateCard),
-                    style = MaterialTheme.typography.bodySmall)
-            }
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun CardDonePreview() {
-    ProyectoFinal_JMATheme {
-       CardDone(HomeworkNoteDone(R.drawable.image,R.string.title,R.string.notaDescripcion,R.string.date))
-    }
-}
 
 @Composable
-fun ElementsDone(
-    contentPadding: PaddingValues = PaddingValues(0.dp)
-) {
-    LazyColumn(contentPadding=contentPadding, modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_4))){
-        items(notesHomeworksDone){
-            CardDone(homeworkNoteDone= it)
+fun Add(contentPadding: PaddingValues = PaddingValues(0.dp)){
+    LazyColumn(
+        contentPadding=contentPadding,
+        modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_8))){
+        items(DataSourceNotesOrHomework.text){
+            TextCard(content = it)
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TextCard(content: Content){
+    TextField(
+        value = stringResource(content.text),
+        onValueChange = {},
+        modifier = Modifier
+            .padding(top = 4.dp)
+            .fillMaxWidth()
+            .height(630.dp),
+        colors = TextFieldDefaults.textFieldColors(
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent),
+        textStyle = MaterialTheme.typography.bodyMedium)
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
-fun Done(modifier: Modifier= Modifier) {
+fun AddNoteHomework(modifier: Modifier= Modifier) {
     Scaffold(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .padding(top = dimensionResource(id = R.dimen.padding_4)),
+        topBar = {
+            Column {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = modifier.padding(end = 8.dp, start = 8.dp),
+                    horizontalArrangement = Arrangement.Center
+                ){
+                    Button(
+                        onClick = { /*TODO*/ },
+                        modifier = modifier
+                            .height(50.dp)
+                            .width(50.dp),
+                        contentPadding = PaddingValues(0.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.check),
+                            contentDescription =null,
+                            modifier = modifier
+                                .aspectRatio(1f),
+                            tint = MaterialTheme.colorScheme.primary)
+                    }
+                    Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_2)))
+                    TextField(
+                        value = stringResource(id = R.string.titulo),
+                        onValueChange = {},
+                        modifier = Modifier
+                            .padding(top = 4.dp)
+                            .height(50.dp),
+                        shape = Shapes.large,
+                        colors = TextFieldDefaults.textFieldColors(
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent
+                        ),
+                        textStyle = MaterialTheme.typography.bodyMedium)
+                    Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_2)))
+                    Button(
+                        onClick = { /*TODO*/ },
+                        modifier = modifier
+                            .height(50.dp)
+                            .width(50.dp),
+                        contentPadding = PaddingValues(0.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.cancel),
+                            contentDescription =null,
+                            modifier = modifier
+                                .aspectRatio(1f),
+                            tint = MaterialTheme.colorScheme.primary)
+                    }
+                }
+                Spacer(Modifier.height(dimensionResource(id = R.dimen.padding_4)))
+                Row(modifier = modifier
+                    .height(50.dp)
+                    .padding(end = 8.dp, start = 8.dp)) {
+                    Box {
+                        Icon(
+                            painter = painterResource(id = R.drawable.text_size),
+                            contentDescription = null,
+                            modifier = modifier
+                                .aspectRatio(1f)
+                                .height(50.dp)
+                                .width(50.dp),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                    Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_2)))
+                    TextField(
+                        value = stringResource(id = R.string.titulo),
+                        onValueChange = {},
+                        modifier = Modifier
+                            .padding(top = 4.dp)
+                            .height(50.dp)
+                            .width(100.dp),
+                        colors = TextFieldDefaults.textFieldColors(
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent
+                        ),
+                        textStyle = MaterialTheme.typography.bodyMedium
+                    )
+                    Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_2)))
+                    Icon(
+                        painter = painterResource(id = R.drawable.gallery),
+                        contentDescription = null,
+                        modifier = modifier
+                            .aspectRatio(1f)
+                            .height(50.dp)
+                            .width(50.dp),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                    Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_2)))
+                    ExposedDropdownMenuBox(
+                        modifier = modifier.height(50.dp)
+                            .padding(top = 4.dp),
+                        expanded = false,
+                        onExpandedChange = {}
+                    ) {
+                        TextField(
+                            value = stringResource(id = R.string.nota),
+                            onValueChange = {},
+                            readOnly = true,
+                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = false) },
+                            modifier = Modifier.menuAnchor()
+                        )
+                    }
+                }
+            }
+        },
         bottomBar = {
             Row (
                 modifier = modifier.padding(
@@ -141,7 +222,8 @@ fun Done(modifier: Modifier= Modifier) {
                         )
                         .clip(Shapes.small)
                         .fillMaxWidth()
-                        .align(Alignment.CenterVertically)
+                        .align(Alignment.CenterVertically),
+                    colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primaryContainer)
                 ){
                     Row (
                         modifier = modifier
@@ -163,12 +245,13 @@ fun Done(modifier: Modifier= Modifier) {
                                 contentPadding = PaddingValues(0.dp),
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                             ) {
-                                Image(
+                                Icon(
                                     painter = painterResource(id = R.drawable.settings),
                                     contentDescription =null,
                                     modifier = modifier
                                         .aspectRatio(1f),
-                                    contentScale = ContentScale.Crop)
+                                    tint = MaterialTheme.colorScheme.secondary
+                                )
                             }
                             Text(
                                 text = stringResource(id = R.string.ajustes),
@@ -187,12 +270,13 @@ fun Done(modifier: Modifier= Modifier) {
                                 contentPadding = PaddingValues(0.dp),
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                             ) {
-                                Image(
+                                Icon(
                                     painter = painterResource(id = R.drawable.trash),
                                     contentDescription =null,
                                     modifier = modifier
                                         .aspectRatio(1f),
-                                    contentScale = ContentScale.Crop)
+                                    tint = MaterialTheme.colorScheme.secondary
+                                )
                             }
                             Text(
                                 text = stringResource(id = R.string.papelera),
@@ -209,15 +293,14 @@ fun Done(modifier: Modifier= Modifier) {
                                 modifier = modifier
                                     .height(60.dp)
                                     .width(60.dp),
-                                contentPadding = PaddingValues(0.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                                contentPadding = PaddingValues(0.dp)
                             ) {
-                                Image(
+                                Icon(
                                     painter = painterResource(id = R.drawable.plus),
-                                    contentDescription =null,
+                                    contentDescription = null,
                                     modifier = modifier
-                                        .aspectRatio(1f),
-                                    contentScale = ContentScale.Crop)
+                                        .aspectRatio(1f)
+                                )
                             }
                         }
                         Column (
@@ -234,12 +317,13 @@ fun Done(modifier: Modifier= Modifier) {
                                 contentPadding = PaddingValues(0.dp),
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                             ) {
-                                Image(
+                                Icon(
                                     painter = painterResource(id = R.drawable.done),
                                     contentDescription =null,
                                     modifier = modifier
                                         .aspectRatio(1f),
-                                    contentScale = ContentScale.Crop)
+                                    tint = MaterialTheme.colorScheme.secondary
+                                )
                             }
                             Text(
                                 text = stringResource(id = R.string.hecho),
@@ -256,12 +340,13 @@ fun Done(modifier: Modifier= Modifier) {
                                 contentPadding = PaddingValues(0.dp),
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                             ) {
-                                Image(
+                                Icon(
                                     painter = painterResource(id = R.drawable.home),
                                     contentDescription =null,
                                     modifier = modifier
                                         .aspectRatio(1f),
-                                    contentScale = ContentScale.Crop)
+                                    tint = MaterialTheme.colorScheme.secondary
+                                )
                             }
                             Text(
                                 text = stringResource(id = R.string.principal),
@@ -272,6 +357,6 @@ fun Done(modifier: Modifier= Modifier) {
             }
         }
     ) {
-       ElementsDone(contentPadding=it)
+        Add(contentPadding = it)
     }
 }

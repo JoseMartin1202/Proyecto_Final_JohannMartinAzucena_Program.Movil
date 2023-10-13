@@ -44,10 +44,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.proyectofinal_jma.data.DataSourceNotesOrHomework.cardsHomeworks
 import com.example.proyectofinal_jma.data.DataSourceNotesOrHomework.cardsNotes
 import com.example.proyectofinal_jma.model.Homework
 import com.example.proyectofinal_jma.model.Note
+import com.example.proyectofinal_jma.navigation.AppNavigation
+import com.example.proyectofinal_jma.navigation.AppScreens
 import com.example.proyectofinal_jma.ui.theme.ProyectoFinal_JMATheme
 import com.example.proyectofinal_jma.ui.theme.Shapes
 
@@ -60,7 +63,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    App()
+                    AppNavigation()
                 }
             }
         }
@@ -222,9 +225,11 @@ fun ListElements(
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true)
 @Composable
-fun App(modifier: Modifier= Modifier) {
+fun App(
+    modifier: Modifier= Modifier,
+    navController: NavController
+) {
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -300,7 +305,9 @@ fun App(modifier: Modifier= Modifier) {
                                 end = dimensionResource(id = R.dimen.padding_8))
                         ){
                             Button(
-                                onClick = {},
+                                onClick = {
+                                    navController.navigate(route = AppScreens.SettingsScreen.route)
+                                },
                                 modifier = modifier
                                     .height(40.dp)
                                     .width(60.dp),
@@ -422,7 +429,3 @@ fun App(modifier: Modifier= Modifier) {
         ListElements(contentPadding = it)
     }
 }
-
-/*NOTA: SI NO FUNCIONA EL ON CLICK CUANDO SE QUIERE MOSTRAR OTRA ACTIVITY
-* SE DEBE A QUE SE AGREGARON ARCHIVOS KOTLIN, EN LUGAR DE INDICARLOS COMO
-* ACTIVYTY A LA HORA DE INSERTAR*/

@@ -33,13 +33,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.proyectofinal_jma.navigation.AppScreens
 import com.example.proyectofinal_jma.ui.theme.Shapes
 
-@Preview(showBackground = true)
 @Composable
 fun Options(
     modifier: Modifier=Modifier,
-    contentPadding: PaddingValues = PaddingValues(0.dp)
+    contentPadding: PaddingValues = PaddingValues(0.dp),
+    navController: NavController
 ){
     Column (
         verticalArrangement = Arrangement.Center,
@@ -50,8 +51,10 @@ fun Options(
             bottom = 4.dp)
     ){
         OutlinedButton(
-            onClick = { /*TODO*/ },
-            modifier = modifier.fillMaxWidth(),
+            onClick = {
+                navController.navigate(route = AppScreens.ThemesScreen.route)
+            },
+            modifier = modifier.fillMaxWidth().padding(top = 10.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
         ) {
             Row {
@@ -70,7 +73,9 @@ fun Options(
             }
         }
         OutlinedButton(
-            onClick = { /*TODO*/ },
+            onClick = {
+                navController.navigate(route = AppScreens.LanguageScreen.route)
+            },
             modifier = modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
         ) {
@@ -155,7 +160,9 @@ fun SettingsApp(
                                 end = dimensionResource(id = R.dimen.padding_8))
                         ){
                             Button(
-                                onClick = { /*TODO*/ },
+                                onClick = {
+                                    navController.navigate(route = AppScreens.TrashScreen.route)
+                                },
                                 modifier = modifier
                                     .height(40.dp)
                                     .width(60.dp),
@@ -181,7 +188,9 @@ fun SettingsApp(
                                 end = dimensionResource(id = R.dimen.padding_8))
                         ){
                             Button(
-                                onClick = { /*TODO*/ },
+                                onClick = {
+                                    navController.navigate(route = AppScreens.AddScreen.route)
+                                },
                                 modifier = modifier
                                     .height(60.dp)
                                     .width(60.dp),
@@ -202,7 +211,9 @@ fun SettingsApp(
                                 end = dimensionResource(id = R.dimen.padding_8))
                         ){
                             Button(
-                                onClick = { /*TODO*/ },
+                                onClick = {
+                                    navController.navigate(route = AppScreens.DoneScreen.route)
+                                },
                                 modifier = modifier
                                     .height(40.dp)
                                     .width(60.dp),
@@ -225,7 +236,9 @@ fun SettingsApp(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ){
                             Button(
-                                onClick = { /*TODO*/ },
+                                onClick = {
+                                    navController.navigate(route = AppScreens.MainScreen.route)
+                                },
                                 modifier = modifier
                                     .height(40.dp)
                                     .width(60.dp),
@@ -249,7 +262,7 @@ fun SettingsApp(
             }
         }
     ) {
-        Options(contentPadding=it)
+        Options(contentPadding=it, navController = navController)
     }
 }
 

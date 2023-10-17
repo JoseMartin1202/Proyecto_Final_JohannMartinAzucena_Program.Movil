@@ -41,10 +41,15 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.proyectofinal_jma.data.Themes
 import com.example.proyectofinal_jma.model.Theme
+import com.example.proyectofinal_jma.navigation.AppScreens
 import com.example.proyectofinal_jma.ui.theme.Shapes
 
 @Composable
-fun ThemeCard(theme: Theme, modifier: Modifier= Modifier){
+fun ThemeCard(
+    theme: Theme,
+    modifier: Modifier= Modifier,
+    navController: NavController
+){
     Card (
         modifier = modifier
             .padding(dimensionResource(id = R.dimen.padding_4))
@@ -54,7 +59,9 @@ fun ThemeCard(theme: Theme, modifier: Modifier= Modifier){
             modifier = Modifier.fillMaxWidth(),
         ){
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    navController.navigate(route = AppScreens.SettingsScreen.route)
+                },
                 modifier = modifier
                     .fillMaxWidth()
                     .height(150.dp),
@@ -106,14 +113,17 @@ fun ThemeCard(theme: Theme, modifier: Modifier= Modifier){
 }
 
 @Composable
-fun Items(contentPadding: PaddingValues = PaddingValues(0.dp)){
+fun Items(
+    contentPadding: PaddingValues = PaddingValues(0.dp),
+    navController: NavController
+){
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         contentPadding=contentPadding,
         modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_4))
     ){
         this.items(Themes.themes){
-            ThemeCard(theme = it)
+            ThemeCard(theme = it, navController = navController)
         }
     }
 }
@@ -128,49 +138,6 @@ fun ThemesList(
         modifier = Modifier
             .fillMaxSize()
             .padding(top = dimensionResource(id = R.dimen.padding_4)),
-        topBar = {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = modifier.padding(end = 8.dp, start = 8.dp),
-                horizontalArrangement = Arrangement.Center
-            ){
-                Button(
-                    onClick = { /*TODO*/ },
-                    modifier = modifier
-                        .height(50.dp)
-                        .width(50.dp),
-                    contentPadding = PaddingValues(0.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.filter),
-                        contentDescription =null,
-                        modifier = modifier
-                            .aspectRatio(1f),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
-                Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_2)))
-                TextField(
-                    value = stringResource(id = R.string.buscar),
-                    onValueChange = {},
-                    modifier = Modifier
-                        .padding(top = 4.dp)
-                        .height(50.dp)
-                        .fillMaxWidth(),
-                    trailingIcon = { Icon(
-                        painter = painterResource(id = R.drawable.search) ,
-                        contentDescription = null)
-                    },
-                    shape = Shapes.large,
-                    colors = TextFieldDefaults.textFieldColors(
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent
-                    ),
-                    textStyle = MaterialTheme.typography.bodyMedium)
-
-            }
-        },
         bottomBar = {
             Row (
                 modifier = modifier.padding(
@@ -200,7 +167,9 @@ fun ThemesList(
                                 end = dimensionResource(id = R.dimen.padding_8))
                         ){
                             Button(
-                                onClick = {},
+                                onClick = {
+                                    navController.navigate(route = AppScreens.SettingsScreen.route)
+                                },
                                 modifier = modifier
                                     .height(40.dp)
                                     .width(60.dp),
@@ -225,7 +194,9 @@ fun ThemesList(
                                 end = dimensionResource(id = R.dimen.padding_8))
                         ){
                             Button(
-                                onClick = { /*TODO*/ },
+                                onClick = {
+                                    navController.navigate(route = AppScreens.TrashScreen.route)
+                                },
                                 modifier = modifier
                                     .height(40.dp)
                                     .width(60.dp),
@@ -251,7 +222,9 @@ fun ThemesList(
                                 end = dimensionResource(id = R.dimen.padding_8))
                         ){
                             Button(
-                                onClick = { /*TODO*/ },
+                                onClick = {
+                                    navController.navigate(route = AppScreens.AddScreen.route)
+                                },
                                 modifier = modifier
                                     .height(60.dp)
                                     .width(60.dp),
@@ -272,7 +245,9 @@ fun ThemesList(
                                 end = dimensionResource(id = R.dimen.padding_8))
                         ){
                             Button(
-                                onClick = { /*TODO*/ },
+                                onClick = {
+                                    navController.navigate(route = AppScreens.DoneScreen.route)
+                                },
                                 modifier = modifier
                                     .height(40.dp)
                                     .width(60.dp),
@@ -295,7 +270,9 @@ fun ThemesList(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ){
                             Button(
-                                onClick = { /*TODO*/ },
+                                onClick = {
+                                    navController.navigate(route = AppScreens.MainScreen.route)
+                                },
                                 modifier = modifier
                                     .height(40.dp)
                                     .width(60.dp),
@@ -319,6 +296,6 @@ fun ThemesList(
             }
         }
     ) {
-        Items(contentPadding = it)
+        Items(contentPadding = it, navController = navController)
     }
 }

@@ -332,7 +332,9 @@ fun App(
                                 end = dimensionResource(id = R.dimen.padding_8))
                         ){
                             Button(
-                                onClick = { /*TODO*/ },
+                                onClick = {
+                                    navController.navigate(route = AppScreens.TrashScreen.route)
+                                },
                                 modifier = modifier
                                     .height(40.dp)
                                     .width(60.dp),
@@ -358,7 +360,9 @@ fun App(
                                 end = dimensionResource(id = R.dimen.padding_8))
                         ){
                             Button(
-                                onClick = { /*TODO*/ },
+                                onClick = {
+                                    navController.navigate(route = AppScreens.AddScreen.route)
+                                },
                                 modifier = modifier
                                     .height(60.dp)
                                     .width(60.dp),
@@ -379,7 +383,9 @@ fun App(
                                 end = dimensionResource(id = R.dimen.padding_8))
                         ){
                             Button(
-                                onClick = { /*TODO*/ },
+                                onClick = {
+                                    navController.navigate(route = AppScreens.DoneScreen.route)
+                                },
                                 modifier = modifier
                                     .height(40.dp)
                                     .width(60.dp),
@@ -402,7 +408,9 @@ fun App(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ){
                             Button(
-                                onClick = { /*TODO*/ },
+                                onClick = {
+                                    navController.navigate(route = AppScreens.MainScreen.route)
+                                },
                                 modifier = modifier
                                     .height(40.dp)
                                     .width(60.dp),

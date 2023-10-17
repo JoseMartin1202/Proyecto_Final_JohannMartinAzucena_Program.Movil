@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.proyectofinal_jma.data.DataSourceNotesOrHomework
 import com.example.proyectofinal_jma.model.HomeworkNoteDone
+import com.example.proyectofinal_jma.navigation.AppScreens
 import com.example.proyectofinal_jma.ui.theme.ProyectoFinal_JMATheme
 import com.example.proyectofinal_jma.ui.theme.Shapes
 
@@ -143,7 +144,9 @@ fun Done(
                                 end = dimensionResource(id = R.dimen.padding_8))
                         ){
                             Button(
-                                onClick = {},
+                                onClick = {
+                                    navController.navigate(route = AppScreens.SettingsScreen.route)
+                                },
                                 modifier = modifier
                                     .height(40.dp)
                                     .width(60.dp),
@@ -168,7 +171,9 @@ fun Done(
                                 end = dimensionResource(id = R.dimen.padding_8))
                         ){
                             Button(
-                                onClick = { /*TODO*/ },
+                                onClick = {
+                                    navController.navigate(route = AppScreens.TrashScreen.route)
+                                },
                                 modifier = modifier
                                     .height(40.dp)
                                     .width(60.dp),
@@ -194,7 +199,9 @@ fun Done(
                                 end = dimensionResource(id = R.dimen.padding_8))
                         ){
                             Button(
-                                onClick = { /*TODO*/ },
+                                onClick = {
+                                    navController.navigate(route = AppScreens.AddScreen.route)
+                                },
                                 modifier = modifier
                                     .height(60.dp)
                                     .width(60.dp),
@@ -215,7 +222,9 @@ fun Done(
                                 end = dimensionResource(id = R.dimen.padding_8))
                         ){
                             Button(
-                                onClick = { /*TODO*/ },
+                                onClick = {
+                                    navController.navigate(route = AppScreens.DoneScreen.route)
+                                },
                                 modifier = modifier
                                     .height(40.dp)
                                     .width(60.dp),
@@ -238,7 +247,9 @@ fun Done(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ){
                             Button(
-                                onClick = { /*TODO*/ },
+                                onClick = {
+                                    navController.navigate(route = AppScreens.MainScreen.route)
+                                },
                                 modifier = modifier
                                     .height(40.dp)
                                     .width(60.dp),

@@ -32,13 +32,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.proyectofinal_jma.navigation.AppScreens
 import com.example.proyectofinal_jma.ui.theme.Shapes
 
-@Preview(showBackground = true)
 @Composable
 fun Language(
     modifier: Modifier=Modifier,
-    contentPadding: PaddingValues = PaddingValues(0.dp)
+    contentPadding: PaddingValues = PaddingValues(0.dp),
+    navController: NavController
 ){
     Column (
         verticalArrangement = Arrangement.Center,
@@ -49,7 +50,9 @@ fun Language(
             bottom = 4.dp)
     ){
         Button(
-            onClick = { /*TODO*/ },
+            onClick = {
+                navController.navigate(route = AppScreens.SettingsScreen.route)
+            },
             modifier = modifier.fillMaxWidth()
         ) {
             Row {
@@ -66,7 +69,9 @@ fun Language(
             }
         }
         Button(
-            onClick = { /*TODO*/ },
+            onClick = {
+                navController.navigate(route = AppScreens.SettingsScreen.route)
+            },
             modifier = modifier.fillMaxWidth()
         ) {
             Row {
@@ -125,7 +130,9 @@ fun LanguageSettings(
                             )
                         ){
                             Button(
-                                onClick = {},
+                                onClick = {
+                                    navController.navigate(route = AppScreens.SettingsScreen.route)
+                                },
                                 modifier = modifier
                                     .height(40.dp)
                                     .width(60.dp),
@@ -151,7 +158,9 @@ fun LanguageSettings(
                             )
                         ){
                             Button(
-                                onClick = { /*TODO*/ },
+                                onClick = {
+                                    navController.navigate(route = AppScreens.TrashScreen.route)
+                                },
                                 modifier = modifier
                                     .height(40.dp)
                                     .width(60.dp),
@@ -178,7 +187,9 @@ fun LanguageSettings(
                             )
                         ){
                             Button(
-                                onClick = { /*TODO*/ },
+                                onClick = {
+                                    navController.navigate(route = AppScreens.AddScreen.route)
+                                },
                                 modifier = modifier
                                     .height(60.dp)
                                     .width(60.dp),
@@ -200,7 +211,9 @@ fun LanguageSettings(
                             )
                         ){
                             Button(
-                                onClick = { /*TODO*/ },
+                                onClick = {
+                                    navController.navigate(route = AppScreens.DoneScreen.route)
+                                },
                                 modifier = modifier
                                     .height(40.dp)
                                     .width(60.dp),
@@ -223,7 +236,9 @@ fun LanguageSettings(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ){
                             Button(
-                                onClick = { /*TODO*/ },
+                                onClick = {
+                                    navController.navigate(route = AppScreens.MainScreen.route)
+                                },
                                 modifier = modifier
                                     .height(40.dp)
                                     .width(60.dp),
@@ -247,6 +262,6 @@ fun LanguageSettings(
             }
         }
     ) {
-        Language(contentPadding = it)
+        Language(contentPadding = it, navController = navController)
     }
 }

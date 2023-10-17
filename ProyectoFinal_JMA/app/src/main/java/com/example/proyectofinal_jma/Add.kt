@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.proyectofinal_jma.data.DataSourceNotesOrHomework
 import com.example.proyectofinal_jma.model.Content
+import com.example.proyectofinal_jma.navigation.AppScreens
 import com.example.proyectofinal_jma.ui.theme.Shapes
 
 @Composable
@@ -61,7 +62,7 @@ fun TextCard(content: Content){
         modifier = Modifier
             .padding(top = 4.dp)
             .fillMaxWidth()
-            .height(630.dp),
+            .height(550.dp),
         colors = TextFieldDefaults.textFieldColors(
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent),
@@ -217,7 +218,9 @@ fun AddNoteHomework(
                                 end = dimensionResource(id = R.dimen.padding_8))
                         ){
                             Button(
-                                onClick = {},
+                                onClick = {
+                                    navController.navigate(route = AppScreens.SettingsScreen.route)
+                                },
                                 modifier = modifier
                                     .height(40.dp)
                                     .width(60.dp),
@@ -242,7 +245,9 @@ fun AddNoteHomework(
                                 end = dimensionResource(id = R.dimen.padding_8))
                         ){
                             Button(
-                                onClick = { /*TODO*/ },
+                                onClick = {
+                                    navController.navigate(route = AppScreens.TrashScreen.route)
+                                },
                                 modifier = modifier
                                     .height(40.dp)
                                     .width(60.dp),
@@ -268,7 +273,7 @@ fun AddNoteHomework(
                                 end = dimensionResource(id = R.dimen.padding_8))
                         ){
                             Button(
-                                onClick = { /*TODO*/ },
+                                onClick = { },
                                 modifier = modifier
                                     .height(60.dp)
                                     .width(60.dp),
@@ -289,7 +294,9 @@ fun AddNoteHomework(
                                 end = dimensionResource(id = R.dimen.padding_8))
                         ){
                             Button(
-                                onClick = { /*TODO*/ },
+                                onClick = {
+                                    navController.navigate(route = AppScreens.DoneScreen.route)
+                                },
                                 modifier = modifier
                                     .height(40.dp)
                                     .width(60.dp),
@@ -312,7 +319,9 @@ fun AddNoteHomework(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ){
                             Button(
-                                onClick = { /*TODO*/ },
+                                onClick = {
+                                    navController.navigate(route = AppScreens.MainScreen.route)
+                                },
                                 modifier = modifier
                                     .height(40.dp)
                                     .width(60.dp),

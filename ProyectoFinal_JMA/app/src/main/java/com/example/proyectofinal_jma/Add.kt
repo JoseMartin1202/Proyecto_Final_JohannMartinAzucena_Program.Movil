@@ -62,10 +62,7 @@ fun Add(
         contentPadding=contentPadding,
         modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_8))){
         items(DataSourceNotesOrHomework.text){
-            TextCard(
-                text = noteViewModel.textBodyNoteUser,
-                newtext = { noteViewModel.updateBodyNote(it)}
-            )
+            TextCard(noteViewModel)
         }
     }
 }
@@ -73,12 +70,11 @@ fun Add(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TextCard(
-    text: String,
-    newtext: (String) -> Unit
+    noteViewModel: NoteViewModel = viewModel()
 ){
     TextField(
-        value = text,
-        onValueChange = newtext,
+        value = noteViewModel.textBodyNoteUser,
+        onValueChange = {noteViewModel.updateBodyNote(it)},
         modifier = Modifier
             .padding(top = 4.dp)
             .fillMaxWidth()
@@ -171,7 +167,9 @@ fun AddNoteHomework(
                     .height(60.dp)
                     .padding(end = 8.dp, start = 8.dp)
                 ) {
-                    Column {
+                    Column(
+                        modifier =modifier.weight(.135f)
+                    ) {
                         Box {
                             Icon(
                                 painter = painterResource(id = R.drawable.text_size),
@@ -185,11 +183,12 @@ fun AddNoteHomework(
                     }
                     Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_2)))
                     Column (
-                        modifier =modifier.weight(.35f)
+                        modifier =modifier.weight(.38f)
                     ){
                         ExposedDropdownMenuBox(
                             modifier = modifier
-                                .padding(top = 4.dp),
+                                .padding(top = 4.dp)
+                                .fillMaxWidth(),
                             expanded = noteViewModel.isExpanded2,
                             onExpandedChange = {noteViewModel.updateIsExpandend2(it)}
                         ) {
@@ -200,7 +199,6 @@ fun AddNoteHomework(
                                 label ={ Text(stringResource(id = R.string.fuente))},
                                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = false) },
                                 modifier = Modifier.menuAnchor(),
-
                             )
                             ExposedDropdownMenu(
                                 expanded = noteViewModel.isExpanded2,
@@ -234,7 +232,9 @@ fun AddNoteHomework(
                         }
                     }
                     Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_2)))
-                    Column{
+                    Column(
+                        modifier =modifier.weight(.135f)
+                    ){
                         Icon(
                             painter = painterResource(id = R.drawable.gallery),
                             contentDescription = null,
@@ -247,11 +247,12 @@ fun AddNoteHomework(
                     }
                     Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_2)))
                     Column(
-                        modifier =modifier.weight(.3f)
+                        modifier =modifier.weight(.35f)
                     ) {
                         ExposedDropdownMenuBox(
                             modifier = modifier
-                                .padding(top = 4.dp),
+                                .padding(top = 4.dp)
+                                .fillMaxWidth(),
                             expanded = noteViewModel.isExpanded,
                             onExpandedChange = {noteViewModel.updateIsExpanden(it)}
                         ) {
@@ -260,7 +261,7 @@ fun AddNoteHomework(
                                 onValueChange = {},
                                 readOnly = true,
                                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = false) },
-                                modifier = Modifier.menuAnchor()
+                                modifier = Modifier.menuAnchor().fillMaxWidth()
                             )
                             ExposedDropdownMenu(
                                 expanded = noteViewModel.isExpanded,

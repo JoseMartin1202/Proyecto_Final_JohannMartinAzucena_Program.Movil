@@ -51,4 +51,12 @@
     <string name="title_activity_done">Done</string>
     <string name="title_activity_add">Add</string>
     <string name="title_activity_language_settings">LanguageSettings</string>
+    <string name="normal">Normal</string>
+    <string name="mediana">Medio</string>
+    <string name="grande">Grande</string>
+    <string name="normalEngl">Normal</string>
+    <string name="median">Median</string>
+    <string name="big">Big</string>
+    <string name="fuente">Fuente</string>
+    <string name="Font">Font</string>
 </resources>

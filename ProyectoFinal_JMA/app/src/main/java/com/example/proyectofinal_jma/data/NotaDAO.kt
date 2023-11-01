@@ -10,15 +10,15 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface NotaDAO {
     @Insert
-    suspend fun insert(nota:Nota)
+    suspend fun insert(notaEntity:NotaEntity)
     @Update
-    suspend fun update(nota:Nota)
+    suspend fun update(notaEntity:NotaEntity)
     @Delete
-    suspend fun delete(nota:Nota)
+    suspend fun delete(notaEntity:NotaEntity)
 
     @Query("SELECT * from Notas WHERE id = :id")
-    fun getItem(id: Int): Flow<Nota>
+    fun getItem(id: Int): Flow<NotaEntity>
 
     @Query("SELECT * from Notas ORDER BY fecha ASC")
-    fun getAllItems(): Flow<List<Nota>>
+    fun getAllItems(): Flow<List<NotaEntity>>
 }

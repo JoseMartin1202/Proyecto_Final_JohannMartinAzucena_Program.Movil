@@ -44,6 +44,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.proyectofinal_jma.data.DataSourceNotesOrHomework.cardsHomeworks
 import com.example.proyectofinal_jma.data.DataSourceNotesOrHomework.cardsNotes
@@ -53,6 +54,8 @@ import com.example.proyectofinal_jma.navigation.AppNavigation
 import com.example.proyectofinal_jma.navigation.AppScreens
 import com.example.proyectofinal_jma.ui.theme.ProyectoFinal_JMATheme
 import com.example.proyectofinal_jma.ui.theme.Shapes
+import com.example.proyectofinal_jma.viewModel.AppViewModelProvider
+import com.example.proyectofinal_jma.viewModel.NoteEntryViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -228,7 +231,8 @@ fun ListElements(
 @Composable
 fun App(
     modifier: Modifier= Modifier,
-    navController: NavController
+    navController: NavController,
+    viewModel: NoteEntryViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     Scaffold(
         modifier = Modifier
@@ -258,8 +262,8 @@ fun App(
                 }
                 Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_2)))
                 TextField(
-                    value = stringResource(id = R.string.buscar),
-                    onValueChange = {},
+                    value = viewModel.textSearch,
+                    onValueChange = {viewModel.updateTextSearch(it)},
                     modifier = Modifier
                         .padding(top = 4.dp)
                         .height(50.dp)

@@ -96,9 +96,9 @@ fun CardDonePreview() {
 
 @Composable
 fun ElementsDone(
-    contentPadding: PaddingValues = PaddingValues(0.dp)
+    contentPadding: PaddingValues
 ) {
-    LazyColumn(contentPadding=contentPadding, modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_4))){
+    LazyColumn(contentPadding=contentPadding){
         items(DataSourceNotesOrHomework.notesHomeworksDone){
             CardDone(homeworkNoteDone= it)
         }

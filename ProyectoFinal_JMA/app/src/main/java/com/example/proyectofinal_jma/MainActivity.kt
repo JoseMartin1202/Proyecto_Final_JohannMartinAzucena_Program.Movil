@@ -19,6 +19,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -32,6 +35,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -46,18 +51,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.proyectofinal_jma.data.DataSourceNotesOrHomework
 import com.example.proyectofinal_jma.data.DataSourceNotesOrHomework.cardsHomeworks
 import com.example.proyectofinal_jma.data.DataSourceNotesOrHomework.cardsNotes
 import com.example.proyectofinal_jma.model.Homework
 import com.example.proyectofinal_jma.model.Note
 import com.example.proyectofinal_jma.navigation.AppNavigation
 import com.example.proyectofinal_jma.navigation.AppScreens
+import com.example.proyectofinal_jma.sizeScreen.WindowInfo
+import com.example.proyectofinal_jma.sizeScreen.rememberWindowInfo
 import com.example.proyectofinal_jma.ui.theme.ProyectoFinal_JMATheme
 import com.example.proyectofinal_jma.ui.theme.Shapes
 import com.example.proyectofinal_jma.viewModel.AppViewModelProvider
 import com.example.proyectofinal_jma.viewModel.NoteEntryViewModel
 
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -215,14 +224,45 @@ fun HomeworkPreview() {
 fun ListElements(
     contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
-    LazyColumn(
-        contentPadding=contentPadding,
-        modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_4))){
-        items(cardsHomeworks){
-            HomeworkCard(homework= it)
+    val windowsSize= rememberWindowInfo()
+    if(windowsSize.screenWindthInfo is WindowInfo.WindowType.Compact){
+        LazyColumn(
+            contentPadding=contentPadding,
+            modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_4))){
+            items(cardsHomeworks){
+                HomeworkCard(homework= it)
+            }
+            items(cardsNotes){
+                NoteCard(note= it)
+            }
         }
-        items(cardsNotes){
-            NoteCard(note= it)
+    }else if (windowsSize.screenWindthInfo is WindowInfo.WindowType.Medium){
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            contentPadding=contentPadding,
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_8)),
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_8))
+        ){
+            itemsIndexed(cardsHomeworks){ id,note->
+                HomeworkCard(homework= note)
+            }
+            itemsIndexed(cardsNotes){ id,note->
+                NoteCard(note= note)
+            }
+        }
+    }else{
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(3),
+            contentPadding=contentPadding,
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_8)),
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_8))
+        ){
+            itemsIndexed(cardsHomeworks){ id,note->
+                HomeworkCard(homework= note)
+            }
+            itemsIndexed(cardsNotes){ id,note->
+                NoteCard(note= note)
+            }
         }
     }
 }

@@ -2,6 +2,7 @@ package com.example.proyectofinal_jma
 
 import android.annotation.SuppressLint
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -41,6 +42,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -339,11 +341,13 @@ fun TopNoteEstructureCompact(
             horizontalArrangement = Arrangement.Center
         ){
             Column{
+                val message= LocalContext.current.applicationContext
                 Button(
                     onClick = {
                         coroutineScope.launch {
                             viewModel.saveNote()
                             navController.navigate(route = AppScreens.MainScreen.route)
+                            Toast.makeText(message,"Nota agregada",Toast.LENGTH_SHORT).show()
                         }
                     },
                     modifier = modifier
@@ -532,11 +536,13 @@ fun TopNoteEstructureMedium(
             horizontalArrangement = Arrangement.Center
         ){
             Column{
+                val message= LocalContext.current.applicationContext
                 Button(
                     onClick = {
                         coroutineScope.launch {
                             viewModel.saveNote()
                             navController.navigate(route = AppScreens.MainScreen.route)
+                            Toast.makeText(message,"Nota agregada",Toast.LENGTH_SHORT).show()
                         }
                     },
                     modifier = modifier
@@ -706,6 +712,8 @@ fun TopNoteEstructureMedium(
     }
 }
 
+
+@SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopNoteEstructureExpanded(
@@ -713,7 +721,7 @@ fun TopNoteEstructureExpanded(
     navController: NavController,
     viewModel: NoteEntryViewModel
     ){
-    val coroutineScope = rememberCoroutineScope()
+    val coroutineScope=rememberCoroutineScope()
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = modifier
@@ -722,11 +730,13 @@ fun TopNoteEstructureExpanded(
             horizontalArrangement = Arrangement.Center
         ){
             Column{
+                val message= LocalContext.current.applicationContext
                 Button(
                     onClick = {
                         coroutineScope.launch {
                             viewModel.saveNote()
                             navController.navigate(route = AppScreens.MainScreen.route)
+                            Toast.makeText(message,"Nota agregada",Toast.LENGTH_SHORT).show()
                         }
                     },
                     modifier = modifier

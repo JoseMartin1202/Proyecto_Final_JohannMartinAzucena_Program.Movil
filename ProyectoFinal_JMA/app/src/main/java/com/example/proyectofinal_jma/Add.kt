@@ -57,6 +57,7 @@ import com.example.proyectofinal_jma.sizeScreen.rememberWindowInfo
 import com.example.proyectofinal_jma.ui.theme.Shapes
 import com.example.proyectofinal_jma.viewModel.AppViewModelProvider
 import com.example.proyectofinal_jma.viewModel.NoteDetails
+import com.example.proyectofinal_jma.viewModel.NoteDetailsViewModel
 import com.example.proyectofinal_jma.viewModel.NoteEntryViewModel
 import com.example.proyectofinal_jma.viewModel.NoteUiState
 import kotlinx.coroutines.launch
@@ -71,7 +72,7 @@ fun Add(
         modifier = Modifier.padding(top = 10.dp, start = 8.dp, end = 8.dp )){
         items(DataSourceNotesOrHomework.text){
             NoteEntryBody(
-                noteUiState = viewModel.noteUiState,
+                    noteUiState = viewModel.noteUiState,
                 onNoteValueChange = viewModel::updateUiState)
         }
     }

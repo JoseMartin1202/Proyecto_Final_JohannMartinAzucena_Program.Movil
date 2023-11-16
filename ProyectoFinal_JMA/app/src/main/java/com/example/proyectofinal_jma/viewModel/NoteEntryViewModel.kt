@@ -3,6 +3,7 @@ package com.example.proyectofinal_jma.viewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.example.proyectofinal_jma.data.NotaEntity
 import com.example.proyectofinal_jma.data.NotesRepository
@@ -11,7 +12,10 @@ import java.util.Calendar
 import java.util.TimeZone
 
 /**ViewModel para validar e insertar notas en la base de datos*/
-class NoteEntryViewModel(private val notesRepository: NotesRepository) : ViewModel() {
+class NoteEntryViewModel(
+    savedStateHandle: SavedStateHandle,
+    private val notesRepository: NotesRepository
+) : ViewModel() {
 
     var noteUiState by mutableStateOf(NoteUiState())
         private set
@@ -96,4 +100,12 @@ fun NotaEntity.toNoteDetails(): NoteDetails = NoteDetails(
     titulo = titulo,
     contenido = contenido,
     fecha = fecha
+)
+
+/**
+ * UI state for ItemDetailsScreen
+ */
+data class NoteDetailsUiState(
+    var editar: Boolean = false,
+    val noteDetails: NoteDetails = NoteDetails()
 )

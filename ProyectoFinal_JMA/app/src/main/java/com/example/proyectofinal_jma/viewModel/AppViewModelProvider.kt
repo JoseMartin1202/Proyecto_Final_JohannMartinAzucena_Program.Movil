@@ -18,7 +18,7 @@ object AppViewModelProvider {
         }
         // Initializer for NoteEntryViewModel
         initializer {
-            NoteEntryViewModel(inventoryApplication().container.notesRepository)
+            NoteEntryViewModel(this.createSavedStateHandle(),inventoryApplication().container.notesRepository)
         }
 
         // Initializer for ItemDetailsViewModel
@@ -30,7 +30,7 @@ object AppViewModelProvider {
 
         // Initializer for HomeViewModel
         initializer {
-            HomeViewModel()
+            HomeViewModel(inventoryApplication().container.notesRepository)
         }
     }
 }

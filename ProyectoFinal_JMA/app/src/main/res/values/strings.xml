@@ -59,4 +59,6 @@
     <string name="big">Big</string>
     <string name="fuente">Fuente</string>
     <string name="Font">Font</string>
+    <string name="sinNotas">No existe ninguna nota</string>
+    <string name="withoutNotes">f</string>
 </resources>

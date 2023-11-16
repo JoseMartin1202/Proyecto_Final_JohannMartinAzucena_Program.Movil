@@ -22,7 +22,10 @@ fun AppNavigation(){
         startDestination = AppScreens.MainScreen.route
     ){
         composable(route =AppScreens.MainScreen.route){
-            App(modifier = Modifier,navController)
+            App(modifier = Modifier, navController,
+               navigateToItemUpdate={
+                    navController.navigate(AppScreens.AddScreen.route)
+                })
         }
         composable(route =AppScreens.AddScreen.route){
             AddNoteHomework(modifier = Modifier,navController)

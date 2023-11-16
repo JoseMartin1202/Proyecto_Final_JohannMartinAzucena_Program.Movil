@@ -1,9 +1,11 @@
 package com.example.proyectofinal_jma
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,6 +23,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
@@ -38,6 +41,8 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
@@ -47,6 +52,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -54,6 +60,7 @@ import androidx.navigation.NavController
 import com.example.proyectofinal_jma.data.DataSourceNotesOrHomework
 import com.example.proyectofinal_jma.data.DataSourceNotesOrHomework.cardsHomeworks
 import com.example.proyectofinal_jma.data.DataSourceNotesOrHomework.cardsNotes
+import com.example.proyectofinal_jma.data.NotaEntity
 import com.example.proyectofinal_jma.model.Homework
 import com.example.proyectofinal_jma.model.Note
 import com.example.proyectofinal_jma.navigation.AppNavigation
@@ -63,10 +70,10 @@ import com.example.proyectofinal_jma.sizeScreen.rememberWindowInfo
 import com.example.proyectofinal_jma.ui.theme.ProyectoFinal_JMATheme
 import com.example.proyectofinal_jma.ui.theme.Shapes
 import com.example.proyectofinal_jma.viewModel.AppViewModelProvider
+import com.example.proyectofinal_jma.viewModel.HomeViewModel
 import com.example.proyectofinal_jma.viewModel.NoteEntryViewModel
 
 class MainActivity : ComponentActivity() {
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -81,7 +88,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
+/*
 @Composable
 fun NoteCard(note: Note, modifier: Modifier= Modifier){
     Card (modifier = modifier.padding(dimensionResource(id = R.dimen.padding_4))){
@@ -136,10 +143,10 @@ fun NoteCard(note: Note, modifier: Modifier= Modifier){
             }
         }
     }
-}
+}*/
 
 @Composable
-fun HomeworkCard(homework: Homework, modifier: Modifier= Modifier){
+fun HomeworkCard(homework: NotaEntity, modifier: Modifier= Modifier){
     Card (modifier = modifier.padding(dimensionResource(id = R.dimen.padding_4))){
         Row (
             modifier= modifier
@@ -150,7 +157,7 @@ fun HomeworkCard(homework: Homework, modifier: Modifier= Modifier){
         ){
             Box{
                 Image(
-                    painter = painterResource(id = homework.miniature),
+                    painter = painterResource(id = R.drawable.image),
                     contentDescription =null,
                     modifier = modifier
                         .size(
@@ -162,78 +169,37 @@ fun HomeworkCard(homework: Homework, modifier: Modifier= Modifier){
             }
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = stringResource(id = homework.titleCard),
+                    text = homework.titulo,
                     style = MaterialTheme.typography.bodyLarge,
                     modifier=modifier
                         .padding( top = dimensionResource(id = R.dimen.padding_8)))
                 Text(
-                    text = stringResource(id = homework.descriptionCard),
+                    text = homework.contenido,
                     style = MaterialTheme.typography.bodyMedium)
             }
             Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_8)))
             Column(horizontalAlignment = Alignment.End){
                 Text(
-                    text = stringResource(id = homework.dateCard),
+                    text = homework.fecha,
                     style = MaterialTheme.typography.bodySmall)
-                Row (modifier=modifier.padding(top = dimensionResource(id = R.dimen.padding_anchor_16))){
-                    Icon(
-                        painter = painterResource(id = homework.favoriteImage),
-                        contentDescription =null,
-                        modifier = modifier
-                            .size(
-                                width = dimensionResource(id = R.dimen.padding_anchor_24),
-                                height = dimensionResource(id = R.dimen.padding_anchor_24)
-                            )
-                            .aspectRatio(1f),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                    Icon(
-                        painter = painterResource(id = homework.reminderImage),
-                        contentDescription =null,
-                        modifier = modifier
-                            .size(
-                                width = dimensionResource(id = R.dimen.padding_anchor_24),
-                                height = dimensionResource(id = R.dimen.padding_anchor_24)
-                            )
-                            .aspectRatio(1f),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
-
             }
         }
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun NotePreview() {
-    ProyectoFinal_JMATheme {
-       NoteCard(Note(R.drawable.image,R.string.title,R.string.notaDescripcion,R.string.date,R.drawable.star))
-    }
-}
-@Preview(showBackground = true)
-@Composable
-fun HomeworkPreview() {
-    ProyectoFinal_JMATheme {
-        HomeworkCard(Homework(R.drawable.image,R.string.title,R.string.homeworkDescription,R.string.date,R.drawable.star,R.drawable.bell_outlined))
-    }
-}
-
 @Composable
 fun ListElements(
-    contentPadding: PaddingValues = PaddingValues(0.dp)
+    contentPadding: PaddingValues = PaddingValues(0.dp),
+    notaList: List<NotaEntity>,
+    onNoteClick: (NotaEntity) -> Unit
 ) {
     val windowsSize= rememberWindowInfo()
     if(windowsSize.screenWindthInfo is WindowInfo.WindowType.Compact){
         LazyColumn(
             contentPadding=contentPadding,
             modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_4))){
-            items(cardsHomeworks){
-                HomeworkCard(homework= it)
-            }
-            items(cardsNotes){
-                NoteCard(note= it)
+            items(items = notaList, key = { it.id }){ nota->
+                HomeworkCard(homework = nota, modifier = Modifier.clickable { onNoteClick(nota) })
             }
         }
     }else if (windowsSize.screenWindthInfo is WindowInfo.WindowType.Medium){
@@ -243,11 +209,8 @@ fun ListElements(
             verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_8)),
             horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_8))
         ){
-            itemsIndexed(cardsHomeworks){ id,note->
-                HomeworkCard(homework= note)
-            }
-            itemsIndexed(cardsNotes){ id,note->
-                NoteCard(note= note)
+            items(items = notaList, key = { it.id }){ nota->
+                HomeworkCard(homework = nota)
             }
         }
     }else{
@@ -257,23 +220,24 @@ fun ListElements(
             verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_8)),
             horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_8))
         ){
-            itemsIndexed(cardsHomeworks){ id,note->
-                HomeworkCard(homework= note)
-            }
-            itemsIndexed(cardsNotes){ id,note->
-                NoteCard(note= note)
+            items(items = notaList, key = { it.id }){ nota->
+                HomeworkCard(homework = nota)
             }
         }
     }
 }
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun App(
     modifier: Modifier= Modifier,
     navController: NavController,
-    viewModel: NoteEntryViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: NoteEntryViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    viewModelHome: HomeViewModel= viewModel(factory = AppViewModelProvider.Factory),
+    navigateToItemUpdate: (Int) -> Unit,
 ) {
+    val homeUiState by viewModelHome.homeUiState.collectAsState()
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -478,6 +442,33 @@ fun App(
             }
         }
     ) {
-        ListElements(contentPadding = it)
+        HomeBody(notaList = homeUiState.noteList, contentPadding = it, onNoteClick= navigateToItemUpdate)
+    }
+}
+
+@Composable
+private fun HomeBody(
+    notaList: List<NotaEntity>,
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues,
+    onNoteClick: (Int) -> Unit
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+    ) {
+        if (notaList.isEmpty()) {
+            Text(
+                text = stringResource(R.string.sinNotas),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.titleLarge
+            )
+        } else {
+            ListElements(
+                notaList = notaList,
+                contentPadding = contentPadding,
+                onNoteClick = { onNoteClick(it.id) }
+            )
+        }
     }
 }

@@ -14,16 +14,14 @@ object AppViewModelProvider {
         initializer {
             NoteEntryViewModel(inventoryApplication().container.notesRepository)
         }
-
+        //editarNota
         initializer {
             NoteEditViewModel(inventoryApplication().container.notesRepository)
         }
-
         // Initializer for HomeViewModel
         initializer {
             HomeViewModel(inventoryApplication().container.notesRepository)
         }
-
     }
 }
 

@@ -10,28 +10,20 @@ import com.example.proyectofinal_jma.InventoryApplication
 //Inicializa los viewmodel que se requieran
 object AppViewModelProvider {
     val Factory = viewModelFactory {
-        // Initializer for ItemEditViewModel
-        initializer {
-            NoteEditViewModel(
-                this.createSavedStateHandle()
-            )
-        }
         // Initializer for NoteEntryViewModel
         initializer {
-            NoteEntryViewModel(this.createSavedStateHandle(),inventoryApplication().container.notesRepository)
+            NoteEntryViewModel(inventoryApplication().container.notesRepository)
         }
 
-        // Initializer for ItemDetailsViewModel
         initializer {
-            NoteDetailsViewModel(
-                this.createSavedStateHandle()
-            )
+            NoteEditViewModel(inventoryApplication().container.notesRepository)
         }
 
         // Initializer for HomeViewModel
         initializer {
             HomeViewModel(inventoryApplication().container.notesRepository)
         }
+
     }
 }
 

@@ -5,15 +5,26 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.navigation.navArgument
 import com.example.proyectofinal_jma.data.NotaEntity
 import com.example.proyectofinal_jma.data.NotesRepository
+import com.example.proyectofinal_jma.navigation.AppScreens
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.util.Calendar
 import java.util.TimeZone
 
 /**ViewModel para validar e insertar notas en la base de datos*/
 class NoteEntryViewModel(
-    savedStateHandle: SavedStateHandle,
     private val notesRepository: NotesRepository
 ) : ViewModel() {
 
@@ -42,6 +53,7 @@ class NoteEntryViewModel(
     var textSearch by mutableStateOf("")
     var optionNote by mutableStateOf("Nota")
     var sizeText by mutableStateOf("Normal")
+    var idNote by mutableStateOf(1)
 
     fun updateIsExpanded(boolean: Boolean){
         isExpanded= boolean
@@ -62,6 +74,7 @@ class NoteEntryViewModel(
     fun updateTextSearch(text: String ){
         textSearch=text
     }
+
 }
 
 /**
@@ -102,10 +115,3 @@ fun NotaEntity.toNoteDetails(): NoteDetails = NoteDetails(
     fecha = fecha
 )
 
-/**
- * UI state for ItemDetailsScreen
- */
-data class NoteDetailsUiState(
-    var editar: Boolean = false,
-    val noteDetails: NoteDetails = NoteDetails()
-)

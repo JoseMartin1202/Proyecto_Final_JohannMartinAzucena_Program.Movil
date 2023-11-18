@@ -1,7 +1,11 @@
 package com.example.proyectofinal_jma
 
 import android.annotation.SuppressLint
+import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,9 +32,9 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -41,76 +45,51 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.NavController
 import com.example.proyectofinal_jma.data.DataSourceNotesOrHomework
+import com.example.proyectofinal_jma.data.NotaEntity
 import com.example.proyectofinal_jma.navigation.AppScreens
 import com.example.proyectofinal_jma.sizeScreen.WindowInfo
 import com.example.proyectofinal_jma.sizeScreen.rememberWindowInfo
+import com.example.proyectofinal_jma.ui.theme.ProyectoFinal_JMATheme
 import com.example.proyectofinal_jma.ui.theme.Shapes
 import com.example.proyectofinal_jma.viewModel.AppViewModelProvider
 import com.example.proyectofinal_jma.viewModel.NoteDetails
+import com.example.proyectofinal_jma.viewModel.NoteEditViewModel
 import com.example.proyectofinal_jma.viewModel.NoteEntryViewModel
 import com.example.proyectofinal_jma.viewModel.NoteUiState
+import com.example.proyectofinal_jma.viewModel.toNoteDetails
 import kotlinx.coroutines.launch
 
 @Composable
-fun Add(
+fun Edit(
     contentPadding: PaddingValues,
-    viewModel: NoteEntryViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: NoteEditViewModel
 ){
     LazyColumn(
         contentPadding=contentPadding,
         modifier = Modifier.padding(top = 10.dp, start = 8.dp, end = 8.dp )){
         items(DataSourceNotesOrHomework.text){
             NoteEntryBody(
-                    noteUiState = viewModel.noteUiState,
-                onNoteValueChange = viewModel::updateUiState)
+                noteUiState = viewModel.noteUiStateEdit,
+                onNoteValueChange = viewModel::updateUiStateEdit)
         }
     }
 }
 
-@Composable
-fun NoteEntryBody(
-    noteUiState: NoteUiState,
-    onNoteValueChange: (NoteDetails) -> Unit
-) {
-    NoteInputForm(
-        noteDetails = noteUiState.noteDetails,
-        onValueChange =  onNoteValueChange)
-}
-
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NoteInputForm(
-    noteDetails: NoteDetails,
-    onValueChange: (NoteDetails) -> Unit = {}
-) {
-        TextField(
-            value = noteDetails.contenido,
-            onValueChange = {
-                onValueChange(noteDetails.copy(contenido = it))
-            },
-            modifier = Modifier
-                .fillMaxWidth(),
-            colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent),
-            singleLine= false,
-            textStyle = MaterialTheme.typography.bodyMedium)
-
-}
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun AddNoteHomework(
+fun EditNoteHomework(
     modifier:  Modifier= Modifier,
     navController: NavController,
-    viewModel: NoteEntryViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    notaEntity: NotaEntity,
+    viewModel: NoteEditViewModel= viewModel(factory = AppViewModelProvider.Factory)
 ) {
+    viewModel.updateUiStateEdit(notaEntity.toNoteDetails())
     val windowsSize= rememberWindowInfo()
     Scaffold(
         modifier = Modifier
@@ -118,11 +97,11 @@ fun AddNoteHomework(
             .padding(top = dimensionResource(id = R.dimen.padding_4)),
         topBar = {
             if(windowsSize.screenWindthInfo is WindowInfo.WindowType.Compact ){
-                TopNoteEstructureCompact(modifier = modifier, navController = navController, viewModel = viewModel)
+                TopNoteEstructureCompactEdit(modifier = modifier, navController = navController, viewModel = viewModel)
             }else if(windowsSize.screenWindthInfo is WindowInfo.WindowType.Medium){
-                TopNoteEstructureMedium(modifier = modifier, navController = navController, viewModel = viewModel)
+                TopNoteEstructureMediumEdit(modifier = modifier, navController = navController, viewModel = viewModel)
             }else{
-                TopNoteEstructureExpanded(modifier = modifier, navController = navController, viewModel = viewModel)
+                TopNoteEstructureExpandedEdit(modifier = modifier, navController = navController, viewModel = viewModel)
             }
         },
         bottomBar = {
@@ -281,50 +260,16 @@ fun AddNoteHomework(
             }
         }
     ) {
-        Add(contentPadding = it)
+        Edit(contentPadding = it, viewModel)
     }
 }
 
-@Composable
-fun TitleNoteEntryBody(
-    noteUiState: NoteUiState,
-    onNoteValueChange: (NoteDetails) -> Unit
-) {
-    TitleTextNote(
-        noteDetails = noteUiState.noteDetails,
-        onValueChange =  onNoteValueChange)
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TitleTextNote(
-    noteDetails: NoteDetails,
-    onValueChange: (NoteDetails) -> Unit = {}
-) {
-    TextField(
-        value = noteDetails.titulo,
-        onValueChange = {
-            onValueChange(noteDetails.copy(titulo = it))
-        },
-        modifier = Modifier
-            .padding(top = 4.dp)
-            .fillMaxWidth(),
-        shape = Shapes.large,
-        colors = TextFieldDefaults.textFieldColors(
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent
-        ),
-        singleLine = true,
-        label={ Text(text = stringResource(id = R.string.titulo)) },
-        textStyle = MaterialTheme.typography.bodyMedium)
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TopNoteEstructureCompact(
+fun TopNoteEstructureCompactEdit(
     modifier: Modifier,
     navController: NavController,
-    viewModel: NoteEntryViewModel,
+    viewModel: NoteEditViewModel,
 ){
     val coroutineScope = rememberCoroutineScope()
     Column {
@@ -340,9 +285,9 @@ fun TopNoteEstructureCompact(
                 Button(
                     onClick = {
                         coroutineScope.launch {
-                            viewModel.saveNote()
+                            viewModel.updateNote()
                             navController.navigate(route = AppScreens.MainScreen.route)
-                            Toast.makeText(message,"Nota agregada",Toast.LENGTH_SHORT).show()
+                            Toast.makeText(message,"Nota actualizada", Toast.LENGTH_SHORT).show()
                         }
                     },
                     modifier = modifier
@@ -363,7 +308,7 @@ fun TopNoteEstructureCompact(
             Column(
                 modifier =modifier.weight(.5f)
             ){
-                TitleNoteEntryBody(noteUiState = viewModel.noteUiState, onNoteValueChange = viewModel::updateUiState)
+                TitleNoteEntryBody(noteUiState = viewModel.noteUiStateEdit, onNoteValueChange = viewModel::updateUiStateEdit)
             }
             Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_2)))
             Column{
@@ -412,7 +357,7 @@ fun TopNoteEstructureCompact(
                         .padding(top = 4.dp)
                         .fillMaxWidth(),
                     expanded = viewModel.isExpanded2,
-                    onExpandedChange = {viewModel.updateIsExpandend2(it)}
+                    onExpandedChange = {viewModel.updateIsExpandend2Edit(it)}
                 ) {
                     TextField(
                         value = viewModel.sizeText,
@@ -432,21 +377,21 @@ fun TopNoteEstructureCompact(
                         DropdownMenuItem(
                             text = { Text(text) },
                             onClick = {
-                                viewModel.updatesizeText(text)
+                                viewModel.updatesizeTextEdit(text)
                                 viewModel.isExpanded2=false
                             }
                         )
                         DropdownMenuItem(
                             text = { Text(text2) },
                             onClick = {
-                                viewModel.updatesizeText(text2)
+                                viewModel.updatesizeTextEdit(text2)
                                 viewModel.isExpanded2=false
                             }
                         )
                         DropdownMenuItem(
                             text = { Text(text3) },
                             onClick = {
-                                viewModel.updatesizeText(text3)
+                                viewModel.updatesizeTextEdit(text3)
                                 viewModel.isExpanded2=false
                             }
                         )
@@ -476,7 +421,7 @@ fun TopNoteEstructureCompact(
                         .padding(top = 4.dp)
                         .fillMaxWidth(),
                     expanded = viewModel.isExpanded,
-                    onExpandedChange = {viewModel.updateIsExpanded(it)}
+                    onExpandedChange = {viewModel.updateIsExpandedEdit(it)}
                 ) {
                     TextField(
                         value = viewModel.optionNote,
@@ -496,14 +441,14 @@ fun TopNoteEstructureCompact(
                         DropdownMenuItem(
                             text = { Text(text) },
                             onClick = {
-                                viewModel.updateOptionNote(text)
+                                viewModel.updateOptionNoteEdit(text)
                                 viewModel.isExpanded=false
                             }
                         )
                         DropdownMenuItem(
                             text = { Text(text2) },
                             onClick = {
-                                viewModel.updateOptionNote(text2)
+                                viewModel.updateOptionNoteEdit(text2)
                                 viewModel.isExpanded=false
                             }
                         )
@@ -516,10 +461,10 @@ fun TopNoteEstructureCompact(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopNoteEstructureMedium(
+fun TopNoteEstructureMediumEdit(
     modifier: Modifier,
     navController: NavController,
-    viewModel: NoteEntryViewModel,
+    viewModel: NoteEditViewModel= viewModel(factory = AppViewModelProvider.Factory)
 ){
     val coroutineScope = rememberCoroutineScope()
     Column {
@@ -535,9 +480,9 @@ fun TopNoteEstructureMedium(
                 Button(
                     onClick = {
                         coroutineScope.launch {
-                            viewModel.saveNote()
+                            viewModel.updateNote()
                             navController.navigate(route = AppScreens.MainScreen.route)
-                            Toast.makeText(message,"Nota agregada",Toast.LENGTH_SHORT).show()
+                            Toast.makeText(message,"Nota actualizada", Toast.LENGTH_SHORT).show()
                         }
                     },
                     modifier = modifier
@@ -558,7 +503,7 @@ fun TopNoteEstructureMedium(
             Column(
                 modifier =modifier.weight(.5f)
             ){
-                TitleNoteEntryBody(noteUiState = viewModel.noteUiState, onNoteValueChange = viewModel::updateUiState)
+                TitleNoteEntryBody(noteUiState = viewModel.noteUiStateEdit, onNoteValueChange = viewModel::updateUiStateEdit)
             }
             Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_2)))
             Column{
@@ -606,7 +551,7 @@ fun TopNoteEstructureMedium(
                         .padding(top = 4.dp)
                         .fillMaxWidth(),
                     expanded = viewModel.isExpanded2,
-                    onExpandedChange = {viewModel.updateIsExpandend2(it)}
+                    onExpandedChange = {viewModel.updateIsExpandend2Edit(it)}
                 ) {
                     TextField(
                         value = viewModel.sizeText,
@@ -626,21 +571,21 @@ fun TopNoteEstructureMedium(
                         DropdownMenuItem(
                             text = { Text(text) },
                             onClick = {
-                                viewModel.updatesizeText(text)
+                                viewModel.updatesizeTextEdit(text)
                                 viewModel.isExpanded2=false
                             }
                         )
                         DropdownMenuItem(
                             text = { Text(text2) },
                             onClick = {
-                                viewModel.updatesizeText(text2)
+                                viewModel.updatesizeTextEdit(text2)
                                 viewModel.isExpanded2=false
                             }
                         )
                         DropdownMenuItem(
                             text = { Text(text3) },
                             onClick = {
-                                viewModel.updatesizeText(text3)
+                                viewModel.updatesizeTextEdit(text3)
                                 viewModel.isExpanded2=false
                             }
                         )
@@ -668,7 +613,7 @@ fun TopNoteEstructureMedium(
                         .padding(top = 4.dp)
                         .fillMaxWidth(),
                     expanded = viewModel.isExpanded,
-                    onExpandedChange = {viewModel.updateIsExpanded(it)}
+                    onExpandedChange = {viewModel.updateIsExpandedEdit(it)}
                 ) {
                     TextField(
                         value = viewModel.optionNote,
@@ -688,14 +633,14 @@ fun TopNoteEstructureMedium(
                         DropdownMenuItem(
                             text = { Text(text) },
                             onClick = {
-                                viewModel.updateOptionNote(text)
+                                viewModel.updateOptionNoteEdit(text)
                                 viewModel.isExpanded=false
                             }
                         )
                         DropdownMenuItem(
                             text = { Text(text2) },
                             onClick = {
-                                viewModel.updateOptionNote(text2)
+                                viewModel.updateOptionNoteEdit(text2)
                                 viewModel.isExpanded=false
                             }
                         )
@@ -711,184 +656,184 @@ fun TopNoteEstructureMedium(
 @SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopNoteEstructureExpanded(
+fun TopNoteEstructureExpandedEdit(
     modifier: Modifier,
     navController: NavController,
-    viewModel: NoteEntryViewModel
+    viewModel: NoteEditViewModel
+){
+    val coroutineScope= rememberCoroutineScope()
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.background),
+        horizontalArrangement = Arrangement.Center
     ){
-    val coroutineScope=rememberCoroutineScope()
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = modifier
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.background),
-            horizontalArrangement = Arrangement.Center
-        ){
-            Column{
-                val message= LocalContext.current.applicationContext
-                Button(
-                    onClick = {
-                        coroutineScope.launch {
-                            viewModel.saveNote()
-                            navController.navigate(route = AppScreens.MainScreen.route)
-                            Toast.makeText(message,"Nota agregada",Toast.LENGTH_SHORT).show()
-                        }
-                    },
-                    modifier = modifier
-                        .height(55.dp)
-                        .width(55.dp),
-                    contentPadding = PaddingValues(0.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.check),
-                        contentDescription =null,
-                        modifier = modifier
-                            .aspectRatio(1f),
-                        tint = MaterialTheme.colorScheme.primary)
-                }
-            }
-            Column(
-                modifier =modifier.weight(.4f)
-            ) {
-                TitleNoteEntryBody(noteUiState = viewModel.noteUiState, onNoteValueChange = viewModel::updateUiState)
-            }
-            Column (
-                modifier =modifier.weight(.04f),
-                verticalArrangement = Arrangement.Center
-            ){
-                Box {
-                    Icon(
-                        painter = painterResource(id = R.drawable.text_size),
-                        contentDescription = null,
-                        modifier = modifier
-                            .aspectRatio(1f)
-                            .height(50.dp),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
-            }
-            //segunda  fila
-            Column(
-                modifier =modifier.weight(.14f)
-            ) {
-                ExposedDropdownMenuBox(
-                    modifier = modifier
-                        .padding(top = 4.dp)
-                        .fillMaxWidth(),
-                    expanded = viewModel.isExpanded2,
-                    onExpandedChange = {viewModel.updateIsExpandend2(it)}
-                ) {
-                    TextField(
-                        value = viewModel.sizeText,
-                        onValueChange = {},
-                        readOnly = true,
-                        label ={ Text(stringResource(id = R.string.fuente))},
-                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = false) },
-                        modifier = Modifier.menuAnchor(),
-                    )
-                    ExposedDropdownMenu(
-                        expanded = viewModel.isExpanded2,
-                        onDismissRequest = {viewModel.isExpanded2=false}
-                    ) {
-                        var text=stringResource(id = R.string.normal)
-                        var text2=stringResource(id = R.string.mediana)
-                        var text3=stringResource(id = R.string.grande)
-                        DropdownMenuItem(
-                            text = { Text(text) },
-                            onClick = {
-                                viewModel.updatesizeText(text)
-                                viewModel.isExpanded2=false
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text(text2) },
-                            onClick = {
-                                viewModel.updatesizeText(text2)
-                                viewModel.isExpanded2=false
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text(text3) },
-                            onClick = {
-                                viewModel.updatesizeText(text3)
-                                viewModel.isExpanded2=false
-                            }
-                        )
+        Column{
+            val message= LocalContext.current.applicationContext
+            Button(
+                onClick = {
+                    coroutineScope.launch {
+                        viewModel.updateNote()
+                        navController.navigate(route = AppScreens.MainScreen.route)
+                        Toast.makeText(message,"Nota actualizada", Toast.LENGTH_SHORT).show()
                     }
-                }
-            }
-            Column(
-                modifier =modifier.weight(.05f)
+                },
+                modifier = modifier
+                    .height(55.dp)
+                    .width(55.dp),
+                contentPadding = PaddingValues(0.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.gallery),
+                    painter = painterResource(id = R.drawable.check),
+                    contentDescription =null,
+                    modifier = modifier
+                        .aspectRatio(1f),
+                    tint = MaterialTheme.colorScheme.primary)
+            }
+        }
+        Column(
+            modifier =modifier.weight(.4f)
+        ) {
+            TitleNoteEntryBody(noteUiState = viewModel.noteUiStateEdit, onNoteValueChange = viewModel::updateUiStateEdit)
+        }
+        Column (
+            modifier =modifier.weight(.04f),
+            verticalArrangement = Arrangement.Center
+        ){
+            Box {
+                Icon(
+                    painter = painterResource(id = R.drawable.text_size),
                     contentDescription = null,
                     modifier = modifier
                         .aspectRatio(1f)
-                        .height(50.dp)
-                        .width(50.dp),
+                        .height(50.dp),
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
-            Column(
-                modifier =modifier.weight(.14f)
+        }
+        //segunda  fila
+        Column(
+            modifier =modifier.weight(.14f)
+        ) {
+            ExposedDropdownMenuBox(
+                modifier = modifier
+                    .padding(top = 4.dp)
+                    .fillMaxWidth(),
+                expanded = viewModel.isExpanded2,
+                onExpandedChange = {viewModel.updateIsExpandend2Edit(it)}
             ) {
-                ExposedDropdownMenuBox(
-                    modifier = modifier
-                        .padding(top = 4.dp)
-                        .fillMaxWidth(),
-                    expanded = viewModel.isExpanded,
-                    onExpandedChange = {viewModel.updateIsExpanded(it)}
+                TextField(
+                    value = viewModel.sizeText,
+                    onValueChange = {},
+                    readOnly = true,
+                    label ={ Text(stringResource(id = R.string.fuente))},
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = false) },
+                    modifier = Modifier.menuAnchor(),
+                )
+                ExposedDropdownMenu(
+                    expanded = viewModel.isExpanded2,
+                    onDismissRequest = {viewModel.isExpanded2=false}
                 ) {
-                    TextField(
-                        value = viewModel.optionNote,
-                        onValueChange = {},
-                        readOnly = true,
-                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = false) },
-                        modifier = Modifier
-                            .menuAnchor()
-                            .fillMaxWidth()
+                    var text=stringResource(id = R.string.normal)
+                    var text2=stringResource(id = R.string.mediana)
+                    var text3=stringResource(id = R.string.grande)
+                    DropdownMenuItem(
+                        text = { Text(text) },
+                        onClick = {
+                            viewModel.updatesizeTextEdit(text)
+                            viewModel.isExpanded2=false
+                        }
                     )
-                    ExposedDropdownMenu(
-                        expanded = viewModel.isExpanded,
-                        onDismissRequest = {viewModel.isExpanded=false}
-                    ) {
-                        var text=stringResource(id = R.string.nota)
-                        var text2=stringResource(id = R.string.tarea)
-                        DropdownMenuItem(
-                            text = { Text(text) },
-                            onClick = {
-                                viewModel.updateOptionNote(text)
-                                viewModel.isExpanded=false
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text(text2) },
-                            onClick = {
-                                viewModel.updateOptionNote(text2)
-                                viewModel.isExpanded=false
-                            }
-                        )
-                    }
-                }
-            }
-            Column {
-                Button(
-                    onClick = { /*TODO*/ },
-                    modifier = modifier
-                        .height(55.dp)
-                        .width(55.dp),
-                    contentPadding = PaddingValues(0.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.cancel),
-                        contentDescription =null,
-                        modifier = modifier
-                            .aspectRatio(1f),
-                        tint = MaterialTheme.colorScheme.primary)
+                    DropdownMenuItem(
+                        text = { Text(text2) },
+                        onClick = {
+                            viewModel.updatesizeTextEdit(text2)
+                            viewModel.isExpanded2=false
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text(text3) },
+                        onClick = {
+                            viewModel.updatesizeTextEdit(text3)
+                            viewModel.isExpanded2=false
+                        }
+                    )
                 }
             }
         }
+        Column(
+            modifier =modifier.weight(.05f)
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.gallery),
+                contentDescription = null,
+                modifier = modifier
+                    .aspectRatio(1f)
+                    .height(50.dp)
+                    .width(50.dp),
+                tint = MaterialTheme.colorScheme.primary
+            )
+        }
+        Column(
+            modifier =modifier.weight(.14f)
+        ) {
+            ExposedDropdownMenuBox(
+                modifier = modifier
+                    .padding(top = 4.dp)
+                    .fillMaxWidth(),
+                expanded = viewModel.isExpanded,
+                onExpandedChange = {viewModel.updateIsExpandedEdit(it)}
+            ) {
+                TextField(
+                    value = viewModel.optionNote,
+                    onValueChange = {},
+                    readOnly = true,
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = false) },
+                    modifier = Modifier
+                        .menuAnchor()
+                        .fillMaxWidth()
+                )
+                ExposedDropdownMenu(
+                    expanded = viewModel.isExpanded,
+                    onDismissRequest = {viewModel.isExpanded=false}
+                ) {
+                    var text=stringResource(id = R.string.nota)
+                    var text2=stringResource(id = R.string.tarea)
+                    DropdownMenuItem(
+                        text = { Text(text) },
+                        onClick = {
+                            viewModel.updateOptionNoteEdit(text)
+                            viewModel.isExpanded=false
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text(text2) },
+                        onClick = {
+                            viewModel.updateOptionNoteEdit(text2)
+                            viewModel.isExpanded=false
+                        }
+                    )
+                }
+            }
+        }
+        Column {
+            Button(
+                onClick = { /*TODO*/ },
+                modifier = modifier
+                    .height(55.dp)
+                    .width(55.dp),
+                contentPadding = PaddingValues(0.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.cancel),
+                    contentDescription =null,
+                    modifier = modifier
+                        .aspectRatio(1f),
+                    tint = MaterialTheme.colorScheme.primary)
+            }
+        }
+    }
 }

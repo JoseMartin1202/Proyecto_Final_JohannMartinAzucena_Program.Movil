@@ -2,6 +2,7 @@ package com.example.proyectofinal_jma
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -24,7 +25,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -38,8 +38,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
-import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -53,16 +51,10 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.proyectofinal_jma.data.DataSourceNotesOrHomework
-import com.example.proyectofinal_jma.data.DataSourceNotesOrHomework.cardsHomeworks
-import com.example.proyectofinal_jma.data.DataSourceNotesOrHomework.cardsNotes
 import com.example.proyectofinal_jma.data.NotaEntity
-import com.example.proyectofinal_jma.model.Homework
-import com.example.proyectofinal_jma.model.Note
 import com.example.proyectofinal_jma.navigation.AppNavigation
 import com.example.proyectofinal_jma.navigation.AppScreens
 import com.example.proyectofinal_jma.sizeScreen.WindowInfo
@@ -71,7 +63,10 @@ import com.example.proyectofinal_jma.ui.theme.ProyectoFinal_JMATheme
 import com.example.proyectofinal_jma.ui.theme.Shapes
 import com.example.proyectofinal_jma.viewModel.AppViewModelProvider
 import com.example.proyectofinal_jma.viewModel.HomeViewModel
+import com.example.proyectofinal_jma.viewModel.NoteEditViewModel
 import com.example.proyectofinal_jma.viewModel.NoteEntryViewModel
+import com.example.proyectofinal_jma.viewModel.toNoteDetails
+import com.example.proyectofinal_jma.viewModel.toNoteUiState
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -199,7 +194,12 @@ fun ListElements(
             contentPadding=contentPadding,
             modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_4))){
             items(items = notaList, key = { it.id }){ nota->
-                HomeworkCard(homework = nota, modifier = Modifier.clickable { onNoteClick(nota) })
+                HomeworkCard(
+                    homework = nota,
+                    modifier = Modifier.clickable {
+                        onNoteClick(nota)
+                    }
+                )
             }
         }
     }else if (windowsSize.screenWindthInfo is WindowInfo.WindowType.Medium){
@@ -235,7 +235,7 @@ fun App(
     navController: NavController,
     viewModel: NoteEntryViewModel = viewModel(factory = AppViewModelProvider.Factory),
     viewModelHome: HomeViewModel= viewModel(factory = AppViewModelProvider.Factory),
-    navigateToItemUpdate: (Int) -> Unit,
+    navigateToItemUpdate: (NotaEntity) -> Unit,
 ) {
     val homeUiState by viewModelHome.homeUiState.collectAsState()
     Scaffold(
@@ -451,7 +451,7 @@ private fun HomeBody(
     notaList: List<NotaEntity>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
-    onNoteClick: (Int) -> Unit
+    onNoteClick: (NotaEntity) -> Unit
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -467,8 +467,13 @@ private fun HomeBody(
             ListElements(
                 notaList = notaList,
                 contentPadding = contentPadding,
-                onNoteClick = { onNoteClick(it.id) }
+                onNoteClick = { onNoteClick(it) }
             )
         }
     }
+}
+
+@Composable
+fun previewNote(){
+
 }

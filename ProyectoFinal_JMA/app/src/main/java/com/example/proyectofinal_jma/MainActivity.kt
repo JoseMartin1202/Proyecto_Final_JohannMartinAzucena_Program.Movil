@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,6 +15,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,6 +24,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -42,6 +46,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,6 +56,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -150,33 +156,42 @@ fun HomeworkCard(homework: NotaEntity, modifier: Modifier= Modifier){
                 .padding(end = dimensionResource(id = R.dimen.padding_4))
                 .sizeIn(minHeight = dimensionResource(id = R.dimen.anchor_64))
         ){
-            Box{
+            Box(
+               modifier=modifier.wrapContentHeight()
+                   .align(CenterVertically)
+            ){
                 Image(
                     painter = painterResource(id = R.drawable.image),
                     contentDescription =null,
                     modifier = modifier
-                        .size(
-                            width = dimensionResource(id = R.dimen.anchor_64),
-                            height = dimensionResource(id = R.dimen.anchor_64)
+                        .width(
+                            width = dimensionResource(id = R.dimen.anchor_64)
                         )
                         .aspectRatio(1f),
-                    contentScale = ContentScale.Crop)
+                    contentScale = ContentScale.FillHeight)
             }
             Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = homework.titulo,
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier=modifier
-                        .padding( top = dimensionResource(id = R.dimen.padding_8)))
+                Row{
+                    Text(
+                        text = homework.titulo,
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier=modifier
+                            .padding(
+                                top = dimensionResource(id = R.dimen.padding_8))
+                            .weight(.74f))
+                    Spacer(Modifier.weight(.01f))
+                    Text(
+                        text = homework.fecha,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier=modifier.weight(.25f))
+                }
                 Text(
                     text = homework.contenido,
                     style = MaterialTheme.typography.bodyMedium)
             }
             Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_8)))
             Column(horizontalAlignment = Alignment.End){
-                Text(
-                    text = homework.fecha,
-                    style = MaterialTheme.typography.bodySmall)
+
             }
         }
     }
@@ -473,7 +488,9 @@ private fun HomeBody(
     }
 }
 
+@Preview
 @Composable
 fun previewNote(){
-
+    var nota=NotaEntity(0,"ttt","cuando el contenido de la nota es demasiado largo y sigo escribiendo un buen contenido","02/05/2012")
+    HomeworkCard(homework = nota)
 }

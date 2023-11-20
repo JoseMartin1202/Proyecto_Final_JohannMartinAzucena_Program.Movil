@@ -59,8 +59,14 @@
     <string name="big">Big</string>
     <string name="fuente">Fuente</string>
     <string name="Font">Font</string>
-    <string name="sinNotas">No existe ninguna nota</string>
+    <string name="sinNotas">Oops!\nNo existe ninguna nota</string>
     <string name="withoutNotes">f</string>
     <string name="title_activity_edit_note">EditNote</string>
     <string name="title_activity_edit">Edit</string>
+    <string name="confirmar">Confirmar</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="cancel">Cancel</string>
+    <string name="eliminarNota">Eliminar nota</string>
+    <string name="preguntaeliminar">¿Desea eliminar la nota seleccionada?</string>
 </resources>

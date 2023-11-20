@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,6 +28,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -37,6 +39,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -123,7 +126,7 @@ fun HomeworkCard(
                         .width(
                             width = 60.dp
                         )
-                        .padding(end=2.dp)
+                        .padding(end = 2.dp)
                         .aspectRatio(1f),
                     tint =MaterialTheme.colorScheme.primary)
             }
@@ -150,17 +153,19 @@ fun HomeworkCard(
                     Text(
                         text = homework.contenido,
                         style = MaterialTheme.typography.bodyMedium,
-                        modifier=modifier.weight(.9f).padding(end = 3.dp))
+                        modifier= modifier
+                            .weight(.9f)
+                            .padding(end = 3.dp))
                         Button(
                             onClick = {
-                                coroutineScope.launch {
-                                    viewModelHome.deleteNote(nota)
-                                    Toast.makeText(message,"Nota eliminada", Toast.LENGTH_SHORT).show()
-                                }
+                               viewModelHome.updateShow(true)
                             },
                             colors =  ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                             contentPadding = PaddingValues(0.dp),
-                            modifier=modifier.weight(.1f).align(Alignment.Top).offset(y=-5.dp)
+                            modifier= modifier
+                                .weight(.1f)
+                                .align(Alignment.Top)
+                                .offset(y = -5.dp)
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.trash),
@@ -171,8 +176,19 @@ fun HomeworkCard(
                                         height = dimensionResource(id = R.dimen.padding_anchor_36)
                                     )
                                     .aspectRatio(1f)
-                                    .align(Alignment.Top).offset(y=-5.dp),
+                                    .align(Alignment.Top)
+                                    .offset(y = -5.dp),
                                 tint = MaterialTheme.colorScheme.primary)
+                            MyDialog(
+                                show = viewModelHome.show,
+                                onDismiss = { viewModelHome.updateShow(false)},
+                                onConfirm ={
+                                    coroutineScope.launch {
+                                        viewModelHome.deleteNote(nota)
+                                        Toast.makeText(message,"Nota eliminada", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                            )
                         }
                 }
             }
@@ -284,9 +300,8 @@ fun App(
         },
         bottomBar = {
             Row (
-                modifier = modifier.padding(
-                    start = dimensionResource(id = R.dimen.padding_8),
-                    end = dimensionResource(id = R.dimen.padding_8)),
+                modifier = modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
             ){
                 Card (
                     modifier = modifier
@@ -294,21 +309,20 @@ fun App(
                             bottom = dimensionResource(id = R.dimen.padding_anchor_16)
                         )
                         .clip(Shapes.small)
-                        .fillMaxWidth()
+                        .width(250.dp)
                         .align(CenterVertically),
                     colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primaryContainer)
                 ){
                     Row (
                         modifier = modifier
                             .padding(dimensionResource(id = R.dimen.padding_4))
-                            .fillMaxWidth(),
-                        verticalAlignment = CenterVertically,
-                        horizontalArrangement = Arrangement.Center
+                            .fillMaxWidth()
                     ){
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = modifier.padding(
                                 end = dimensionResource(id = R.dimen.padding_8))
+                                .weight(.33f)
                         ){
                             Button(
                                 onClick = {
@@ -335,35 +349,9 @@ fun App(
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = modifier.padding(
-                                end = dimensionResource(id = R.dimen.padding_8))
-                        ){
-                            Button(
-                                onClick = {
-                                    navController.navigate(route = AppScreens.TrashScreen.route)
-                                },
-                                modifier = modifier
-                                    .height(40.dp)
-                                    .width(60.dp),
-                                contentPadding = PaddingValues(0.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.trash),
-                                    contentDescription =null,
-                                    modifier = modifier
-                                        .aspectRatio(1f),
-                                    tint = MaterialTheme.colorScheme.secondary
-                                )
-                            }
-                            Text(
-                                text = stringResource(id = R.string.papelera),
-                                style = MaterialTheme.typography.bodyMedium)
-                        }
-                        Column (
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = modifier.padding(
                                 start = dimensionResource(id = R.dimen.padding_8),
                                 end = dimensionResource(id = R.dimen.padding_8))
+                                .weight(.33f)
                         ){
                             Button(
                                 onClick = {
@@ -384,34 +372,7 @@ fun App(
                         }
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = modifier.padding(
-                                start = dimensionResource(id = R.dimen.padding_8),
-                                end = dimensionResource(id = R.dimen.padding_8))
-                        ){
-                            Button(
-                                onClick = {
-                                    navController.navigate(route = AppScreens.DoneScreen.route)
-                                },
-                                modifier = modifier
-                                    .height(40.dp)
-                                    .width(60.dp),
-                                contentPadding = PaddingValues(0.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.done),
-                                    contentDescription =null,
-                                    modifier = modifier
-                                        .aspectRatio(1f),
-                                    tint = MaterialTheme.colorScheme.secondary
-                                )
-                            }
-                            Text(
-                                text = stringResource(id = R.string.hecho),
-                                style = MaterialTheme.typography.bodyMedium)
-                        }
-                        Column (
-                            horizontalAlignment = Alignment.CenterHorizontally
+                            modifier = modifier.weight(.33f)
                         ){
                             Button(
                                 onClick = {
@@ -457,11 +418,21 @@ private fun HomeBody(
         modifier = modifier
     ) {
         if (notaList.isEmpty()) {
-            Text(
-                text = stringResource(R.string.sinNotas),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.titleLarge
-            )
+            LazyColumn(
+                contentPadding=contentPadding,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = modifier.fillMaxHeight().fillMaxWidth()
+            ){
+                item{
+                    Text(
+                        text = stringResource(R.string.sinNotas),
+                        textAlign = TextAlign.Center,
+                        modifier= modifier.fillMaxWidth(),
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                }
+            }
         } else {
             ListElements(
                 notaList = notaList,
@@ -478,4 +449,29 @@ private fun HomeBody(
 fun previewNote(){
     var nota=NotaEntity(0,"ttt","cuando el contenido de la nota es","02/05/2012")
     //HomeworkCard(homework = nota)
+}
+
+@Composable
+fun MyDialog(
+    show:Boolean,
+    onDismiss:()->Unit,
+    onConfirm:()->Unit
+){
+    if(show) {
+        AlertDialog(
+            onDismissRequest = { onDismiss() },
+            confirmButton = {
+                TextButton(onClick = {onConfirm() }) {
+                    Text(text = stringResource(id = R.string.confirmar))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { onDismiss() }) {
+                    Text(text = stringResource(id = R.string.cancelar))
+                }
+            },
+            title = { Text(stringResource(id = R.string.eliminarNota)) },
+            text = { Text(stringResource(id = R.string.preguntaeliminar)) }
+        )
+    }
 }

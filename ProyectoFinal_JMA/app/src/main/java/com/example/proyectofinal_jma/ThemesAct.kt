@@ -140,9 +140,8 @@ fun ThemesList(
             .padding(top = dimensionResource(id = R.dimen.padding_4)),
         bottomBar = {
             Row (
-                modifier = modifier.padding(
-                    start = dimensionResource(id = R.dimen.padding_8),
-                    end = dimensionResource(id = R.dimen.padding_8)),
+                modifier = modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
             ){
                 Card (
                     modifier = modifier
@@ -150,21 +149,20 @@ fun ThemesList(
                             bottom = dimensionResource(id = R.dimen.padding_anchor_16)
                         )
                         .clip(Shapes.small)
-                        .fillMaxWidth()
+                        .width(250.dp)
                         .align(Alignment.CenterVertically),
                     colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primaryContainer)
                 ){
                     Row (
                         modifier = modifier
                             .padding(dimensionResource(id = R.dimen.padding_4))
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
+                            .fillMaxWidth()
                     ){
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = modifier.padding(
                                 end = dimensionResource(id = R.dimen.padding_8))
+                                .weight(.33f)
                         ){
                             Button(
                                 onClick = {
@@ -191,35 +189,9 @@ fun ThemesList(
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = modifier.padding(
-                                end = dimensionResource(id = R.dimen.padding_8))
-                        ){
-                            Button(
-                                onClick = {
-                                    navController.navigate(route = AppScreens.TrashScreen.route)
-                                },
-                                modifier = modifier
-                                    .height(40.dp)
-                                    .width(60.dp),
-                                contentPadding = PaddingValues(0.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.trash),
-                                    contentDescription =null,
-                                    modifier = modifier
-                                        .aspectRatio(1f),
-                                    tint = MaterialTheme.colorScheme.secondary
-                                )
-                            }
-                            Text(
-                                text = stringResource(id = R.string.papelera),
-                                style = MaterialTheme.typography.bodyMedium)
-                        }
-                        Column (
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = modifier.padding(
                                 start = dimensionResource(id = R.dimen.padding_8),
                                 end = dimensionResource(id = R.dimen.padding_8))
+                                .weight(.33f)
                         ){
                             Button(
                                 onClick = {
@@ -240,34 +212,7 @@ fun ThemesList(
                         }
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = modifier.padding(
-                                start = dimensionResource(id = R.dimen.padding_8),
-                                end = dimensionResource(id = R.dimen.padding_8))
-                        ){
-                            Button(
-                                onClick = {
-                                    navController.navigate(route = AppScreens.DoneScreen.route)
-                                },
-                                modifier = modifier
-                                    .height(40.dp)
-                                    .width(60.dp),
-                                contentPadding = PaddingValues(0.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.done),
-                                    contentDescription =null,
-                                    modifier = modifier
-                                        .aspectRatio(1f),
-                                    tint = MaterialTheme.colorScheme.secondary
-                                )
-                            }
-                            Text(
-                                text = stringResource(id = R.string.hecho),
-                                style = MaterialTheme.typography.bodyMedium)
-                        }
-                        Column (
-                            horizontalAlignment = Alignment.CenterHorizontally
+                            modifier = modifier.weight(.33f)
                         ){
                             Button(
                                 onClick = {

@@ -53,7 +53,6 @@ class NoteEntryViewModel(
     var textSearch by mutableStateOf("")
     var optionNote by mutableStateOf("Nota")
     var sizeText by mutableStateOf("Normal")
-    var idNote by mutableStateOf(1)
 
     fun updateIsExpanded(boolean: Boolean){
         isExpanded= boolean

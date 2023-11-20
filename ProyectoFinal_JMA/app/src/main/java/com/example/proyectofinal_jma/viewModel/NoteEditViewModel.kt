@@ -39,9 +39,7 @@ class NoteEditViewModel(
     }
 
     var isExpanded by mutableStateOf(false)
-    var prueba by mutableStateOf(false)
     var isExpanded2 by mutableStateOf(false)
-    var textSearch by mutableStateOf("")
     var optionNote by mutableStateOf("Nota")
     var sizeText by mutableStateOf("Normal")
 

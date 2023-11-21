@@ -69,4 +69,8 @@
     <string name="cancel">Cancel</string>
     <string name="eliminarNota">Eliminar nota</string>
     <string name="preguntaeliminar">¿Desea eliminar la nota seleccionada?</string>
+    <string name="cancelarRegistro">Cancelar registro</string>
+    <string name="cancelarRegistrotext">¿Deseas cancelar el registro de la nota?</string>
+    <string name="cancelarActualización">Cancelar cambios</string>
+    <string name="cancelarActualizaciontext">¿Deseas cancelar los cambios en la nota?</string>
 </resources>

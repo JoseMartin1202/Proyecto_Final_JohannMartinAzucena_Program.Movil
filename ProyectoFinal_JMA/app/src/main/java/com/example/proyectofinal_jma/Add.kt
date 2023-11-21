@@ -147,8 +147,10 @@ fun AddNoteHomework(
                     ){
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = modifier.padding(
-                                end = dimensionResource(id = R.dimen.padding_8))
+                            modifier = modifier
+                                .padding(
+                                    end = dimensionResource(id = R.dimen.padding_8)
+                                )
                                 .weight(.33f)
                         ){
                             Button(
@@ -175,9 +177,11 @@ fun AddNoteHomework(
                         }
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = modifier.padding(
-                                start = dimensionResource(id = R.dimen.padding_8),
-                                end = dimensionResource(id = R.dimen.padding_8))
+                            modifier = modifier
+                                .padding(
+                                    start = dimensionResource(id = R.dimen.padding_8),
+                                    end = dimensionResource(id = R.dimen.padding_8)
+                                )
                                 .weight(.33f)
                         ){
                             Button(
@@ -315,7 +319,7 @@ fun TopNoteEstructureCompact(
             Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_2)))
             Column{
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = {viewModel.updateShowCancel(true) },
                     modifier = modifier
                         .height(55.dp)
                         .width(55.dp),
@@ -328,6 +332,15 @@ fun TopNoteEstructureCompact(
                         modifier = modifier
                             .aspectRatio(1f),
                         tint = MaterialTheme.colorScheme.primary)
+                    MyDialog(
+                        show = viewModel.showCancel,
+                        onDismiss = { viewModel.updateShowCancel(false) },
+                        onConfirm = {
+                            navController.navigate(route = AppScreens.MainScreen.route)
+                        },
+                        titulo = stringResource(id = R.string.cancelarRegistro),
+                        text = stringResource(id = R.string.cancelarRegistrotext)
+                    )
                 }
             }
         }
@@ -510,7 +523,7 @@ fun TopNoteEstructureMedium(
             Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_2)))
             Column{
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = { viewModel.updateShowCancel(true)  },
                     modifier = modifier
                         .height(55.dp)
                         .width(55.dp),
@@ -523,6 +536,15 @@ fun TopNoteEstructureMedium(
                         modifier = modifier
                             .aspectRatio(1f),
                         tint = MaterialTheme.colorScheme.primary)
+                    MyDialog(
+                        show = viewModel.showCancel,
+                        onDismiss = { viewModel.updateShowCancel(false) },
+                        onConfirm = {
+                            navController.navigate(route = AppScreens.MainScreen.route)
+                        },
+                        titulo = stringResource(id = R.string.cancelarRegistro),
+                        text = stringResource(id = R.string.cancelarRegistrotext)
+                    )
                 }
             }
         }
@@ -822,7 +844,7 @@ fun TopNoteEstructureExpanded(
             }
             Column {
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = { viewModel.updateShowCancel(true)  },
                     modifier = modifier
                         .height(55.dp)
                         .width(55.dp),
@@ -835,6 +857,15 @@ fun TopNoteEstructureExpanded(
                         modifier = modifier
                             .aspectRatio(1f),
                         tint = MaterialTheme.colorScheme.primary)
+                    MyDialog(
+                        show = viewModel.showCancel,
+                        onDismiss = { viewModel.updateShowCancel(false) },
+                        onConfirm = {
+                            navController.navigate(route = AppScreens.MainScreen.route)
+                        },
+                        titulo = stringResource(id = R.string.cancelarRegistro),
+                        text = stringResource(id = R.string.cancelarRegistrotext)
+                    )
                 }
             }
         }

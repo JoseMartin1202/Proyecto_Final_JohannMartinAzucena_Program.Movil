@@ -2,6 +2,7 @@ package com.example.proyectofinal_jma
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -27,6 +28,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -45,7 +47,10 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
@@ -89,6 +94,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+var notaDrop:NotaEntity= NotaEntity(0,"","","")
 
 @Composable
 fun HomeworkCard(
@@ -98,8 +104,6 @@ fun HomeworkCard(
     nota:NotaEntity,
     modifier: Modifier=Modifier,
 ){
-    val coroutineScope = rememberCoroutineScope()
-    val message= LocalContext.current.applicationContext
     Card (
         modifier = modifier
             .padding(
@@ -158,7 +162,8 @@ fun HomeworkCard(
                             .padding(end = 3.dp))
                         Button(
                             onClick = {
-                               viewModelHome.updateShow(true)
+                                notaDrop=nota
+                                viewModelHome.updateShow(true)
                             },
                             colors =  ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                             contentPadding = PaddingValues(0.dp),
@@ -179,22 +184,16 @@ fun HomeworkCard(
                                     .align(Alignment.Top)
                                     .offset(y = -5.dp),
                                 tint = MaterialTheme.colorScheme.primary)
-                            MyDialog(
-                                show = viewModelHome.show,
-                                onDismiss = { viewModelHome.updateShow(false)},
-                                onConfirm ={
-                                    coroutineScope.launch {
-                                        viewModelHome.deleteNote(nota)
-                                        Toast.makeText(message,"Nota eliminada", Toast.LENGTH_SHORT).show()
-                                    }
-                                }
-                            )
+
                         }
+
+
                 }
             }
 
         }
     }
+
 }
 
 @Composable
@@ -205,6 +204,8 @@ fun ListElements(
     viewModelHome: HomeViewModel
 ) {
     val windowsSize= rememberWindowInfo()
+    val coroutineScope = rememberCoroutineScope()
+    val message= LocalContext.current.applicationContext
     if(windowsSize.screenWindthInfo is WindowInfo.WindowType.Compact){
         LazyColumn(
             contentPadding=contentPadding,
@@ -220,25 +221,58 @@ fun ListElements(
                 )
             }
         }
+        MyDialog(
+            show = viewModelHome.show ,
+            onDismiss = { },
+            onConfirm = {
+                coroutineScope.launch {
+                    viewModelHome.deleteNote(notaDrop)
+                    Toast.makeText(message,"Nota eliminada", Toast.LENGTH_SHORT).show()
+                }
+                viewModelHome.updateShow(false)
+            },
+            titulo = stringResource(id = R.string.eliminarNota),
+            text = stringResource(id = R.string.preguntaeliminar))
     }else if (windowsSize.screenWindthInfo is WindowInfo.WindowType.Medium){
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             contentPadding=contentPadding,
             verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_8)),
-            horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_8))
-        ){
-
-        }
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_8)),
+            content = {
+                itemsIndexed(items = notaList, key = { index,nota-> nota.id}){ index,nota->
+                    HomeworkCard(
+                        homework = nota,
+                        modifierEdit = Modifier.clickable {
+                            onNoteClick(nota)
+                        },
+                        viewModelHome,
+                        nota
+                    )
+                }
+            }
+        )
     }else{
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
             contentPadding=contentPadding,
             verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_8)),
-            horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_8))
-        ){
-
-        }
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_8)),
+            content = {
+                itemsIndexed(items = notaList, key = { index,nota-> nota.id}){ index,nota->
+                    HomeworkCard(
+                        homework = nota,
+                        modifierEdit = Modifier.clickable {
+                            onNoteClick(nota)
+                        },
+                        viewModelHome,
+                        nota
+                    )
+                }
+            }
+        )
     }
+
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -320,8 +354,10 @@ fun App(
                     ){
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = modifier.padding(
-                                end = dimensionResource(id = R.dimen.padding_8))
+                            modifier = modifier
+                                .padding(
+                                    end = dimensionResource(id = R.dimen.padding_8)
+                                )
                                 .weight(.33f)
                         ){
                             Button(
@@ -348,9 +384,11 @@ fun App(
                         }
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = modifier.padding(
-                                start = dimensionResource(id = R.dimen.padding_8),
-                                end = dimensionResource(id = R.dimen.padding_8))
+                            modifier = modifier
+                                .padding(
+                                    start = dimensionResource(id = R.dimen.padding_8),
+                                    end = dimensionResource(id = R.dimen.padding_8)
+                                )
                                 .weight(.33f)
                         ){
                             Button(
@@ -402,6 +440,7 @@ fun App(
         }
     ) {
         HomeBody(notaList = homeUiState.noteList, contentPadding = it, onNoteClick= navigateToItemUpdate, viewModelHome = viewModelHome)
+
     }
 }
 
@@ -422,7 +461,9 @@ private fun HomeBody(
                 contentPadding=contentPadding,
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
-                modifier = modifier.fillMaxHeight().fillMaxWidth()
+                modifier = modifier
+                    .fillMaxHeight()
+                    .fillMaxWidth()
             ){
                 item{
                     Text(
@@ -455,7 +496,9 @@ fun previewNote(){
 fun MyDialog(
     show:Boolean,
     onDismiss:()->Unit,
-    onConfirm:()->Unit
+    onConfirm:()->Unit,
+    titulo:String,
+    text:String
 ){
     if(show) {
         AlertDialog(
@@ -470,8 +513,35 @@ fun MyDialog(
                     Text(text = stringResource(id = R.string.cancelar))
                 }
             },
-            title = { Text(stringResource(id = R.string.eliminarNota)) },
-            text = { Text(stringResource(id = R.string.preguntaeliminar)) }
+            title = { Text(titulo) },
+            text = { Text(text) }
+        )
+    }
+}
+
+@Composable
+fun MyDialogDrop(
+    show:Boolean,
+    onDismiss:()->Unit,
+    onConfirm:()->Unit,
+    titulo:String,
+    text:String
+){
+    if(show) {
+        AlertDialog(
+            onDismissRequest = { onDismiss() },
+            confirmButton = {
+                TextButton(onClick = {onConfirm}) {
+                    Text(text = stringResource(id = R.string.confirmar))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { onDismiss() }) {
+                    Text(text = stringResource(id = R.string.cancelar))
+                }
+            },
+            title = { Text(titulo) },
+            text = { Text(text) }
         )
     }
 }

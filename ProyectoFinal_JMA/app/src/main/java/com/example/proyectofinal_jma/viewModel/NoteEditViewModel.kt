@@ -42,6 +42,11 @@ class NoteEditViewModel(
     var isExpanded2 by mutableStateOf(false)
     var optionNote by mutableStateOf("Nota")
     var sizeText by mutableStateOf("Normal")
+    var showCancelEdit by mutableStateOf(false)
+
+    fun updateShowCancelEdit(boolean: Boolean){
+        showCancelEdit= boolean
+    }
 
     fun updateIsExpandedEdit(boolean: Boolean){
         isExpanded= boolean

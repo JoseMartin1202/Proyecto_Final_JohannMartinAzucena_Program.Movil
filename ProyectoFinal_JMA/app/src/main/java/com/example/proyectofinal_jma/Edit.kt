@@ -260,7 +260,7 @@ fun TopNoteEstructureCompactEdit(
             Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_2)))
             Column{
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = { viewModel.updateShowCancelEdit(true)},
                     modifier = modifier
                         .height(55.dp)
                         .width(55.dp),
@@ -273,6 +273,15 @@ fun TopNoteEstructureCompactEdit(
                         modifier = modifier
                             .aspectRatio(1f),
                         tint = MaterialTheme.colorScheme.primary)
+                    MyDialog(
+                        show = viewModel.showCancelEdit,
+                        onDismiss = { viewModel.updateShowCancelEdit(false) },
+                        onConfirm = {
+                            navController.navigate(route = AppScreens.MainScreen.route)
+                        },
+                        titulo = stringResource(id = R.string.cancelarActualización),
+                        text = stringResource(id = R.string.cancelarActualizaciontext)
+                    )
                 }
             }
         }
@@ -455,7 +464,7 @@ fun TopNoteEstructureMediumEdit(
             Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_2)))
             Column{
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = { viewModel.updateShowCancelEdit(true) },
                     modifier = modifier
                         .height(55.dp)
                         .width(55.dp),
@@ -468,6 +477,15 @@ fun TopNoteEstructureMediumEdit(
                         modifier = modifier
                             .aspectRatio(1f),
                         tint = MaterialTheme.colorScheme.primary)
+                    MyDialog(
+                        show = viewModel.showCancelEdit,
+                        onDismiss = { viewModel.updateShowCancelEdit(false) },
+                        onConfirm = {
+                            navController.navigate(route = AppScreens.MainScreen.route)
+                        },
+                        titulo = stringResource(id = R.string.cancelarActualización),
+                        text = stringResource(id = R.string.cancelarActualizaciontext)
+                    )
                 }
             }
         }
@@ -767,7 +785,7 @@ fun TopNoteEstructureExpandedEdit(
         }
         Column {
             Button(
-                onClick = { /*TODO*/ },
+                onClick = { viewModel.updateShowCancelEdit(true)},
                 modifier = modifier
                     .height(55.dp)
                     .width(55.dp),
@@ -780,6 +798,15 @@ fun TopNoteEstructureExpandedEdit(
                     modifier = modifier
                         .aspectRatio(1f),
                     tint = MaterialTheme.colorScheme.primary)
+                MyDialog(
+                    show = viewModel.showCancelEdit,
+                    onDismiss = { viewModel.updateShowCancelEdit(false) },
+                    onConfirm = {
+                        navController.navigate(route = AppScreens.MainScreen.route)
+                    },
+                    titulo = stringResource(id = R.string.cancelarActualización),
+                    text = stringResource(id = R.string.cancelarActualizaciontext)
+                )
             }
         }
     }

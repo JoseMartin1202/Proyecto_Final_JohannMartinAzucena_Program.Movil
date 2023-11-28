@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace = "com.example.proyectofinal_jma"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.proyectofinal_jma"
         minSdk = 21
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -93,4 +93,7 @@ dependencies {
     androidTestImplementation(platform("androidx.compose:compose-bom:2023.03.00"))
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+    implementation("io.coil-kt:coil-compose:2.5.0")
+    implementation("com.google.android.exoplayer:exoplayer:2.15.1")
+    implementation("com.google.accompanist:accompanist-permissions:0.33.2-alpha")
 }

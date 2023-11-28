@@ -9,5 +9,9 @@ data class NotaEntity(
     val id:Int =0 ,
     val titulo:String,
     val contenido:String,
-    val fecha:String
+    val fecha:String,
+    val tipo:String="",
+    val uriImagenes:String="",
+    val uriVideos:String="",
+    val uriAudios:String=""
 )

@@ -1,7 +1,10 @@
 package com.example.proyectofinal_jma.viewModel
 
+import android.net.Uri
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -38,6 +41,8 @@ class NoteEntryViewModel(
 
     suspend fun saveNote() {
         if (validateInput()) {
+            noteUiState.noteDetails.tipo=optionNote
+            noteUiState.noteDetails.uriAudios=urislist.toList().toString()
             notesRepository.insertNote(noteUiState.noteDetails.toNote())
         }
     }
@@ -49,11 +54,26 @@ class NoteEntryViewModel(
     }
 
     var isExpanded by mutableStateOf(false)
-    var isExpanded2 by mutableStateOf(false)
     var textSearch by mutableStateOf("")
     var optionNote by mutableStateOf("Nota")
-    var sizeText by mutableStateOf("Normal")
     var showCancel by mutableStateOf(false)
+    //IMAGENES
+    var hasImage by mutableStateOf(false)
+    var mostrarImagen by mutableStateOf(false)
+    var cantidad by mutableStateOf(0)
+    var imageUri by mutableStateOf<Uri?>(null)
+    var urislist= mutableStateListOf<Uri>()
+    //VIDEOS
+    var hasVideo by mutableStateOf(false)
+    var cantidadVideos by mutableStateOf(0)
+    var videoUri by mutableStateOf<Uri?>(null)
+    var urisVideoslist= mutableStateListOf<Uri>()
+    //AUDIOS
+    var hasAudio by mutableStateOf(false)
+    var cantidadAudios by mutableStateOf(0)
+    var audioUri by mutableStateOf<Uri?>(null)
+    var urisAudioslist= mutableStateListOf<Uri>()
+    var rationaleState by mutableStateOf<RationaleState?>(null)
 
     fun updateShowCancel(boolean: Boolean){
         showCancel= boolean
@@ -63,22 +83,75 @@ class NoteEntryViewModel(
         isExpanded= boolean
     }
 
-    fun updateIsExpandend2(boolean: Boolean){
-        isExpanded2= boolean
-    }
-
     fun updateOptionNote(text: String ){
         optionNote=text
-    }
-
-    fun updatesizeText(text: String ){
-        sizeText=text
     }
 
     fun updateTextSearch(text: String ){
         textSearch=text
     }
 
+    //IMAGENES
+    fun updatehasImage(boolean: Boolean){
+        hasImage= boolean
+    }
+
+    fun updateImageUri(uri: Uri?){
+        imageUri= uri
+    }
+
+    fun updateUrisList(uri: Uri){
+        urislist.add(uri)
+        cantidad=urislist.size
+    }
+
+    fun deleteLastUri(){
+        urislist.removeLast()
+        cantidad=urislist.size
+    }
+
+    fun updateMostrarImagen(boolean: Boolean){
+        mostrarImagen= boolean
+    }
+
+
+    //VIDEOS
+    fun updatehasVideo(boolean: Boolean){
+        hasVideo= boolean
+    }
+
+    fun updateVideoUri(uri: Uri?){
+        videoUri= uri
+    }
+
+    fun updateUrisVideosList(uri: Uri){
+        urisVideoslist.add(uri)
+        cantidadVideos=urisVideoslist.size
+    }
+
+    fun deleteLastUriVideos(){
+        urisVideoslist.removeLast()
+        cantidadVideos=urisVideoslist.size
+    }
+
+    //AUDIOS
+    fun updatehasAudio(boolean: Boolean){
+        hasAudio= boolean
+    }
+
+    fun updateAudioUri(uri: Uri?){
+        audioUri= uri
+    }
+
+    fun updateUrisAudiosList(uri: Uri){
+        urisAudioslist.add(uri)
+        cantidadAudios=urisAudioslist.size
+    }
+
+    fun deleteLastUriAudios(){
+        urisAudioslist.removeLast()
+        cantidadAudios=urisAudioslist.size
+    }
 }
 
 /**
@@ -94,14 +167,22 @@ data class NoteDetails(
     val titulo: String = "",
     val contenido: String = "",
     val fecha: String = ""+ Calendar.getInstance(TimeZone.getTimeZone("America/Mexico_City")).get(Calendar.DAY_OF_MONTH)+
-            "/"+(Calendar.getInstance().get(Calendar.MONTH)+1)+"/"+Calendar.getInstance().get(Calendar.YEAR)
+            "/"+(Calendar.getInstance().get(Calendar.MONTH)+1)+"/"+Calendar.getInstance().get(Calendar.YEAR),
+    var tipo:String="",
+    var uriImagenes:String="",
+    var uriVideos:String="",
+    var uriAudios:String=""
 )
 
 fun NoteDetails.toNote(): NotaEntity = NotaEntity(
     id = id,
     titulo = titulo,
     contenido = contenido,
-    fecha = fecha
+    fecha = fecha,
+    tipo=tipo,
+    uriImagenes= uriImagenes,
+    uriVideos= uriVideos,
+    uriAudios= uriAudios
 )
 
 fun NotaEntity.toNoteUiState(isEntryValid: Boolean = false): NoteUiState = NoteUiState(
@@ -116,6 +197,16 @@ fun NotaEntity.toNoteDetails(): NoteDetails = NoteDetails(
     id = id,
     titulo = titulo,
     contenido = contenido,
-    fecha = fecha
+    fecha = fecha,
+    tipo= tipo,
+    uriImagenes= uriImagenes,
+    uriVideos= uriVideos,
+    uriAudios= uriAudios
+)
+
+data class RationaleState(
+    val title: String,
+    val rationale: String,
+    val onRationaleReply: (proceed: Boolean) -> Unit,
 )
 

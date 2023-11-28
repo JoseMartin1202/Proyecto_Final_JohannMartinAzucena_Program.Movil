@@ -22,6 +22,9 @@ object AppViewModelProvider {
         initializer {
             HomeViewModel(inventoryApplication().container.notesRepository)
         }
+        initializer {
+            PhotoVideoViewModel()
+        }
     }
 }
 

@@ -1,14 +1,10 @@
 package com.example.proyectofinal_jma
 
 import android.annotation.SuppressLint
-import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -35,6 +31,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -59,10 +56,13 @@ import com.example.proyectofinal_jma.ui.theme.ProyectoFinal_JMATheme
 import com.example.proyectofinal_jma.ui.theme.Shapes
 import com.example.proyectofinal_jma.viewModel.AppViewModelProvider
 import com.example.proyectofinal_jma.viewModel.NoteDetails
+import com.example.proyectofinal_jma.viewModel.NoteDetailsEdit
 import com.example.proyectofinal_jma.viewModel.NoteEditViewModel
 import com.example.proyectofinal_jma.viewModel.NoteEntryViewModel
 import com.example.proyectofinal_jma.viewModel.NoteUiState
+import com.example.proyectofinal_jma.viewModel.NoteUiStateEdit
 import com.example.proyectofinal_jma.viewModel.toNoteDetails
+import com.example.proyectofinal_jma.viewModel.toNoteDetailsEdit
 import kotlinx.coroutines.launch
 
 @Composable
@@ -74,11 +74,77 @@ fun Edit(
         contentPadding=contentPadding,
         modifier = Modifier.padding(top = 10.dp, start = 8.dp, end = 8.dp )){
         items(DataSourceNotesOrHomework.text){
-            NoteEntryBody(
+            NoteEditBody(
                 noteUiState = viewModel.noteUiStateEdit,
                 onNoteValueChange = viewModel::updateUiStateEdit)
         }
     }
+}
+
+@Composable
+fun NoteEditBody(
+    noteUiState: NoteUiStateEdit,
+    onNoteValueChange: (NoteDetailsEdit) -> Unit
+) {
+    NoteInputEditForm(
+        noteDetails = noteUiState.noteDetails,
+        onValueChange =  onNoteValueChange)
+}
+
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun NoteInputEditForm(
+    noteDetails: NoteDetailsEdit,
+    onValueChange: (NoteDetailsEdit) -> Unit = {}
+) {
+    TextField(
+        value = noteDetails.contenido,
+        onValueChange = {
+            onValueChange(noteDetails.copy(contenido = it))
+        },
+        modifier = Modifier
+            .fillMaxWidth(),
+        colors = TextFieldDefaults.textFieldColors(
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent),
+        singleLine= false,
+        textStyle = MaterialTheme.typography.bodyMedium)
+
+}
+
+@Composable
+fun TitleNoteEditBody(
+    noteUiState: NoteUiStateEdit,
+    onNoteValueChange: (NoteDetailsEdit) -> Unit
+) {
+    TitleTextNoteEdit(
+        noteDetails = noteUiState.noteDetails,
+        onValueChange =  onNoteValueChange)
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TitleTextNoteEdit(
+    noteDetails: NoteDetailsEdit,
+    onValueChange: (NoteDetailsEdit) -> Unit = {}
+) {
+    TextField(
+        value = noteDetails.titulo,
+        onValueChange = {
+            onValueChange(noteDetails.copy(titulo = it))
+        },
+        modifier = Modifier
+            .padding(top = 4.dp)
+            .fillMaxWidth(),
+        shape = Shapes.large,
+        colors = TextFieldDefaults.textFieldColors(
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent
+        ),
+        singleLine = true,
+        label={ Text(text = stringResource(id = R.string.titulo)) },
+        textStyle = MaterialTheme.typography.bodyMedium)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -89,7 +155,7 @@ fun EditNoteHomework(
     notaEntity: NotaEntity,
     viewModel: NoteEditViewModel= viewModel(factory = AppViewModelProvider.Factory)
 ) {
-    viewModel.updateUiStateEdit(notaEntity.toNoteDetails())
+    viewModel.updateUiStateEdit(notaEntity.toNoteDetailsEdit())
     val windowsSize= rememberWindowInfo()
     Scaffold(
         modifier = Modifier
@@ -99,9 +165,9 @@ fun EditNoteHomework(
             if(windowsSize.screenWindthInfo is WindowInfo.WindowType.Compact ){
                 TopNoteEstructureCompactEdit(modifier = modifier, navController = navController, viewModel = viewModel)
             }else if(windowsSize.screenWindthInfo is WindowInfo.WindowType.Medium){
-                TopNoteEstructureMediumEdit(modifier = modifier, navController = navController, viewModel = viewModel)
+                TopNoteEstructureMediumEdit(modifier = modifier, navController = navController, viewModel = viewModel, notaEntity = notaEntity)
             }else{
-                TopNoteEstructureExpandedEdit(modifier = modifier, navController = navController, viewModel = viewModel)
+                TopNoteEstructureExpandedEdit(modifier = modifier, navController = navController, viewModel = viewModel, notaEntity = notaEntity)
             }
         },
         bottomBar = {
@@ -126,8 +192,10 @@ fun EditNoteHomework(
                     ){
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = modifier.padding(
-                                end = dimensionResource(id = R.dimen.padding_8))
+                            modifier = modifier
+                                .padding(
+                                    end = dimensionResource(id = R.dimen.padding_8)
+                                )
                                 .weight(.33f)
                         ){
                             Button(
@@ -154,9 +222,11 @@ fun EditNoteHomework(
                         }
                         Column (
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = modifier.padding(
-                                start = dimensionResource(id = R.dimen.padding_8),
-                                end = dimensionResource(id = R.dimen.padding_8))
+                            modifier = modifier
+                                .padding(
+                                    start = dimensionResource(id = R.dimen.padding_8),
+                                    end = dimensionResource(id = R.dimen.padding_8)
+                                )
                                 .weight(.33f)
                         ){
                             Button(
@@ -216,7 +286,7 @@ fun EditNoteHomework(
 fun TopNoteEstructureCompactEdit(
     modifier: Modifier,
     navController: NavController,
-    viewModel: NoteEditViewModel,
+    viewModel: NoteEditViewModel
 ){
     val coroutineScope = rememberCoroutineScope()
     Column {
@@ -255,7 +325,7 @@ fun TopNoteEstructureCompactEdit(
             Column(
                 modifier =modifier.weight(.5f)
             ){
-                TitleNoteEntryBody(noteUiState = viewModel.noteUiStateEdit, onNoteValueChange = viewModel::updateUiStateEdit)
+                TitleNoteEditBody(noteUiState = viewModel.noteUiStateEdit, onNoteValueChange = viewModel::updateUiStateEdit)
             }
             Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_2)))
             Column{
@@ -290,83 +360,69 @@ fun TopNoteEstructureCompactEdit(
             .height(60.dp)
             .background(MaterialTheme.colorScheme.background)
         ) {
-            Column(
-                modifier =modifier.weight(.135f)
+            Row(
+                modifier =modifier.weight(.65f)
             ) {
-                Box {
+                Button(
+                    onClick = { },
+                    modifier = modifier
+                        .weight(.25f),
+                    contentPadding = PaddingValues(0.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                ){
                     Icon(
-                        painter = painterResource(id = R.drawable.text_size),
+                        painter = painterResource(id = R.drawable.gallery),
                         contentDescription = null,
                         modifier = modifier
-                            .aspectRatio(1f)
-                            .height(50.dp),
+                            .aspectRatio(1f),
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
-            }
-            Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_2)))
-            Column (
-                modifier =modifier.weight(.38f)
-            ){
-                ExposedDropdownMenuBox(
+                Button(
+                    onClick = { },
                     modifier = modifier
-                        .padding(top = 4.dp)
-                        .fillMaxWidth(),
-                    expanded = viewModel.isExpanded2,
-                    onExpandedChange = {viewModel.updateIsExpandend2Edit(it)}
-                ) {
-                    TextField(
-                        value = viewModel.sizeText,
-                        onValueChange = {},
-                        readOnly = true,
-                        label ={ Text(stringResource(id = R.string.fuente))},
-                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = false) },
-                        modifier = Modifier.menuAnchor(),
+                        .weight(.25f),
+                    contentPadding = PaddingValues(0.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                ){
+                    Icon(
+                        painter = painterResource(id = R.drawable.video),
+                        contentDescription = null,
+                        modifier = modifier
+                            .aspectRatio(1f),
+                        tint = MaterialTheme.colorScheme.primary
                     )
-                    ExposedDropdownMenu(
-                        expanded = viewModel.isExpanded2,
-                        onDismissRequest = {viewModel.isExpanded2=false}
-                    ) {
-                        var text=stringResource(id = R.string.normal)
-                        var text2=stringResource(id = R.string.mediana)
-                        var text3=stringResource(id = R.string.grande)
-                        DropdownMenuItem(
-                            text = { Text(text) },
-                            onClick = {
-                                viewModel.updatesizeTextEdit(text)
-                                viewModel.isExpanded2=false
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text(text2) },
-                            onClick = {
-                                viewModel.updatesizeTextEdit(text2)
-                                viewModel.isExpanded2=false
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text(text3) },
-                            onClick = {
-                                viewModel.updatesizeTextEdit(text3)
-                                viewModel.isExpanded2=false
-                            }
-                        )
-                    }
                 }
-            }
-            Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_2)))
-            Column(
-                modifier =modifier.weight(.135f)
-            ){
-                Icon(
-                    painter = painterResource(id = R.drawable.gallery),
-                    contentDescription = null,
+                Button(
+                    onClick = { },
                     modifier = modifier
-                        .aspectRatio(1f)
-                        .height(50.dp)
-                        .width(50.dp),
-                    tint = MaterialTheme.colorScheme.primary
-                )
+                        .weight(.25f),
+                    contentPadding = PaddingValues(0.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.audio),
+                        contentDescription = null,
+                        modifier = modifier
+                            .aspectRatio(1f),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+                Button(
+                    onClick = { },
+                    modifier = modifier
+                        .weight(.25f),
+                    contentPadding = PaddingValues(0.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.file),
+                        contentDescription = null,
+                        modifier = modifier
+                            .aspectRatio(1f),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
             }
             Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_2)))
             Column(
@@ -380,9 +436,10 @@ fun TopNoteEstructureCompactEdit(
                     onExpandedChange = {viewModel.updateIsExpandedEdit(it)}
                 ) {
                     TextField(
-                        value = viewModel.optionNote,
+                        value = viewModel.noteUiStateEdit.noteDetails.tipo,
                         onValueChange = {},
                         readOnly = true,
+                        label ={ Text(stringResource(id = R.string.tipo))},
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = false) },
                         modifier = Modifier
                             .menuAnchor()
@@ -420,8 +477,10 @@ fun TopNoteEstructureCompactEdit(
 fun TopNoteEstructureMediumEdit(
     modifier: Modifier,
     navController: NavController,
-    viewModel: NoteEditViewModel= viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: NoteEditViewModel,
+    notaEntity: NotaEntity
 ){
+    viewModel.updateUiStateEdit(notaEntity.toNoteDetailsEdit())
     val coroutineScope = rememberCoroutineScope()
     Column {
         Row(
@@ -459,7 +518,7 @@ fun TopNoteEstructureMediumEdit(
             Column(
                 modifier =modifier.weight(.5f)
             ){
-                TitleNoteEntryBody(noteUiState = viewModel.noteUiStateEdit, onNoteValueChange = viewModel::updateUiStateEdit)
+                TitleNoteEditBody(noteUiState = viewModel.noteUiStateEdit, onNoteValueChange = viewModel::updateUiStateEdit)
             }
             Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_2)))
             Column{
@@ -495,79 +554,69 @@ fun TopNoteEstructureMediumEdit(
             .height(60.dp)
             .background(MaterialTheme.colorScheme.background)
         ) {
-            Column {
-                Box {//Aproximadamente equivalen al 8% o 7% de la pantalla
+            Row(
+                modifier =modifier.weight(.65f)
+            ) {
+                Button(
+                    onClick = { },
+                    modifier = modifier
+                        .weight(.25f),
+                    contentPadding = PaddingValues(0.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                ){
                     Icon(
-                        painter = painterResource(id = R.drawable.text_size),
+                        painter = painterResource(id = R.drawable.gallery),
                         contentDescription = null,
                         modifier = modifier
-                            .aspectRatio(1f)
-                            .height(50.dp),
+                            .aspectRatio(1f),
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
-            }
-            Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_2)))
-            Column (
-                modifier =modifier.weight(.38f)
-            ){
-                ExposedDropdownMenuBox(
+                Button(
+                    onClick = { },
                     modifier = modifier
-                        .padding(top = 4.dp)
-                        .fillMaxWidth(),
-                    expanded = viewModel.isExpanded2,
-                    onExpandedChange = {viewModel.updateIsExpandend2Edit(it)}
-                ) {
-                    TextField(
-                        value = viewModel.sizeText,
-                        onValueChange = {},
-                        readOnly = true,
-                        label ={ Text(stringResource(id = R.string.fuente))},
-                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = false) },
-                        modifier = Modifier.menuAnchor(),
+                        .weight(.25f),
+                    contentPadding = PaddingValues(0.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                ){
+                    Icon(
+                        painter = painterResource(id = R.drawable.video),
+                        contentDescription = null,
+                        modifier = modifier
+                            .aspectRatio(1f),
+                        tint = MaterialTheme.colorScheme.primary
                     )
-                    ExposedDropdownMenu(
-                        expanded = viewModel.isExpanded2,
-                        onDismissRequest = {viewModel.isExpanded2=false}
-                    ) {
-                        var text=stringResource(id = R.string.normal)
-                        var text2=stringResource(id = R.string.mediana)
-                        var text3=stringResource(id = R.string.grande)
-                        DropdownMenuItem(
-                            text = { Text(text) },
-                            onClick = {
-                                viewModel.updatesizeTextEdit(text)
-                                viewModel.isExpanded2=false
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text(text2) },
-                            onClick = {
-                                viewModel.updatesizeTextEdit(text2)
-                                viewModel.isExpanded2=false
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text(text3) },
-                            onClick = {
-                                viewModel.updatesizeTextEdit(text3)
-                                viewModel.isExpanded2=false
-                            }
-                        )
-                    }
                 }
-            }
-            Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_2)))
-            Column{
-                Icon(
-                    painter = painterResource(id = R.drawable.gallery),
-                    contentDescription = null,
+                Button(
+                    onClick = { },
                     modifier = modifier
-                        .aspectRatio(1f)
-                        .height(50.dp)
-                        .width(50.dp),
-                    tint = MaterialTheme.colorScheme.primary
-                )
+                        .weight(.25f),
+                    contentPadding = PaddingValues(0.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.audio),
+                        contentDescription = null,
+                        modifier = modifier
+                            .aspectRatio(1f),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+                Button(
+                    onClick = { },
+                    modifier = modifier
+                        .weight(.25f),
+                    contentPadding = PaddingValues(0.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.file),
+                        contentDescription = null,
+                        modifier = modifier
+                            .aspectRatio(1f),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
             }
             Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_2)))
             Column(
@@ -581,7 +630,7 @@ fun TopNoteEstructureMediumEdit(
                     onExpandedChange = {viewModel.updateIsExpandedEdit(it)}
                 ) {
                     TextField(
-                        value = viewModel.optionNote,
+                        value = viewModel.noteUiStateEdit.noteDetails.tipo,
                         onValueChange = {},
                         readOnly = true,
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = false) },
@@ -624,8 +673,10 @@ fun TopNoteEstructureMediumEdit(
 fun TopNoteEstructureExpandedEdit(
     modifier: Modifier,
     navController: NavController,
-    viewModel: NoteEditViewModel
+    viewModel: NoteEditViewModel,
+    notaEntity: NotaEntity
 ){
+    viewModel.updateUiStateEdit(notaEntity.toNoteDetailsEdit())
     val coroutineScope= rememberCoroutineScope()
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -659,87 +710,76 @@ fun TopNoteEstructureExpandedEdit(
             }
         }
         Column(
-            modifier =modifier.weight(.4f)
+            modifier =modifier.weight(.45f)
         ) {
-            TitleNoteEntryBody(noteUiState = viewModel.noteUiStateEdit, onNoteValueChange = viewModel::updateUiStateEdit)
+            TitleNoteEditBody(noteUiState = viewModel.noteUiStateEdit, onNoteValueChange = viewModel::updateUiStateEdit)
         }
         Column (
-            modifier =modifier.weight(.04f),
+            modifier =modifier.weight(.25f),
             verticalArrangement = Arrangement.Center
         ){
-            Box {
-                Icon(
-                    painter = painterResource(id = R.drawable.text_size),
-                    contentDescription = null,
+            Row {
+                Button(
+                    onClick = { },
                     modifier = modifier
-                        .aspectRatio(1f)
-                        .height(50.dp),
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
-        }
-        //segunda  fila
-        Column(
-            modifier =modifier.weight(.14f)
-        ) {
-            ExposedDropdownMenuBox(
-                modifier = modifier
-                    .padding(top = 4.dp)
-                    .fillMaxWidth(),
-                expanded = viewModel.isExpanded2,
-                onExpandedChange = {viewModel.updateIsExpandend2Edit(it)}
-            ) {
-                TextField(
-                    value = viewModel.sizeText,
-                    onValueChange = {},
-                    readOnly = true,
-                    label ={ Text(stringResource(id = R.string.fuente))},
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = false) },
-                    modifier = Modifier.menuAnchor(),
-                )
-                ExposedDropdownMenu(
-                    expanded = viewModel.isExpanded2,
-                    onDismissRequest = {viewModel.isExpanded2=false}
+                        .weight(.25f),
+                    contentPadding = PaddingValues(0.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                ){
+                    Icon(
+                        painter = painterResource(id = R.drawable.gallery),
+                        contentDescription = null,
+                        modifier = modifier
+                            .aspectRatio(1f),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+                Button(
+                    onClick = { },
+                    modifier = modifier
+                        .weight(.25f),
+                    contentPadding = PaddingValues(0.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                ){
+                    Icon(
+                        painter = painterResource(id = R.drawable.video),
+                        contentDescription = null,
+                        modifier = modifier
+                            .aspectRatio(1f),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+                Button(
+                    onClick = { },
+                    modifier = modifier
+                        .weight(.25f),
+                    contentPadding = PaddingValues(0.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                 ) {
-                    var text=stringResource(id = R.string.normal)
-                    var text2=stringResource(id = R.string.mediana)
-                    var text3=stringResource(id = R.string.grande)
-                    DropdownMenuItem(
-                        text = { Text(text) },
-                        onClick = {
-                            viewModel.updatesizeTextEdit(text)
-                            viewModel.isExpanded2=false
-                        }
+                    Icon(
+                        painter = painterResource(id = R.drawable.audio),
+                        contentDescription = null,
+                        modifier = modifier
+                            .aspectRatio(1f),
+                        tint = MaterialTheme.colorScheme.primary
                     )
-                    DropdownMenuItem(
-                        text = { Text(text2) },
-                        onClick = {
-                            viewModel.updatesizeTextEdit(text2)
-                            viewModel.isExpanded2=false
-                        }
-                    )
-                    DropdownMenuItem(
-                        text = { Text(text3) },
-                        onClick = {
-                            viewModel.updatesizeTextEdit(text3)
-                            viewModel.isExpanded2=false
-                        }
+                }
+                Button(
+                    onClick = { },
+                    modifier = modifier
+                        .weight(.25f),
+                    contentPadding = PaddingValues(0.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.file),
+                        contentDescription = null,
+                        modifier = modifier
+                            .aspectRatio(1f),
+                        tint = MaterialTheme.colorScheme.primary
                     )
                 }
             }
-        }
-        Column(
-            modifier =modifier.weight(.05f)
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.gallery),
-                contentDescription = null,
-                modifier = modifier
-                    .aspectRatio(1f)
-                    .height(50.dp)
-                    .width(50.dp),
-                tint = MaterialTheme.colorScheme.primary
-            )
         }
         Column(
             modifier =modifier.weight(.14f)
@@ -752,7 +792,7 @@ fun TopNoteEstructureExpandedEdit(
                 onExpandedChange = {viewModel.updateIsExpandedEdit(it)}
             ) {
                 TextField(
-                    value = viewModel.optionNote,
+                    value = viewModel.noteUiStateEdit.noteDetails.tipo,
                     onValueChange = {},
                     readOnly = true,
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = false) },

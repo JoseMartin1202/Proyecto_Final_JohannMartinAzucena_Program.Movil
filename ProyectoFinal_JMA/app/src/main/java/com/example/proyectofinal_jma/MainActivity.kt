@@ -102,7 +102,7 @@ fun HomeworkCard(
     modifierEdit: Modifier= Modifier,
     viewModelHome: HomeViewModel,
     nota:NotaEntity,
-    modifier: Modifier=Modifier,
+    modifier: Modifier=Modifier
 ){
     Card (
         modifier = modifier
@@ -186,8 +186,6 @@ fun HomeworkCard(
                                 tint = MaterialTheme.colorScheme.primary)
 
                         }
-
-
                 }
             }
 
@@ -206,6 +204,18 @@ fun ListElements(
     val windowsSize= rememberWindowInfo()
     val coroutineScope = rememberCoroutineScope()
     val message= LocalContext.current.applicationContext
+    MyDialog(
+        show = viewModelHome.show ,
+        onDismiss = { viewModelHome.updateShow(false)},
+        onConfirm = {
+            coroutineScope.launch {
+                viewModelHome.deleteNote(notaDrop)
+                Toast.makeText(message,"Nota eliminada", Toast.LENGTH_SHORT).show()
+            }
+            viewModelHome.updateShow(false)
+        },
+        titulo = stringResource(id = R.string.eliminarNota),
+        text = stringResource(id = R.string.preguntaeliminar))
     if(windowsSize.screenWindthInfo is WindowInfo.WindowType.Compact){
         LazyColumn(
             contentPadding=contentPadding,
@@ -221,18 +231,6 @@ fun ListElements(
                 )
             }
         }
-        MyDialog(
-            show = viewModelHome.show ,
-            onDismiss = { },
-            onConfirm = {
-                coroutineScope.launch {
-                    viewModelHome.deleteNote(notaDrop)
-                    Toast.makeText(message,"Nota eliminada", Toast.LENGTH_SHORT).show()
-                }
-                viewModelHome.updateShow(false)
-            },
-            titulo = stringResource(id = R.string.eliminarNota),
-            text = stringResource(id = R.string.preguntaeliminar))
     }else if (windowsSize.screenWindthInfo is WindowInfo.WindowType.Medium){
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
@@ -453,8 +451,7 @@ private fun HomeBody(
     viewModelHome: HomeViewModel
 ) {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (notaList.isEmpty()) {
             LazyColumn(

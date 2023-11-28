@@ -13,7 +13,7 @@ object DataSourceNotesOrHomework {
         HomeworkNoteDone(R.drawable.image,R.string.title,R.string.notaDescripcion,R.string.date)
     )
 
-    val text = listOf(
+   val text = listOf(
         Content(R.string.escribirTexto)
     )
 }

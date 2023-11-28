@@ -73,4 +73,10 @@
     <string name="cancelarRegistrotext">¿Deseas cancelar el registro de la nota?</string>
     <string name="cancelarActualización">Cancelar cambios</string>
     <string name="cancelarActualizaciontext">¿Deseas cancelar los cambios en la nota?</string>
+    <string name="tipo">Tipo</string>
+    <string name="type">Type</string>
+    <string name="eliminarUltimafoto">Eliminar última foto</string>
+    <string name="dropLastPhoto">Eliminar ultima foto</string>
+    <string name="eliminarUltimoVideo">Eliminar último video</string>
+    <string name="eliminarUltimoAudio">Eliminar último audio</string>
 </resources>

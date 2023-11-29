@@ -29,5 +29,24 @@ class ComposeFileProvider : FileProvider(
                 file,
             )
         }
+        fun getVideoUri(context: Context): Uri {
+            // 1
+            val directory = File(context.cacheDir, "videos")
+            directory.mkdirs()
+            // 2
+            val file = File.createTempFile(
+                "captured_video_",
+                ".mp4",
+                directory
+            )
+            // 3
+            val authority = context.packageName + ".fileprovider"
+            // 4
+            return getUriForFile(
+                context,
+                authority,
+                file,
+            )
+        }
     }
 }

@@ -7,4 +7,11 @@
         name="my_images"
         path="images/" />
 
+    <files-path
+        name="my_videos"
+        path="videos/" />
+    <cache-path
+        name="my_videos"
+        path="videos/" />
+
 </paths>

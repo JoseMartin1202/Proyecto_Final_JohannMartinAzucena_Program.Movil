@@ -2,6 +2,7 @@ package com.example.proyectofinal_jma
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
@@ -26,6 +27,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -35,6 +38,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -42,17 +46,21 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -72,6 +80,9 @@ import com.example.proyectofinal_jma.viewModel.NoteUiState
 import com.example.proyectofinal_jma.viewModel.PhotoVideoViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.ui.PlayerView
 import kotlinx.coroutines.launch
 
 
@@ -388,7 +399,7 @@ fun TopNoteEstructureCompact(
                     AudioCapture(viewModel = viewModel, modifier = modifier)
                 }
                 Row ( modifier =modifier.weight(.25f)){
-                    ElementCapture(viewModel = viewModel, modifier = modifier)
+                    Recordatorio(viewModel = viewModel, modifier = modifier)
                 }
             }
             Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_2)))
@@ -423,6 +434,7 @@ fun TopNoteEstructureCompact(
                             onClick = {
                                 viewModel.updateOptionNote(text)
                                 viewModel.isExpanded=false
+                                viewModel.updateRecordatorios(false)
                             }
                         )
                         DropdownMenuItem(
@@ -430,6 +442,7 @@ fun TopNoteEstructureCompact(
                             onClick = {
                                 viewModel.updateOptionNote(text2)
                                 viewModel.isExpanded=false
+                                viewModel.updateRecordatorios(true)
                             }
                         )
                     }
@@ -856,17 +869,18 @@ fun VideoCapture(
     modifier:Modifier
 ){
     val context = LocalContext.current
-    var uri=ComposeFileProvider.getImageUri(context)
+    var uri=ComposeFileProvider.getVideoUri(context)
     val videoLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CaptureVideo(),
         onResult = { success ->
             viewModel.updatehasVideo(success)
             viewModel.updateVideoUri(uri)
+            viewModel.updateUrisVideosList(uri)
         }
     )
     Button(
         onClick = {
-            uri = ComposeFileProvider.getImageUri(context)
+            uri = ComposeFileProvider.getVideoUri(context)
             videoLauncher.launch(uri)
         },
         contentPadding = PaddingValues(0.dp),
@@ -881,6 +895,7 @@ fun VideoCapture(
         )
     }
 }
+
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -910,26 +925,61 @@ fun AudioCapture(
 }
 
 @Composable
-fun ElementCapture(
+fun filesCapture(
+    viewModel: NoteEntryViewModel,
+    modifier: Modifier
+){
+    val imagePicker = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = { uri ->
+            viewModel.updatehasImage(uri != null)
+            if(viewModel.hasImage){
+                viewModel.updateImageUri(uri)
+                viewModel.updateUrisList(uri)
+            }
+        }
+    )
+    Button(
+        onClick = {
+            imagePicker.launch("image/*")
+        },
+        contentPadding = PaddingValues(0.dp),
+        modifier = modifier.padding(end = 5.dp)
+    ) {
+        Icon(painter = painterResource(id = R.drawable.file), contentDescription ="" )
+    }
+}
+
+@Composable
+fun Recordatorio(
     viewModel: NoteEntryViewModel,
     modifier:Modifier
 ){
-    val context = LocalContext.current
-
     Button(
         onClick = {
 
         },
+        enabled=viewModel.recordatorios,
         contentPadding = PaddingValues(0.dp),
         colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
     ){
-        Icon(
-            painter = painterResource(id = R.drawable.file),
-            contentDescription = null,
-            modifier = modifier
-                .aspectRatio(1f),
-            tint = MaterialTheme.colorScheme.primary
-        )
+        if(viewModel.recordatorios){
+            Icon(
+                painter = painterResource(id = R.drawable.clock),
+                contentDescription = null,
+                modifier = modifier
+                    .aspectRatio(1f),
+                tint = MaterialTheme.colorScheme.primary
+            )
+        }else{
+            Icon(
+                painter = painterResource(id = R.drawable.clock),
+                contentDescription = null,
+                modifier = modifier
+                    .aspectRatio(1f),
+                tint = MaterialTheme.colorScheme.secondary
+            )
+        }
     }
 }
 
@@ -950,17 +1000,19 @@ fun viewImages(
                 modifier=modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "Imágenes: "+viewModel.cantidad,
-                    modifier=modifier.weight(.4f))
+                Text(text = stringResource(id = R.string.imagenes)+viewModel.cantidad,
+                    modifier=modifier.weight(.3f))
                 Row (
-                    modifier=modifier.weight(.6f),
+                    modifier=modifier.weight(.7f),
                     horizontalArrangement = Arrangement.End
                 ){
+                    filesCapture(viewModel = viewModel, modifier = modifier)
                     Button(
                         enabled = viewModel.cantidad!=0,
                         onClick = {
                             viewModel.deleteLastUri()
-                        }) {
+                        },
+                        contentPadding = PaddingValues(10.dp)) {
                         Text(text = stringResource(id = R.string.eliminarUltimafoto))
                     }
                 }
@@ -1007,7 +1059,7 @@ fun viewVideos(
                 modifier=modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "Videos: "+viewModel.cantidadVideos,
+                Text(text = stringResource(id = R.string.videos)+viewModel.cantidadVideos,
                     modifier=modifier.weight(.4f))
                 Row (
                     modifier=modifier.weight(.6f),
@@ -1017,7 +1069,8 @@ fun viewVideos(
                         enabled = viewModel.cantidadVideos!=0,
                         onClick = {
                             viewModel.deleteLastUriVideos()
-                        }) {
+                        },
+                        contentPadding = PaddingValues(10.dp)) {
                         Text(text = stringResource(id = R.string.eliminarUltimoVideo))
                     }
                 }
@@ -1028,12 +1081,15 @@ fun viewVideos(
                     .padding(top = 4.dp)) {
                     items(viewModel.urisVideoslist.toList()) { uri ->
                         Surface(
-                            onClick = {  },
+                            onClick = {
+                                viewModel.updateMostrarVideo(true)
+                            },
                             modifier = modifier
                                 .size(width = 100.dp, height = 120.dp)
                         ){
-                           
+                            Icon(painter = painterResource(id = R.drawable.video_logo), contentDescription = "")
                         }
+                        mostrarVideo(viewModel = viewModel, uri = uri)
                     }
                 }
             }
@@ -1057,7 +1113,7 @@ fun viewAudios(
                 modifier=modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "Audios: "+viewModel.cantidadAudios,
+                Text(text = stringResource(id = R.string.audios)+viewModel.cantidadAudios,
                     modifier=modifier.weight(.4f))
                 Row (
                     modifier=modifier.weight(.6f),
@@ -1067,7 +1123,8 @@ fun viewAudios(
                         enabled = viewModel.cantidadAudios!=0,
                         onClick = {
                             viewModel.deleteLastUriVideos()
-                        }) {
+                        },
+                        contentPadding = PaddingValues(10.dp)) {
                         Text(text = stringResource(id = R.string.eliminarUltimoAudio))
                     }
                 }
@@ -1094,7 +1151,7 @@ fun viewAudios(
 @Composable
 fun mostrarImagen(
     viewModel: NoteEntryViewModel,
-    uri: Uri
+    uri: Uri?
 ){
     if(viewModel.mostrarImagen){
         Dialog(
@@ -1108,4 +1165,44 @@ fun mostrarImagen(
             )
         }
     }
+}
+
+@Composable
+fun mostrarVideo(
+    viewModel: NoteEntryViewModel,
+    uri: Uri
+){
+    if(viewModel.mostrarVideo){
+        Dialog(
+            properties = DialogProperties(dismissOnClickOutside = true),
+            onDismissRequest = { viewModel.updateMostrarVideo(false) }
+        ) {
+            val context = LocalContext.current
+            VideoPlayer(videoUri = uri, context)
+        }
+    }
+}
+
+@Composable
+fun VideoPlayer(videoUri: Uri, context:Context) {
+    val exoPlayer = remember {
+        SimpleExoPlayer.Builder(context).build().apply {
+            setMediaItem(MediaItem.fromUri(videoUri))
+            prepare()
+        }
+    }
+    // Usar disposableEffect para liberar el exoPlayer cuando el composable se elimina del árbol de composición
+    DisposableEffect(exoPlayer) {
+        onDispose {
+            exoPlayer.release() // Liberar el exoPlayer
+        }
+    }
+    AndroidView(
+        factory = { context ->
+            PlayerView(context).apply {
+                player = exoPlayer
+            }
+        },
+        modifier = Modifier.fillMaxWidth(.8f)
+    )
 }

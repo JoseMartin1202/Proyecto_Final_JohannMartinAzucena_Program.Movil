@@ -1,6 +1,7 @@
 package com.example.proyectofinal_jma.viewModel
 
 import android.net.Uri
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -57,14 +58,18 @@ class NoteEntryViewModel(
     var textSearch by mutableStateOf("")
     var optionNote by mutableStateOf("Nota")
     var showCancel by mutableStateOf(false)
+    var recordatorios by mutableStateOf(false)
+    var archivos by mutableStateOf(false)
+
     //IMAGENES
     var hasImage by mutableStateOf(false)
     var mostrarImagen by mutableStateOf(false)
     var cantidad by mutableStateOf(0)
     var imageUri by mutableStateOf<Uri?>(null)
-    var urislist= mutableStateListOf<Uri>()
+    var urislist= mutableStateListOf<Uri?>()
     //VIDEOS
     var hasVideo by mutableStateOf(false)
+    var mostrarVideo by mutableStateOf(false)
     var cantidadVideos by mutableStateOf(0)
     var videoUri by mutableStateOf<Uri?>(null)
     var urisVideoslist= mutableStateListOf<Uri>()
@@ -73,7 +78,6 @@ class NoteEntryViewModel(
     var cantidadAudios by mutableStateOf(0)
     var audioUri by mutableStateOf<Uri?>(null)
     var urisAudioslist= mutableStateListOf<Uri>()
-    var rationaleState by mutableStateOf<RationaleState?>(null)
 
     fun updateShowCancel(boolean: Boolean){
         showCancel= boolean
@@ -91,6 +95,14 @@ class NoteEntryViewModel(
         textSearch=text
     }
 
+    fun updateRecordatorios(boolean: Boolean){
+        recordatorios= boolean
+    }
+
+    fun updateArchivos(boolean: Boolean){
+        archivos= boolean
+    }
+
     //IMAGENES
     fun updatehasImage(boolean: Boolean){
         hasImage= boolean
@@ -100,7 +112,7 @@ class NoteEntryViewModel(
         imageUri= uri
     }
 
-    fun updateUrisList(uri: Uri){
+    fun updateUrisList(uri: Uri?){
         urislist.add(uri)
         cantidad=urislist.size
     }
@@ -132,6 +144,10 @@ class NoteEntryViewModel(
     fun deleteLastUriVideos(){
         urisVideoslist.removeLast()
         cantidadVideos=urisVideoslist.size
+    }
+
+    fun updateMostrarVideo(boolean: Boolean){
+        mostrarVideo= boolean
     }
 
     //AUDIOS

@@ -86,23 +86,11 @@ fun CardDone(homeworkNoteDone: HomeworkNoteDone, modifier: Modifier= Modifier){
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun CardDonePreview() {
-    ProyectoFinal_JMATheme {
-        CardDone(HomeworkNoteDone(R.drawable.image,R.string.title,R.string.notaDescripcion,R.string.date))
-    }
-}
-
 @Composable
 fun ElementsDone(
     contentPadding: PaddingValues
 ) {
-    LazyColumn(contentPadding=contentPadding){
-        items(DataSourceNotesOrHomework.notesHomeworksDone){
-            CardDone(homeworkNoteDone= it)
-        }
-    }
+
 }
 
 

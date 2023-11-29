@@ -516,29 +516,3 @@ fun MyDialog(
     }
 }
 
-@Composable
-fun MyDialogDrop(
-    show:Boolean,
-    onDismiss:()->Unit,
-    onConfirm:()->Unit,
-    titulo:String,
-    text:String
-){
-    if(show) {
-        AlertDialog(
-            onDismissRequest = { onDismiss() },
-            confirmButton = {
-                TextButton(onClick = {onConfirm}) {
-                    Text(text = stringResource(id = R.string.confirmar))
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { onDismiss() }) {
-                    Text(text = stringResource(id = R.string.cancelar))
-                }
-            },
-            title = { Text(titulo) },
-            text = { Text(text) }
-        )
-    }
-}

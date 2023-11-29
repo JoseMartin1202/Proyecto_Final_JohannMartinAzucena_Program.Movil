@@ -45,13 +45,6 @@ import com.example.proyectofinal_jma.navigation.AppScreens
 import com.example.proyectofinal_jma.ui.theme.ProyectoFinal_JMATheme
 import com.example.proyectofinal_jma.ui.theme.Shapes
 
-@Preview(showBackground = true)
-@Composable
-fun CardTrashPreview() {
-    ProyectoFinal_JMATheme {
-        CardTrash(HomeworkNoteDone(R.drawable.image,R.string.title,R.string.notaDescripcion,R.string.date))
-    }
-}
 @Composable
 fun CardTrash(homeworkNoteDone: HomeworkNoteDone, modifier: Modifier= Modifier){
     Row (
@@ -111,9 +104,7 @@ fun TrashCards(
         contentPadding=contentPadding,
         modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_4))
     ){
-        items(DataSourceNotesOrHomework.notesHomeworksDone){
-            CardTrash(homeworkNoteDone= it)
-        }
+
     }
 }
 

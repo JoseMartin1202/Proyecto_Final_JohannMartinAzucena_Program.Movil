@@ -39,4 +39,6 @@
     <string name="imagenes">Imágenes: </string>
     <string name="videos">Videos: </string>
     <string name="audios">Audios: </string>
+    <string name="record_audio">Permiso para grabar</string>
+    <string name="title_activity_audio_recorder">AudioRecorder</string>
 </resources>

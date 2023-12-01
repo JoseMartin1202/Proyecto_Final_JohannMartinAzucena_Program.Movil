@@ -30,15 +30,20 @@ fun AppNavigation(){
         composable(route =AppScreens.MainScreen.route){
             App(modifier = Modifier, navController,
                navigateToItemUpdate={
-                    navController.navigate(AppScreens.EditScreen.route)
+                    navController.navigate("${AppScreens.EditScreen.route}/${it.id}")
                     nota=it
                 })
         }
         composable(route =AppScreens.AddScreen.route){
             AddNoteHomework(modifier = Modifier,navController)
         }
-        composable(route =AppScreens.EditScreen.route){
-            EditNoteHomework(modifier = Modifier,navController,nota)
+        composable(
+            route =AppScreens.EditScreen.route+"/{id}",
+            arguments = listOf(navArgument(name = "id") {
+                type = NavType.IntType
+            })
+        ){
+            EditNoteHomework(modifier = Modifier,navController)
         }
         composable(route =AppScreens.DoneScreen.route){
             Done(modifier = Modifier,navController)

@@ -1,8 +1,11 @@
 package com.example.proyectofinal_jma
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,8 +17,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -44,12 +49,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.proyectofinal_jma.data.DataSourceNotesOrHomework
 import com.example.proyectofinal_jma.data.NotaEntity
 import com.example.proyectofinal_jma.navigation.AppScreens
+import com.example.proyectofinal_jma.navigation.NavigationDestination
 import com.example.proyectofinal_jma.sizeScreen.WindowInfo
 import com.example.proyectofinal_jma.sizeScreen.rememberWindowInfo
 import com.example.proyectofinal_jma.ui.theme.ProyectoFinal_JMATheme
@@ -63,7 +72,15 @@ import com.example.proyectofinal_jma.viewModel.NoteUiState
 import com.example.proyectofinal_jma.viewModel.NoteUiStateEdit
 import com.example.proyectofinal_jma.viewModel.toNoteDetails
 import com.example.proyectofinal_jma.viewModel.toNoteDetailsEdit
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import kotlinx.coroutines.launch
+
+object ItemEditDestination : NavigationDestination {
+    override val route = "item_details"
+    override val titleRes = R.string.nota
+    const val itemIdArg = "itemId"
+    val routeWithArgs = "$route/{$itemIdArg}"
+}
 
 @Composable
 fun Edit(
@@ -76,7 +93,8 @@ fun Edit(
         items(DataSourceNotesOrHomework.text){
             NoteEditBody(
                 noteUiState = viewModel.noteUiStateEdit,
-                onNoteValueChange = viewModel::updateUiStateEdit)
+                onNoteValueChange = viewModel::updateUiStateEdit,
+                viewModel = viewModel)
         }
     }
 }
@@ -84,11 +102,13 @@ fun Edit(
 @Composable
 fun NoteEditBody(
     noteUiState: NoteUiStateEdit,
-    onNoteValueChange: (NoteDetailsEdit) -> Unit
+    onNoteValueChange: (NoteDetailsEdit) -> Unit,
+    viewModel: NoteEditViewModel,
 ) {
     NoteInputEditForm(
         noteDetails = noteUiState.noteDetails,
-        onValueChange =  onNoteValueChange)
+        onValueChange =  onNoteValueChange,
+        viewModel = viewModel)
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -96,7 +116,8 @@ fun NoteEditBody(
 @Composable
 fun NoteInputEditForm(
     noteDetails: NoteDetailsEdit,
-    onValueChange: (NoteDetailsEdit) -> Unit = {}
+    onValueChange: (NoteDetailsEdit) -> Unit = {},
+    viewModel: NoteEditViewModel,
 ) {
     TextField(
         value = noteDetails.contenido,
@@ -110,7 +131,9 @@ fun NoteInputEditForm(
             unfocusedIndicatorColor = Color.Transparent),
         singleLine= false,
         textStyle = MaterialTheme.typography.bodyMedium)
-
+        viewImagesEdit(viewModel = viewModel)
+        viewVideosEdit(viewModel = viewModel)
+        viewAudiosEdit(viewModel = viewModel)
 }
 
 @Composable
@@ -152,10 +175,9 @@ fun TitleTextNoteEdit(
 fun EditNoteHomework(
     modifier:  Modifier= Modifier,
     navController: NavController,
-    notaEntity: NotaEntity,
     viewModel: NoteEditViewModel= viewModel(factory = AppViewModelProvider.Factory)
 ) {
-    viewModel.updateUiStateEdit(notaEntity.toNoteDetailsEdit())
+    viewModel.updateOptionNoteEdit(viewModel.noteUiStateEdit.noteDetails.tipo)
     val windowsSize= rememberWindowInfo()
     Scaffold(
         modifier = Modifier
@@ -165,9 +187,9 @@ fun EditNoteHomework(
             if(windowsSize.screenWindthInfo is WindowInfo.WindowType.Compact ){
                 TopNoteEstructureCompactEdit(modifier = modifier, navController = navController, viewModel = viewModel)
             }else if(windowsSize.screenWindthInfo is WindowInfo.WindowType.Medium){
-                TopNoteEstructureMediumEdit(modifier = modifier, navController = navController, viewModel = viewModel, notaEntity = notaEntity)
+                TopNoteEstructureMediumEdit(modifier = modifier, navController = navController, viewModel = viewModel)
             }else{
-                TopNoteEstructureExpandedEdit(modifier = modifier, navController = navController, viewModel = viewModel, notaEntity = notaEntity)
+                TopNoteEstructureExpandedEdit(modifier = modifier, navController = navController, viewModel = viewModel)
             }
         },
         bottomBar = {
@@ -363,65 +385,17 @@ fun TopNoteEstructureCompactEdit(
             Row(
                 modifier =modifier.weight(.65f)
             ) {
-                Button(
-                    onClick = { },
-                    modifier = modifier
-                        .weight(.25f),
-                    contentPadding = PaddingValues(0.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
-                ){
-                    Icon(
-                        painter = painterResource(id = R.drawable.gallery),
-                        contentDescription = null,
-                        modifier = modifier
-                            .aspectRatio(1f),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
+                Row ( modifier =modifier.weight(.25f)){
+                    ImageCaptureEdit(viewModel = viewModel, modifier = modifier)
                 }
-                Button(
-                    onClick = { },
-                    modifier = modifier
-                        .weight(.25f),
-                    contentPadding = PaddingValues(0.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
-                ){
-                    Icon(
-                        painter = painterResource(id = R.drawable.video),
-                        contentDescription = null,
-                        modifier = modifier
-                            .aspectRatio(1f),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
+                Row ( modifier =modifier.weight(.25f)){
+                    VideoCaptureEdit(viewModel = viewModel, modifier = modifier)
                 }
-                Button(
-                    onClick = { },
-                    modifier = modifier
-                        .weight(.25f),
-                    contentPadding = PaddingValues(0.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.audio),
-                        contentDescription = null,
-                        modifier = modifier
-                            .aspectRatio(1f),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
+                Row ( modifier =modifier.weight(.25f)){
+                    AudioCaptureEdit(viewModel = viewModel, modifier = modifier)
                 }
-                Button(
-                    onClick = { },
-                    modifier = modifier
-                        .weight(.25f),
-                    contentPadding = PaddingValues(0.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.file),
-                        contentDescription = null,
-                        modifier = modifier
-                            .aspectRatio(1f),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
+                Row ( modifier =modifier.weight(.25f)){
+                    RecordatorioEdit(viewModel = viewModel, modifier = modifier)
                 }
             }
             Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_2)))
@@ -436,7 +410,7 @@ fun TopNoteEstructureCompactEdit(
                     onExpandedChange = {viewModel.updateIsExpandedEdit(it)}
                 ) {
                     TextField(
-                        value = viewModel.noteUiStateEdit.noteDetails.tipo,
+                        value = viewModel.optionNote,
                         onValueChange = {},
                         readOnly = true,
                         label ={ Text(stringResource(id = R.string.tipo))},
@@ -456,6 +430,7 @@ fun TopNoteEstructureCompactEdit(
                             onClick = {
                                 viewModel.updateOptionNoteEdit(text)
                                 viewModel.isExpanded=false
+                                viewModel.updateRecordatorios(false)
                             }
                         )
                         DropdownMenuItem(
@@ -463,6 +438,7 @@ fun TopNoteEstructureCompactEdit(
                             onClick = {
                                 viewModel.updateOptionNoteEdit(text2)
                                 viewModel.isExpanded=false
+                                viewModel.updateRecordatorios(true)
                             }
                         )
                     }
@@ -477,10 +453,8 @@ fun TopNoteEstructureCompactEdit(
 fun TopNoteEstructureMediumEdit(
     modifier: Modifier,
     navController: NavController,
-    viewModel: NoteEditViewModel,
-    notaEntity: NotaEntity
+    viewModel: NoteEditViewModel
 ){
-    viewModel.updateUiStateEdit(notaEntity.toNoteDetailsEdit())
     val coroutineScope = rememberCoroutineScope()
     Column {
         Row(
@@ -673,10 +647,8 @@ fun TopNoteEstructureMediumEdit(
 fun TopNoteEstructureExpandedEdit(
     modifier: Modifier,
     navController: NavController,
-    viewModel: NoteEditViewModel,
-    notaEntity: NotaEntity
+    viewModel: NoteEditViewModel
 ){
-    viewModel.updateUiStateEdit(notaEntity.toNoteDetailsEdit())
     val coroutineScope= rememberCoroutineScope()
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -847,6 +819,357 @@ fun TopNoteEstructureExpandedEdit(
                     titulo = stringResource(id = R.string.cancelarActualización),
                     text = stringResource(id = R.string.cancelarActualizaciontext)
                 )
+            }
+        }
+    }
+}
+
+
+
+@Composable
+fun ImageCaptureEdit(
+    viewModel: NoteEditViewModel,
+    modifier:Modifier
+){
+    val context = LocalContext.current
+    var uri=ComposeFileProvider.getImageUri(context)
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture(),
+        onResult = { success ->
+            if(success) {
+                viewModel.updatehasImage(success)
+                viewModel.updateImageUri(uri)
+                viewModel.updateUrisList(uri)
+            }
+        }
+    )
+    Button(
+        onClick = {
+            uri = ComposeFileProvider.getImageUri(context)
+            cameraLauncher.launch(uri)
+        },
+        contentPadding = PaddingValues(0.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+    ){
+        Icon(
+            painter = painterResource(id = R.drawable.gallery),
+            contentDescription = null,
+            modifier = modifier
+                .aspectRatio(1f),
+            tint = MaterialTheme.colorScheme.primary
+        )
+    }
+}
+
+@Composable
+fun VideoCaptureEdit(
+    viewModel: NoteEditViewModel,
+    modifier:Modifier
+){
+    val context = LocalContext.current
+    var uri=ComposeFileProvider.getVideoUri(context)
+    val videoLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CaptureVideo(),
+        onResult = { success ->
+            viewModel.updatehasVideo(success)
+            viewModel.updateVideoUri(uri)
+            viewModel.updateUrisVideosList(uri)
+        }
+    )
+    Button(
+        onClick = {
+            uri = ComposeFileProvider.getVideoUri(context)
+            videoLauncher.launch(uri)
+        },
+        contentPadding = PaddingValues(0.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+    ){
+        Icon(
+            painter = painterResource(id = R.drawable.video),
+            contentDescription = null,
+            modifier = modifier
+                .aspectRatio(1f),
+            tint = MaterialTheme.colorScheme.primary
+        )
+    }
+}
+
+@Composable
+fun filesCapture(
+    viewModel: NoteEditViewModel,
+    modifier: Modifier
+){
+    val imagePicker = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = { uri ->
+            viewModel.updatehasImage(uri != null)
+            if(viewModel.hasImage){
+                viewModel.updateImageUri(uri)
+                viewModel.updateUrisList(uri)
+            }
+        }
+    )
+    Button(
+        onClick = {
+            imagePicker.launch("image/*")
+        },
+        contentPadding = PaddingValues(0.dp),
+        modifier = modifier.padding(end = 5.dp)
+    ) {
+        Icon(painter = painterResource(id = R.drawable.file), contentDescription ="" )
+    }
+}
+
+@Composable
+fun RecordatorioEdit(
+    viewModel: NoteEditViewModel,
+    modifier:Modifier
+){
+    Button(
+        onClick = {
+
+        },
+        enabled=viewModel.recordatorios,
+        contentPadding = PaddingValues(0.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+    ){
+        if(viewModel.recordatorios){
+            Icon(
+                painter = painterResource(id = R.drawable.clock),
+                contentDescription = null,
+                modifier = modifier
+                    .aspectRatio(1f),
+                tint = MaterialTheme.colorScheme.primary
+            )
+        }else{
+            Icon(
+                painter = painterResource(id = R.drawable.clock),
+                contentDescription = null,
+                modifier = modifier
+                    .aspectRatio(1f),
+                tint = MaterialTheme.colorScheme.secondary
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun viewImagesEdit(
+    viewModel: NoteEditViewModel,
+    modifier:Modifier=Modifier
+) {
+    Row(
+        modifier= modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp)
+    ) {
+        Column {
+            Row(
+                modifier=modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(text = stringResource(id = R.string.imagenes)+viewModel.cantidad,
+                    modifier=modifier.weight(.3f))
+                Row (
+                    modifier=modifier.weight(.7f),
+                    horizontalArrangement = Arrangement.End
+                ){
+                    filesCapture(viewModel = viewModel, modifier = modifier)
+                    Button(
+                        enabled = viewModel.cantidad!=0,
+                        onClick = {
+                            viewModel.deleteLastUri()
+                        },
+                        contentPadding = PaddingValues(10.dp)) {
+                        Text(text = stringResource(id = R.string.eliminarUltimafoto))
+                    }
+                }
+            }
+            if (viewModel.hasImage || (viewModel.isEditar && !viewModel.hasImage)){
+                LazyRow(modifier = modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp)) {
+                    items(viewModel.urislist.toList()) { uri ->
+                        Surface(
+                            onClick = {
+                                viewModel.updateMostrarImagen(true)
+                            },
+                            modifier = modifier
+                                .size(width = 100.dp, height = 120.dp)
+                        ){
+                            AsyncImage(
+                                model = uri,
+                                modifier = Modifier.fillMaxWidth(),
+                                contentDescription = "Selected image",
+                            )
+                        }
+                        mostrarImagenEdit(viewModel = viewModel, uri = uri)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun mostrarImagenEdit(
+    viewModel: NoteEditViewModel,
+    uri: Uri?
+){
+    if(viewModel.mostrarImagen){
+        Dialog(
+            properties = DialogProperties(dismissOnClickOutside = true),
+            onDismissRequest = { viewModel.updateMostrarImagen(false) }
+        ) {
+            AsyncImage(
+                model = uri,
+                modifier = Modifier.fillMaxSize(.9f),
+                contentDescription = "Amplied image",
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun viewVideosEdit(
+    viewModel: NoteEditViewModel,
+    modifier:Modifier=Modifier
+) {
+    Row(
+        modifier= modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp)
+    ) {
+        Column {
+            Row(
+                modifier=modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(text = stringResource(id = R.string.videos)+viewModel.cantidadVideos,
+                    modifier=modifier.weight(.4f))
+                Row (
+                    modifier=modifier.weight(.6f),
+                    horizontalArrangement = Arrangement.End
+                ){
+                    Button(
+                        enabled = viewModel.cantidadVideos!=0,
+                        onClick = {
+                            viewModel.deleteLastUriVideos()
+                        },
+                        contentPadding = PaddingValues(10.dp)) {
+                        Text(text = stringResource(id = R.string.eliminarUltimoVideo))
+                    }
+                }
+            }
+            if (viewModel.hasVideo){
+                LazyRow(modifier = modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp)) {
+                    items(viewModel.urisVideoslist.toList()) { uri ->
+                        Surface(
+                            onClick = {
+                                viewModel.updateMostrarVideo(true)
+                            },
+                            modifier = modifier
+                                .size(width = 100.dp, height = 120.dp)
+                        ){
+                            Icon(painter = painterResource(id = R.drawable.video_logo), contentDescription = "")
+                        }
+                        mostrarVideoEdit(viewModel = viewModel, uri = uri)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun mostrarVideoEdit(
+    viewModel: NoteEditViewModel,
+    uri: Uri
+){
+    if(viewModel.mostrarVideo){
+        Dialog(
+            properties = DialogProperties(dismissOnClickOutside = true),
+            onDismissRequest = { viewModel.updateMostrarVideo(false) }
+        ) {
+            val context = LocalContext.current
+            VideoPlayer(videoUri = uri, context)
+        }
+    }
+}
+
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+fun AudioCaptureEdit(
+    viewModel: NoteEditViewModel,
+    modifier:Modifier
+){
+    Button(
+        onClick = {
+
+        },
+        contentPadding = PaddingValues(0.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+    ){
+        Icon(
+            painter = painterResource(id = R.drawable.audio),
+            contentDescription = null,
+            modifier = modifier
+                .aspectRatio(1f),
+            tint = MaterialTheme.colorScheme.primary
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun viewAudiosEdit(
+    viewModel: NoteEditViewModel,
+    modifier:Modifier=Modifier
+) {
+    Row(
+        modifier= modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp)
+    ) {
+        Column {
+            Row(
+                modifier=modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(text = stringResource(id = R.string.audios)+viewModel.cantidadAudios,
+                    modifier=modifier.weight(.4f))
+                Row (
+                    modifier=modifier.weight(.6f),
+                    horizontalArrangement = Arrangement.End
+                ){
+                    Button(
+                        enabled = viewModel.cantidadAudios!=0,
+                        onClick = {
+                            viewModel.deleteLastUriVideos()
+                        },
+                        contentPadding = PaddingValues(10.dp)) {
+                        Text(text = stringResource(id = R.string.eliminarUltimoAudio))
+                    }
+                }
+            }
+            if (viewModel.hasAudio){
+                LazyRow(modifier = modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp)) {
+                    items(viewModel.urisAudioslist.toList()) { uri ->
+                        Surface(
+                            onClick = {  },
+                            modifier = modifier
+                                .size(width = 100.dp, height = 120.dp)
+                        ){
+
+                        }
+                    }
+                }
             }
         }
     }

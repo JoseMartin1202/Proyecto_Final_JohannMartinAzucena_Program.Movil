@@ -11,8 +11,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.navArgument
+import com.example.proyectofinal_jma.data.AudioNotaEntity
+import com.example.proyectofinal_jma.data.ImageNotaEntity
 import com.example.proyectofinal_jma.data.NotaEntity
 import com.example.proyectofinal_jma.data.NotesRepository
+import com.example.proyectofinal_jma.data.VideoNotaEntity
 import com.example.proyectofinal_jma.navigation.AppScreens
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -22,6 +25,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.util.Calendar
@@ -43,8 +47,23 @@ class NoteEntryViewModel(
     suspend fun saveNote() {
         if (validateInput()) {
             noteUiState.noteDetails.tipo=optionNote
-            noteUiState.noteDetails.uriAudios=urislist.toList().toString()
-            notesRepository.insertNote(noteUiState.noteDetails.toNote())
+            var id=notesRepository.insertNote(noteUiState.noteDetails.toNote())
+            saveImages(id)
+            saveVideos(id)
+        }
+    }
+
+    suspend fun saveImages(id:Long){
+        urislist.forEach{uri->
+            var imageNota=ImageNotaEntity(0, id.toInt(),""+uri)
+            notesRepository.insertImage(imageNota)
+        }
+    }
+
+    suspend fun saveVideos(id:Long){
+        urisVideoslist.forEach{uri->
+            var videoNota=VideoNotaEntity(0,id.toInt() ,""+uri)
+            notesRepository.insertVideo(videoNota)
         }
     }
 
@@ -59,7 +78,6 @@ class NoteEntryViewModel(
     var optionNote by mutableStateOf("Nota")
     var showCancel by mutableStateOf(false)
     var recordatorios by mutableStateOf(false)
-    var archivos by mutableStateOf(false)
 
     //IMAGENES
     var hasImage by mutableStateOf(false)
@@ -79,6 +97,7 @@ class NoteEntryViewModel(
     var audioUri by mutableStateOf<Uri?>(null)
     var urisAudioslist= mutableStateListOf<Uri>()
 
+
     fun updateShowCancel(boolean: Boolean){
         showCancel= boolean
     }
@@ -97,10 +116,6 @@ class NoteEntryViewModel(
 
     fun updateRecordatorios(boolean: Boolean){
         recordatorios= boolean
-    }
-
-    fun updateArchivos(boolean: Boolean){
-        archivos= boolean
     }
 
     //IMAGENES
@@ -184,10 +199,7 @@ data class NoteDetails(
     val contenido: String = "",
     val fecha: String = ""+ Calendar.getInstance(TimeZone.getTimeZone("America/Mexico_City")).get(Calendar.DAY_OF_MONTH)+
             "/"+(Calendar.getInstance().get(Calendar.MONTH)+1)+"/"+Calendar.getInstance().get(Calendar.YEAR),
-    var tipo:String="",
-    var uriImagenes:String="",
-    var uriVideos:String="",
-    var uriAudios:String=""
+    var tipo:String=""
 )
 
 fun NoteDetails.toNote(): NotaEntity = NotaEntity(
@@ -195,10 +207,7 @@ fun NoteDetails.toNote(): NotaEntity = NotaEntity(
     titulo = titulo,
     contenido = contenido,
     fecha = fecha,
-    tipo=tipo,
-    uriImagenes= uriImagenes,
-    uriVideos= uriVideos,
-    uriAudios= uriAudios
+    tipo=tipo
 )
 
 fun NotaEntity.toNoteUiState(isEntryValid: Boolean = false): NoteUiState = NoteUiState(
@@ -214,15 +223,41 @@ fun NotaEntity.toNoteDetails(): NoteDetails = NoteDetails(
     titulo = titulo,
     contenido = contenido,
     fecha = fecha,
-    tipo= tipo,
-    uriImagenes= uriImagenes,
-    uriVideos= uriVideos,
-    uriAudios= uriAudios
+    tipo= tipo
 )
 
-data class RationaleState(
-    val title: String,
-    val rationale: String,
-    val onRationaleReply: (proceed: Boolean) -> Unit,
+
+
+//VIDEOS
+/*
+data class VideoDetails(
+    var idNota: Int = 0,
+    var uriVideo: String = ""
 )
+
+fun VideoNotaEntity.toImage():VideoNotaEntity=VideoNotaEntity(
+    idNota=idNota,
+    uriVideo = uriVideo
+)
+
+fun VideoNotaEntity.toImageDetails():VideoDetails= VideoDetails(
+    idNota=idNota,
+    uriVideo = uriVideo
+)
+
+//Audios
+data class AudioDetails(
+    var idNota: Int = 0,
+    var uriAudio: String = ""
+)
+
+fun AudioNotaEntity.toImage():AudioNotaEntity=AudioNotaEntity(
+    idNota=idNota,
+    uriAudio = uriAudio
+)
+
+fun AudioNotaEntity.toImageDetails():AudioDetails= AudioDetails(
+    idNota=idNota,
+    uriAudio = uriAudio
+)*/
 

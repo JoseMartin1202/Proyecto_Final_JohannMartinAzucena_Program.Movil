@@ -16,7 +16,7 @@ object AppViewModelProvider {
         }
         //editarNota
         initializer {
-            NoteEditViewModel(inventoryApplication().container.notesRepository)
+            NoteEditViewModel( this.createSavedStateHandle(),inventoryApplication().container.notesRepository)
         }
         // Initializer for HomeViewModel
         initializer {

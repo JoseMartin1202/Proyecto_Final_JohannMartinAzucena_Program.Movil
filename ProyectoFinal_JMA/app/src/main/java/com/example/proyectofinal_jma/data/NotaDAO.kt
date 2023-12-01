@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface NotaDAO {
     @Insert
-    suspend fun insert(notaEntity:NotaEntity)
+    suspend fun insert(notaEntity:NotaEntity):Long
     @Update
     suspend fun update(notaEntity:NotaEntity)
     @Delete
@@ -21,4 +21,37 @@ interface NotaDAO {
 
     @Query("SELECT * from Notas ORDER BY fecha ASC")
     fun getAllItems(): Flow<List<NotaEntity>>
+
+    //IMAGENES
+    @Query("SELECT uriImagen from imagenes WHERE idNota= :id")
+    fun getAllImages(id: Int): Flow<List<String>>
+
+    @Query("DELETE from imagenes WHERE idNota= :id")
+    suspend fun deleteAllImages(id: Int)
+
+    @Insert
+    suspend fun insert(imageNotaEntity: ImageNotaEntity)
+
+    @Update
+    suspend fun update(imageNotaEntity: ImageNotaEntity)
+
+    @Delete
+    suspend fun delete(imageNotaEntity: ImageNotaEntity)
+
+    //VIDEOS
+    @Query("SELECT * from videos WHERE idNota= :id")
+    fun getAllVideos(id: Int): Flow<List<String>>
+
+    @Query("DELETE from videos WHERE idNota= :id")
+    suspend fun deleteAllVideos(id: Int)
+
+    @Insert
+    suspend fun insert(videoNotaEntity: VideoNotaEntity)
+
+    @Update
+    suspend fun update(videoNotaEntity: VideoNotaEntity)
+
+    @Delete
+    suspend fun delete(videoNotaEntity: VideoNotaEntity)
+
 }

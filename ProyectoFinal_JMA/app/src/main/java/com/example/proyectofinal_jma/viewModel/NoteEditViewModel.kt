@@ -16,6 +16,7 @@ import com.example.proyectofinal_jma.ItemEditDestination
 import com.example.proyectofinal_jma.data.ImageNotaEntity
 import com.example.proyectofinal_jma.data.NotaEntity
 import com.example.proyectofinal_jma.data.NotesRepository
+import com.example.proyectofinal_jma.data.VideoNotaEntity
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
@@ -82,6 +83,7 @@ class NoteEditViewModel(
             noteUiStateEdit.noteDetails.tipo=optionNote
             notesRepository.updateNote(noteUiStateEdit.noteDetails.toNoteEdit())
             actualizarImagenes()
+            actualizarVideos()
         }
     }
 
@@ -90,6 +92,14 @@ class NoteEditViewModel(
         urislist.forEach{uri->
             var imageNota=ImageNotaEntity(0, itemId,""+uri)
             notesRepository.insertImage(imageNota)
+        }
+    }
+
+    suspend fun actualizarVideos(){
+        notesRepository.deleteAllVideos(itemId)
+        urislist.forEach{uri->
+            var videoNota= VideoNotaEntity(0, itemId,""+uri)
+            notesRepository.insertVideo(videoNota)
         }
     }
 

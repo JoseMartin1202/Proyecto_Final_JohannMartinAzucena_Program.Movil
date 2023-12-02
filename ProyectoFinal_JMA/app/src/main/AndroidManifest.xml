@@ -3,7 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+
 
     <application
         android:name=".InventoryApplication"
@@ -17,11 +20,6 @@
         android:theme="@style/Theme.ProyectoFinal_JMA"
         tools:targetApi="31">
         <activity
-            android:name=".AudioRecorder"
-            android:exported="false"
-            android:label="@string/title_activity_audio_recorder"
-            android:theme="@style/Theme.ProyectoFinal_JMA" />
-        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
@@ -32,7 +30,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <receiver android:name=".Notification.NotificacionProgramada"
+            android:enabled="true"/>
         <provider
             android:name=".ComposeFileProvider"
             android:authorities="com.example.proyectofinal_jma.fileprovider"

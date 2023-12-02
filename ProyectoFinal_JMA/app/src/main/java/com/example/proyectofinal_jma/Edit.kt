@@ -383,7 +383,7 @@ fun TopNoteEstructureCompactEdit(
             .background(MaterialTheme.colorScheme.background)
         ) {
             Row(
-                modifier =modifier.weight(.65f)
+                modifier =modifier.weight(.6f)
             ) {
                 Row ( modifier =modifier.weight(.25f)){
                     ImageCaptureEdit(viewModel = viewModel, modifier = modifier)
@@ -400,7 +400,7 @@ fun TopNoteEstructureCompactEdit(
             }
             Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_2)))
             Column(
-                modifier =modifier.weight(.35f)
+                modifier =modifier.weight(.4f)
             ) {
                 ExposedDropdownMenuBox(
                     modifier = modifier
@@ -871,9 +871,11 @@ fun VideoCaptureEdit(
     val videoLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CaptureVideo(),
         onResult = { success ->
-            viewModel.updatehasVideo(success)
-            viewModel.updateVideoUri(uri)
-            viewModel.updateUrisVideosList(uri)
+            if(success){
+                viewModel.updatehasVideo(success)
+                viewModel.updateVideoUri(uri)
+                viewModel.updateUrisVideosList(uri)
+            }
         }
     )
     Button(
@@ -1063,7 +1065,7 @@ fun viewVideosEdit(
                     }
                 }
             }
-            if (viewModel.hasVideo){
+            if (viewModel.hasVideo || (viewModel.isEditar && !viewModel.hasVideo)){
                 LazyRow(modifier = modifier
                     .fillMaxWidth()
                     .padding(top = 4.dp)) {

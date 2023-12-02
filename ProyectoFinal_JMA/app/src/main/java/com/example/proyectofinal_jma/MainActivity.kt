@@ -1,5 +1,6 @@
 package com.example.proyectofinal_jma
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
@@ -64,6 +65,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.proyectofinal_jma.data.NotaEntity
@@ -81,6 +83,8 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ActivityCompat.requestPermissions(this,
+            arrayOf(Manifest.permission.POST_NOTIFICATIONS,Manifest.permission.RECORD_AUDIO),0)
         setContent {
             ProyectoFinal_JMATheme {
                 Surface(
@@ -88,6 +92,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     AppNavigation()
+                    obtenerCacheDir(cacheDir)
                 }
             }
         }
@@ -482,13 +487,6 @@ private fun HomeBody(
     }
 }
 
-@Preview
-@Composable
-fun previewNote(){
-    var nota=NotaEntity(0,"ttt","cuando el contenido de la nota es","02/05/2012")
-    //HomeworkCard(homework = nota)
-}
-
 @Composable
 fun MyDialog(
     show:Boolean,
@@ -516,3 +514,29 @@ fun MyDialog(
     }
 }
 
+@Composable
+fun optionsAudio(
+    show:Boolean,
+    onDismiss:()->Unit,
+    onConfirm:()->Unit,
+    titulo:String,
+    text:String
+){
+    if(show) {
+        AlertDialog(
+            onDismissRequest = { onDismiss() },
+            confirmButton = {
+                TextButton(onClick = { onConfirm() }) {
+                    Text(text = stringResource(id = R.string.grabar))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { onDismiss() }) {
+                    Text(text = stringResource(id = R.string.parar))
+                }
+            },
+            title = { Text(titulo) },
+            text = { Text(text) }
+        )
+    }
+}

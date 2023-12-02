@@ -97,7 +97,7 @@ class NoteEditViewModel(
 
     suspend fun actualizarVideos(){
         notesRepository.deleteAllVideos(itemId)
-        urislist.forEach{uri->
+        urisVideoslist.forEach{uri->
             var videoNota= VideoNotaEntity(0, itemId,""+uri)
             notesRepository.insertVideo(videoNota)
         }
@@ -135,11 +135,12 @@ class NoteEditViewModel(
     var cantidad by mutableStateOf(0)
     var imageUri by mutableStateOf<Uri?>(null)
 
+
     //VIDEOS
     var hasVideo by mutableStateOf(false)
     var mostrarVideo by mutableStateOf(false)
     var cantidadVideos by mutableStateOf(0)
-    var videoUri by mutableStateOf<Uri?>(null)
+    //var videoUri by mutableStateOf<Uri?>(null)
     //AUDIOS
     var hasAudio by mutableStateOf(false)
     var cantidadAudios by mutableStateOf(0)
@@ -180,10 +181,6 @@ class NoteEditViewModel(
     //VIDEOS
     fun updatehasVideo(boolean: Boolean){
         hasVideo= boolean
-    }
-
-    fun updateVideoUri(uri: Uri?){
-        videoUri= uri
     }
 
     fun updateUrisVideosList(uri: Uri){

@@ -36,9 +36,18 @@
     <string name="eliminarUltimafoto">Borrar última foto</string>
     <string name="eliminarUltimoVideo">Borrar último video</string>
     <string name="eliminarUltimoAudio">Borrar último audio</string>
-    <string name="imagenes">Imágenes: </string>
+    <string name="imagenes">Fotos: </string>
     <string name="videos">Videos: </string>
     <string name="audios">Audios: </string>
     <string name="record_audio">Permiso para grabar</string>
+    <string name="definirDia">Fecha</string>
+    <string name="definirHora">Hora</string>
+    <string name="grabar">Grabar</string>
+    <string name="tituloAudio">Grabar audio</string>
+    <string name="contenidoAudio">Presiona grabar para comenzar</string>
+    <string name="parar">Parar</string>
+    <string name="bienvenida">Bienvenido a NOTITAS+</string>
+    <string name="tareaPend">Tarea pendiente</string>
+    <string name="Recordatorio">Recordatorio fijado para:</string>
     <string name="title_activity_audio_recorder">AudioRecorder</string>
 </resources>

@@ -78,12 +78,25 @@ class NoteEntryViewModel(
     var optionNote by mutableStateOf("Nota")
     var showCancel by mutableStateOf(false)
     var recordatorios by mutableStateOf(false)
+    var showOptionRecordatorios by mutableStateOf(false)
+    var showCalendar by mutableStateOf(false)
+    var showReloj by mutableStateOf(false)
+    var fecha by mutableStateOf("")
+    var calcular by mutableStateOf(false)
+    var hora by mutableStateOf("")
+    var notificacion by mutableStateOf(false)
+    var hour by mutableStateOf(0)
+    var minute by mutableStateOf(0)
+    var uriMostrar by mutableStateOf(Uri.EMPTY)
+
+    fun updateUriMostrar(uri: Uri?){
+        uriMostrar=uri
+    }
 
     //IMAGENES
     var hasImage by mutableStateOf(false)
     var mostrarImagen by mutableStateOf(false)
     var cantidad by mutableStateOf(0)
-    var imageUri by mutableStateOf<Uri?>(null)
     var urislist= mutableStateListOf<Uri?>()
     //VIDEOS
     var hasVideo by mutableStateOf(false)
@@ -92,14 +105,35 @@ class NoteEntryViewModel(
     var videoUri by mutableStateOf<Uri?>(null)
     var urisVideoslist= mutableStateListOf<Uri>()
     //AUDIOS
+    val urisAudiosList = mutableStateListOf<Uri>()
     var hasAudio by mutableStateOf(false)
     var cantidadAudios by mutableStateOf(0)
-    var audioUri by mutableStateOf<Uri?>(null)
-    var urisAudioslist= mutableStateListOf<Uri>()
+    var mostrarAudio by mutableStateOf(false)
+    var showOptionsAudio by mutableStateOf(false)
 
+    fun updateShowOptionsAudio(boolean: Boolean){
+        showOptionsAudio= boolean
+    }
+
+    fun updateMostrarAudio(boolean: Boolean){
+        mostrarAudio= boolean
+    }
 
     fun updateShowCancel(boolean: Boolean){
         showCancel= boolean
+    }
+    fun updateHour(int: Int){
+        hour= int
+    }
+    fun updateMinute(int: Int){
+        minute= int
+    }
+    fun updateShowCalendar(boolean: Boolean){
+        showCalendar= boolean
+    }
+
+    fun updateCalcular(boolean: Boolean){
+        calcular= boolean
     }
 
     fun updateIsExpanded(boolean: Boolean){
@@ -118,13 +152,26 @@ class NoteEntryViewModel(
         recordatorios= boolean
     }
 
+    fun updateOptionsRecordatorios(boolean: Boolean){
+        showOptionRecordatorios= boolean
+    }
+    fun updateShowReloj(boolean: Boolean){
+        showReloj= boolean
+    }
+
+    fun updateFecha(text: String){
+        fecha= text
+    }
+    fun updateHora(text: String){
+        hora= text
+    }
+
+    fun updateNotificaciones(boolean: Boolean){
+        notificacion= boolean
+    }
     //IMAGENES
     fun updatehasImage(boolean: Boolean){
         hasImage= boolean
-    }
-
-    fun updateImageUri(uri: Uri?){
-        imageUri= uri
     }
 
     fun updateUrisList(uri: Uri?){
@@ -140,7 +187,6 @@ class NoteEntryViewModel(
     fun updateMostrarImagen(boolean: Boolean){
         mostrarImagen= boolean
     }
-
 
     //VIDEOS
     fun updatehasVideo(boolean: Boolean){
@@ -166,22 +212,18 @@ class NoteEntryViewModel(
     }
 
     //AUDIOS
-    fun updatehasAudio(boolean: Boolean){
-        hasAudio= boolean
-    }
-
-    fun updateAudioUri(uri: Uri?){
-        audioUri= uri
-    }
-
     fun updateUrisAudiosList(uri: Uri){
-        urisAudioslist.add(uri)
-        cantidadAudios=urisAudioslist.size
+        urisAudiosList.add(uri)
+        cantidadAudios=urisAudiosList.size
     }
 
     fun deleteLastUriAudios(){
-        urisAudioslist.removeLast()
-        cantidadAudios=urisAudioslist.size
+        urisAudiosList.removeLast()
+        cantidadAudios=urisAudiosList.size
+    }
+
+    fun updateHasAudio(boolean: Boolean){
+        hasAudio= boolean
     }
 }
 

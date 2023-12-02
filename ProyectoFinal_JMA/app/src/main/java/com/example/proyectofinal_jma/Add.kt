@@ -1,19 +1,20 @@
 package com.example.proyectofinal_jma
 
-import android.Manifest
 import android.annotation.SuppressLint
+import android.app.AlarmManager
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
-import android.media.MediaRecorder
+import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -25,44 +26,38 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TimePicker
+import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -71,37 +66,67 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.core.net.toFile
+import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import coil.compose.rememberImagePainter
+import com.example.proyectofinal_jma.Notification.NotificacionProgramada
+import com.example.proyectofinal_jma.Notification.NotificacionProgramada.Companion.NOTIFICACION_ID
 import com.example.proyectofinal_jma.data.DataSourceNotesOrHomework
 import com.example.proyectofinal_jma.navigation.AppScreens
 import com.example.proyectofinal_jma.sizeScreen.WindowInfo
 import com.example.proyectofinal_jma.sizeScreen.rememberWindowInfo
 import com.example.proyectofinal_jma.ui.theme.Shapes
 import com.example.proyectofinal_jma.viewModel.AppViewModelProvider
+import com.example.proyectofinal_jma.viewModel.AudioViewModel
 import com.example.proyectofinal_jma.viewModel.NoteDetails
-import com.example.proyectofinal_jma.viewModel.NoteDetailsEdit
 import com.example.proyectofinal_jma.viewModel.NoteEntryViewModel
 import com.example.proyectofinal_jma.viewModel.NoteUiState
-import com.example.proyectofinal_jma.viewModel.PhotoVideoViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
-import com.google.accompanist.permissions.shouldShowRationale
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ui.PlayerView
 import kotlinx.coroutines.launch
 import java.io.File
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
+import java.util.Calendar
+import java.util.Locale
 
 
 @Composable
 fun Add(
     contentPadding: PaddingValues,
     viewModel: NoteEntryViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    audioViewModel:AudioViewModel
 ){
+    val coroutineScope = rememberCoroutineScope()
+    optionsAudio(
+        show = viewModel.showOptionsAudio ,
+        onDismiss = {
+            audioViewModel.recorder.stop()
+            viewModel.updateShowOptionsAudio(false)
+        },
+        onConfirm = {
+            coroutineScope.launch {
+                File(cache, "Grabacion.mp3").also{
+                    audioViewModel.recorder.start(it)
+                    audioViewModel.audioFile = it
+                    viewModel.updateUrisAudiosList(it.toUri())
+                    viewModel.updateHasAudio(true)
+                }
+            }
+        },
+        titulo = stringResource(id = R.string.tituloAudio),
+        text = stringResource(id = R.string.contenidoAudio)
+    )
     LazyColumn(
         contentPadding=contentPadding,
         modifier = Modifier.padding(top = 10.dp, start = 8.dp, end = 8.dp )){
@@ -109,7 +134,8 @@ fun Add(
             NoteEntryBody(
                 noteUiState = viewModel.noteUiState,
                 onNoteValueChange = viewModel::updateUiState,
-                viewModelPhoto=viewModel)
+                viewModelPhoto=viewModel,
+                audioViewModel=audioViewModel)
         }
     }
 }
@@ -119,11 +145,13 @@ fun NoteEntryBody(
     noteUiState: NoteUiState,
     onNoteValueChange: (NoteDetails) -> Unit,
     viewModelPhoto: NoteEntryViewModel,
+    audioViewModel: AudioViewModel
 ) {
     NoteInputForm(
         noteDetails = noteUiState.noteDetails,
         onValueChange =  onNoteValueChange,
-        viewModel = viewModelPhoto)
+        viewModel = viewModelPhoto,
+        audioViewModel = audioViewModel)
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -133,6 +161,7 @@ fun NoteInputForm(
     noteDetails: NoteDetails,
     onValueChange: (NoteDetails) -> Unit = {},
     viewModel: NoteEntryViewModel,
+    audioViewModel: AudioViewModel
 ) {
     TextField(
         value = noteDetails.contenido,
@@ -148,7 +177,7 @@ fun NoteInputForm(
         textStyle = MaterialTheme.typography.bodyMedium)
     viewImages(viewModel = viewModel)
     viewVideos(viewModel = viewModel)
-    viewAudios(viewModel = viewModel)
+    viewAudios(viewModel = viewModel, audioViewModel = audioViewModel)
 }
 
 
@@ -157,7 +186,8 @@ fun NoteInputForm(
 fun AddNoteHomework(
     modifier:  Modifier= Modifier,
     navController: NavController,
-    viewModel: NoteEntryViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: NoteEntryViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    audioViewModel: AudioViewModel = viewModel()
 ) {
     val windowsSize= rememberWindowInfo()
     Scaffold(
@@ -280,7 +310,7 @@ fun AddNoteHomework(
             }
         }
     ) {
-        Add(contentPadding = it,viewModel)
+        Add(contentPadding = it,viewModel, audioViewModel = audioViewModel)
     }
 }
 
@@ -398,7 +428,7 @@ fun TopNoteEstructureCompact(
             .background(MaterialTheme.colorScheme.background)
         ) {
             Row(
-                modifier =modifier.weight(.65f)
+                modifier =modifier.weight(.6f)
             ) {
                 Row ( modifier =modifier.weight(.25f)){
                     ImageCapture(viewModel = viewModel, modifier = modifier)
@@ -415,7 +445,7 @@ fun TopNoteEstructureCompact(
             }
             Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_2)))
             Column(
-                modifier =modifier.weight(.35f)
+                modifier =modifier.weight(.4f)
             ) {
                 ExposedDropdownMenuBox(
                     modifier = modifier
@@ -761,7 +791,6 @@ fun ImageCapture(
         onResult = { success ->
             if(success){
                 viewModel.updatehasImage(success)
-                viewModel.updateImageUri(uri)
                 viewModel.updateUrisList(uri)
             }
         }
@@ -795,7 +824,7 @@ fun VideoCapture(
         contract = ActivityResultContracts.CaptureVideo(),
         onResult = { success ->
             viewModel.updatehasVideo(success)
-            viewModel.updateVideoUri(uri)
+            //viewModel.updateVideoUri(uri)
             viewModel.updateUrisVideosList(uri)
         }
     )
@@ -826,7 +855,7 @@ fun AudioCapture(
 ){
     Button(
         onClick = {
-
+            viewModel.updateShowOptionsAudio(true)
         },
         contentPadding = PaddingValues(0.dp),
         colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
@@ -852,7 +881,6 @@ fun filesCapture(
         onResult = { uri ->
             viewModel.updatehasImage(uri != null)
             if(viewModel.hasImage){
-                viewModel.updateImageUri(uri)
                 viewModel.updateUrisList(uri)
             }
         }
@@ -875,7 +903,7 @@ fun Recordatorio(
 ){
     Button(
         onClick = {
-
+            viewModel.updateOptionsRecordatorios(true)
         },
         enabled=viewModel.recordatorios,
         contentPadding = PaddingValues(0.dp),
@@ -898,6 +926,9 @@ fun Recordatorio(
                 tint = MaterialTheme.colorScheme.secondary
             )
         }
+       // calendar(viewModel = viewModel)
+        Reloj(viewModel = viewModel)
+        opcionesRecordatorios(viewModel = viewModel)
     }
 }
 
@@ -943,6 +974,7 @@ fun viewImages(
                         Surface(
                             onClick = {
                                 viewModel.updateMostrarImagen(true)
+                                viewModel.updateUriMostrar(uri)
                             },
                             modifier = modifier
                                 .size(width = 100.dp, height = 120.dp)
@@ -953,9 +985,9 @@ fun viewImages(
                                 contentDescription = "Selected image",
                             )
                         }
-                        mostrarImagen(viewModel = viewModel, uri = uri)
                     }
                 }
+                mostrarImagen(viewModel = viewModel, uri = viewModel.uriMostrar)
             }
         }
     }
@@ -1001,15 +1033,16 @@ fun viewVideos(
                         Surface(
                             onClick = {
                                 viewModel.updateMostrarVideo(true)
+                                viewModel.updateUriMostrar(uri)
                             },
                             modifier = modifier
                                 .size(width = 100.dp, height = 120.dp)
                         ){
                             Icon(painter = painterResource(id = R.drawable.video_logo), contentDescription = "")
                         }
-                        mostrarVideo(viewModel = viewModel, uri = uri)
                     }
                 }
+                mostrarVideo(viewModel = viewModel, uri = viewModel.uriMostrar)
             }
         }
     }
@@ -1019,6 +1052,7 @@ fun viewVideos(
 @Composable
 fun viewAudios(
     viewModel: NoteEntryViewModel,
+    audioViewModel: AudioViewModel,
     modifier:Modifier=Modifier
 ) {
     Row(
@@ -1040,7 +1074,7 @@ fun viewAudios(
                     Button(
                         enabled = viewModel.cantidadAudios!=0,
                         onClick = {
-                            viewModel.deleteLastUriVideos()
+                            viewModel.deleteLastUriAudios()
                         },
                         contentPadding = PaddingValues(10.dp)) {
                         Text(text = stringResource(id = R.string.eliminarUltimoAudio))
@@ -1051,17 +1085,40 @@ fun viewAudios(
                 LazyRow(modifier = modifier
                     .fillMaxWidth()
                     .padding(top = 4.dp)) {
-                    items(viewModel.urisAudioslist.toList()) { uri ->
+                    items(viewModel.urisAudiosList.toList()) { uri ->
                         Surface(
-                            onClick = {  },
+                            onClick = {
+                                viewModel.updateMostrarAudio(true)
+                                viewModel.updateUriMostrar(uri)
+                            },
                             modifier = modifier
                                 .size(width = 100.dp, height = 120.dp)
                         ){
-
+                            Icon(painter = painterResource(id = R.drawable.audio_port), contentDescription = "")
                         }
                     }
                 }
+                Reproducir(viewModel = viewModel, audioViewModel = audioViewModel, uri = viewModel.uriMostrar )
             }
+        }
+    }
+}
+
+@Composable
+fun Reproducir(
+    viewModel: NoteEntryViewModel,
+    audioViewModel: AudioViewModel,
+    uri: Uri
+){
+    if(viewModel.mostrarAudio){
+        Dialog(
+            properties = DialogProperties(dismissOnClickOutside = true),
+            onDismissRequest = {
+                audioViewModel.player.stop()
+                viewModel.updateMostrarAudio(false)
+            }
+        ) {
+            audioViewModel.player.playFile(uri.toFile())
         }
     }
 }
@@ -1123,4 +1180,172 @@ fun VideoPlayer(videoUri: Uri, context:Context) {
         },
         modifier = Modifier.fillMaxWidth(.8f)
     )
+}
+
+@Composable
+fun opcionesRecordatorios(
+    viewModel: NoteEntryViewModel,
+){
+    if(viewModel.showOptionRecordatorios){
+        Dialog(
+            properties = DialogProperties(dismissOnClickOutside = true),
+            onDismissRequest = {
+                viewModel.updateOptionsRecordatorios(false)
+                viewModel.updateCalcular(false)
+            }
+        ) {
+            Card(
+                modifier = Modifier.fillMaxWidth(.9f)
+            ) {
+                Column (
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .padding(5.dp)
+                        .fillMaxWidth()
+                ){
+                    Row (
+                        modifier = Modifier.fillMaxWidth()
+                    ){
+                        Row(
+                            modifier = Modifier
+                                .weight(.5f)
+                                .padding(2.dp)
+                        ) {
+                            Button(
+                                onClick = {
+                                    viewModel.updateShowReloj(true)},
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text(text = stringResource(id = R.string.definirHora))
+                            }
+                        }
+                    }
+                    Text(
+                        text = stringResource(id = R.string.Recordatorio),
+                        modifier = Modifier.padding(5.dp))
+                    Text(
+                        text = viewModel.hora,
+                        modifier = Modifier.padding(5.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Button(
+                            onClick = {
+                                viewModel.updateNotificaciones(true)
+                                viewModel.updateCalcular(true)
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(text = stringResource(id = R.string.confirmar))
+                        }
+                        if(viewModel.calcular){
+                            var time= LocalTime.now()
+                            var time2=LocalTime.of(viewModel.hour,viewModel.minute,0)
+                            val dif=time.until(time2, ChronoUnit.MILLIS)
+                            Log.d("micros",""+dif)
+                            Notificaciones(dif,viewModel)
+                            viewModel.updateOptionsRecordatorios(false)
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun Reloj(
+    viewModel: NoteEntryViewModel
+){
+    if(viewModel.showReloj){
+        val state= rememberTimePickerState()
+        DatePickerDialog(
+            onDismissRequest = { viewModel.updateShowReloj(false) },
+            confirmButton = {
+                Button(
+                    onClick = { viewModel.updateShowReloj(false)  }
+                ) {
+                    Text(text = stringResource(id = R.string.confirmar))
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = { viewModel.updateShowReloj(false)  }
+                ) {
+                    Text(text = stringResource(id = R.string.cancelar))
+                }
+            }
+        ) {
+            TimePicker(state = state, modifier = Modifier.fillMaxWidth())
+        }
+        val hour=state.hour
+        val minut=state.minute
+        hour?.let {
+            minut?.let{
+                viewModel.updateHora("$hour:$minut:00")
+                viewModel.updateHour(hour)
+                viewModel.updateMinute(minut)
+            }
+        }
+    }
+}
+
+@Composable
+fun Notificaciones(
+    milisegundos: Long,
+    viewModel: NoteEntryViewModel
+){
+    if(viewModel.notificacion){
+        val context= LocalContext.current
+        val idCanal= "CanalNotas"
+
+        LaunchedEffect(Unit){
+            crearCanalNotificacion(idCanal,context)
+        }
+        notificacionProgramada(context,milisegundos)
+    }
+}
+
+fun crearCanalNotificacion(
+    idCanal: String,
+    context: Context
+){
+    if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
+        val nombre= "CanalNotas"
+        val descripcion="Canal de notificaciones notas"
+        val importancia=NotificationManager.IMPORTANCE_DEFAULT
+        val canal=NotificationChannel(idCanal,nombre,importancia)
+            .apply {
+                description=descripcion
+            }
+        val notificationManager:NotificationManager=
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as
+                NotificationManager
+        notificationManager.createNotificationChannel(canal)
+    }
+}
+
+@SuppressLint("ScheduleExactAlarm")
+fun notificacionProgramada(context: Context, milisegundos:Long){
+    val intent=Intent(context,NotificacionProgramada::class.java)
+    val pendingIntent=PendingIntent.getBroadcast(
+        context,
+        NOTIFICACION_ID,
+        intent,
+        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+    )
+
+    var alarmManager=context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+    alarmManager.setExact(
+        AlarmManager.RTC_WAKEUP,
+        Calendar.getInstance().timeInMillis+milisegundos,
+        pendingIntent
+    )
+}
+
+var cache: File? = null
+fun obtenerCacheDir(cacheDir: File){
+    cache = cacheDir
 }

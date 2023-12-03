@@ -79,10 +79,15 @@ import com.example.proyectofinal_jma.viewModel.AppViewModelProvider
 import com.example.proyectofinal_jma.viewModel.HomeViewModel
 import com.example.proyectofinal_jma.viewModel.NoteEntryViewModel
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 class MainActivity : ComponentActivity() {
+    companion object {
+        lateinit var instancia: MainActivity // Variable global que almacena la instancia de la primera activity
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        instancia=this
         ActivityCompat.requestPermissions(this,
             arrayOf(Manifest.permission.POST_NOTIFICATIONS,Manifest.permission.RECORD_AUDIO),0)
         setContent {
@@ -97,8 +102,17 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-}
 
+    fun cambiarIdioma(idioma:String){
+        val recursos=resources
+        val displayMetrics=resources.displayMetrics
+        val configuracion=resources.configuration
+        configuracion.setLocale(Locale(idioma))
+        recursos.updateConfiguration(configuracion,displayMetrics)
+        configuracion.locale= Locale(idioma)
+        resources.updateConfiguration(configuracion,displayMetrics)
+    }
+}
 var notaDrop:NotaEntity= NotaEntity(0,"","","")
 
 @Composable
@@ -365,7 +379,7 @@ fun App(
                         ){
                             Button(
                                 onClick = {
-                                    navController.navigate(route = AppScreens.SettingsScreen.route)
+                                    navController.navigate(route = AppScreens.LanguageScreen.route)
                                 },
                                 modifier = modifier
                                     .height(40.dp)
@@ -374,7 +388,7 @@ fun App(
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                             ) {
                                 Icon(
-                                    painter = painterResource(id = R.drawable.settings),
+                                    painter = painterResource(id = R.drawable.translate),
                                     contentDescription =null,
                                     modifier = modifier
                                         .aspectRatio(1f),
@@ -382,7 +396,7 @@ fun App(
                                 )
                             }
                             Text(
-                                text = stringResource(id = R.string.ajustes),
+                                text = stringResource(id = R.string.idioma),
                                 style = MaterialTheme.typography.bodyMedium)
                         }
                         Column (

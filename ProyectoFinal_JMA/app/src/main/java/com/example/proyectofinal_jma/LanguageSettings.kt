@@ -21,6 +21,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.proyectofinal_jma.navigation.AppScreens
 import com.example.proyectofinal_jma.ui.theme.Shapes
+import java.util.Locale
 
 @Composable
 fun Language(
@@ -51,7 +54,8 @@ fun Language(
     ){
         Button(
             onClick = {
-                navController.navigate(route = AppScreens.SettingsScreen.route)
+                MainActivity.instancia.cambiarIdioma("es")
+                navController.navigate(route = AppScreens.MainScreen.route)
             },
             modifier = modifier.fillMaxWidth()
         ) {
@@ -61,16 +65,12 @@ fun Language(
                     style = MaterialTheme.typography.bodyLarge,
                     textAlign = TextAlign.Center,
                     modifier = modifier.weight(1f))
-                Divider(modifier = Modifier.width(1.dp),
-                    color = Color.Transparent)
-                Icon(
-                    painter = painterResource(id = R.drawable.check),
-                    contentDescription = null)
             }
         }
         Button(
             onClick = {
-                navController.navigate(route = AppScreens.SettingsScreen.route)
+                MainActivity.instancia.cambiarIdioma("en")
+                navController.navigate(route = AppScreens.MainScreen.route)
             },
             modifier = modifier.fillMaxWidth()
         ) {
@@ -80,11 +80,6 @@ fun Language(
                     style = MaterialTheme.typography.bodyLarge,
                     textAlign = TextAlign.Center,
                     modifier = modifier.weight(1f))
-                Divider(modifier = Modifier.width(1.dp),
-                    color = Color.Transparent)
-                Icon(
-                    painter = painterResource(id = R.drawable.check),
-                    contentDescription = null)
             }
         }
     }

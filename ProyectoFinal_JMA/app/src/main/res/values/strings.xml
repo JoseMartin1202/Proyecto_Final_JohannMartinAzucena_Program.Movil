@@ -1,9 +1,8 @@
 <resources>
     <string name="app_name">ProyectoFinal_JMA</string>
-    <string name="search">Search</string>
     <string name="buscar">Buscar</string>
     <string name="titulo">Titulo</string>
-    <string name="date">18/09/23</string>
+    <string name="date" translatable="false">18/09/23</string>
     <string name="ajustes">Ajustes</string>
     <string name="favoritos">Favoritos</string>
     <string name="añadir">Añadir</string>
@@ -17,7 +16,6 @@
     <string name="escogeTema">Escoge un tema</string>
     <string name="oscuro">Oscuro</string>
     <string name="claro">Claro</string>
-    <string name="dinamico">Dinámico</string>
     <string name="nota">Nota</string>
     <string name="tarea">Tarea</string>
     <string name="escribirTexto">Escribir texto</string>
@@ -37,8 +35,8 @@
     <string name="eliminarUltimoVideo">Borrar último video</string>
     <string name="eliminarUltimoAudio">Borrar último audio</string>
     <string name="imagenes">Fotos: </string>
-    <string name="videos">Videos: </string>
-    <string name="audios">Audios: </string>
+    <string name="videos" translatable="false">Videos: </string>
+    <string name="audios" translatable="false">Audios: </string>
     <string name="reproducir">Reproducir</string>
     <string name="opciones">Opciones</string>
     <string name="record_audio">Permiso para grabar</string>
@@ -51,5 +49,6 @@
     <string name="bienvenida">Bienvenido a NOTITAS+</string>
     <string name="tareaPend">Tarea pendiente</string>
     <string name="Recordatorio">Recordatorio fijado para:</string>
-    <string name="title_activity_audio_recorder">AudioRecorder</string>
+    <string name="mensajeRecordatorio">Tiene un recordatorio para: </string>
+    <string name="recordatorios">Recordatorios: </string>
 </resources>

@@ -252,7 +252,7 @@ fun EditNoteHomework(
                         ){
                             Button(
                                 onClick = {
-                                    navController.navigate(route = AppScreens.SettingsScreen.route)
+                                        navController.navigate(route = AppScreens.LanguageScreen.route)
                                 },
                                 modifier = modifier
                                     .height(40.dp)
@@ -261,7 +261,7 @@ fun EditNoteHomework(
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                             ) {
                                 Icon(
-                                    painter = painterResource(id = R.drawable.settings),
+                                    painter = painterResource(id = R.drawable.translate),
                                     contentDescription =null,
                                     modifier = modifier
                                         .aspectRatio(1f),
@@ -269,7 +269,7 @@ fun EditNoteHomework(
                                 )
                             }
                             Text(
-                                text = stringResource(id = R.string.ajustes),
+                                text = stringResource(id = R.string.idioma),
                                 style = MaterialTheme.typography.bodyMedium)
                         }
                         Column (
@@ -561,65 +561,17 @@ fun TopNoteEstructureMediumEdit(
             Row(
                 modifier =modifier.weight(.65f)
             ) {
-                Button(
-                    onClick = { },
-                    modifier = modifier
-                        .weight(.25f),
-                    contentPadding = PaddingValues(0.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
-                ){
-                    Icon(
-                        painter = painterResource(id = R.drawable.gallery),
-                        contentDescription = null,
-                        modifier = modifier
-                            .aspectRatio(1f),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
+                Row ( modifier =modifier.weight(.25f)){
+                    ImageCaptureEdit(viewModel = viewModel, modifier = modifier)
                 }
-                Button(
-                    onClick = { },
-                    modifier = modifier
-                        .weight(.25f),
-                    contentPadding = PaddingValues(0.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
-                ){
-                    Icon(
-                        painter = painterResource(id = R.drawable.video),
-                        contentDescription = null,
-                        modifier = modifier
-                            .aspectRatio(1f),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
+                Row ( modifier =modifier.weight(.25f)){
+                    VideoCaptureEdit(viewModel = viewModel, modifier = modifier)
                 }
-                Button(
-                    onClick = { },
-                    modifier = modifier
-                        .weight(.25f),
-                    contentPadding = PaddingValues(0.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.audio),
-                        contentDescription = null,
-                        modifier = modifier
-                            .aspectRatio(1f),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
+                Row ( modifier =modifier.weight(.25f)){
+                    AudioCaptureEdit(viewModel = viewModel, modifier = modifier)
                 }
-                Button(
-                    onClick = { },
-                    modifier = modifier
-                        .weight(.25f),
-                    contentPadding = PaddingValues(0.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.file),
-                        contentDescription = null,
-                        modifier = modifier
-                            .aspectRatio(1f),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
+                Row ( modifier =modifier.weight(.25f)){
+                    RecordatorioEdit(viewModel = viewModel, modifier = modifier)
                 }
             }
             Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_2)))
@@ -720,66 +672,18 @@ fun TopNoteEstructureExpandedEdit(
             modifier =modifier.weight(.25f),
             verticalArrangement = Arrangement.Center
         ){
-            Row {
-                Button(
-                    onClick = { },
-                    modifier = modifier
-                        .weight(.25f),
-                    contentPadding = PaddingValues(0.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
-                ){
-                    Icon(
-                        painter = painterResource(id = R.drawable.gallery),
-                        contentDescription = null,
-                        modifier = modifier
-                            .aspectRatio(1f),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
+            Row{
+                Row ( modifier =modifier.weight(.25f)){
+                    ImageCaptureEdit(viewModel = viewModel, modifier = modifier)
                 }
-                Button(
-                    onClick = { },
-                    modifier = modifier
-                        .weight(.25f),
-                    contentPadding = PaddingValues(0.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
-                ){
-                    Icon(
-                        painter = painterResource(id = R.drawable.video),
-                        contentDescription = null,
-                        modifier = modifier
-                            .aspectRatio(1f),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
+                Row ( modifier =modifier.weight(.25f)){
+                    VideoCaptureEdit(viewModel = viewModel, modifier = modifier)
                 }
-                Button(
-                    onClick = { },
-                    modifier = modifier
-                        .weight(.25f),
-                    contentPadding = PaddingValues(0.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.audio),
-                        contentDescription = null,
-                        modifier = modifier
-                            .aspectRatio(1f),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
+                Row ( modifier =modifier.weight(.25f)){
+                    AudioCaptureEdit(viewModel = viewModel, modifier = modifier)
                 }
-                Button(
-                    onClick = { },
-                    modifier = modifier
-                        .weight(.25f),
-                    contentPadding = PaddingValues(0.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.file),
-                        contentDescription = null,
-                        modifier = modifier
-                            .aspectRatio(1f),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
+                Row ( modifier =modifier.weight(.25f)){
+                    RecordatorioEdit(viewModel = viewModel, modifier = modifier)
                 }
             }
         }
@@ -1242,7 +1146,7 @@ fun ReproducirEdit(
                     Text(text = stringResource(id = R.string.cancelar))
                 }
             },
-            title = { Text(stringResource(id = R.string.cancelar)) }
+            title = { Text(stringResource(id = R.string.opciones)) }
         )
     }
 }
@@ -1345,8 +1249,11 @@ fun opcionesRecordatoriosEdit(
                             var time= LocalTime.now()
                             var time2= LocalTime.of(viewModel.hour,viewModel.minute,0)
                             val dif=time.until(time2, ChronoUnit.MILLIS)
-                            NotificacionesEdit(dif,viewModel)
+                            if(dif>0) {
+                                NotificacionesEdit(dif, viewModel)
+                            }
                             viewModel.updateOptionsRecordatorios(false)
+                            viewModel.updateCalcular(false)
                         }
                     }
                 }
@@ -1368,6 +1275,6 @@ fun NotificacionesEdit(
         LaunchedEffect(Unit){
             crearCanalNotificacion(idCanal,context)
         }
-        notificacionProgramada(context,milisegundos)
+        notificacionProgramada(context,milisegundos, viewModel.idNotificacion)
     }
 }

@@ -92,12 +92,17 @@ class NoteEntryViewModel(
     var hora by mutableStateOf("")
     var notificacion by mutableStateOf(false)
     var hour by mutableStateOf(0)
+    var idNotificacion by mutableStateOf(0)
     var fileNumb by mutableStateOf(0)
     var minute by mutableStateOf(0)
     var uriMostrar by mutableStateOf(Uri.EMPTY)
 
     fun updateUriMostrar(uri: Uri?){
         uriMostrar=uri
+    }
+
+    fun updateIdNotificacion(){
+        idNotificacion+=1
     }
 
     //IMAGENES
@@ -267,39 +272,3 @@ fun NotaEntity.toNoteDetails(): NoteDetails = NoteDetails(
     fecha = fecha,
     tipo= tipo
 )
-
-
-
-//VIDEOS
-/*
-data class VideoDetails(
-    var idNota: Int = 0,
-    var uriVideo: String = ""
-)
-
-fun VideoNotaEntity.toImage():VideoNotaEntity=VideoNotaEntity(
-    idNota=idNota,
-    uriVideo = uriVideo
-)
-
-fun VideoNotaEntity.toImageDetails():VideoDetails= VideoDetails(
-    idNota=idNota,
-    uriVideo = uriVideo
-)
-
-//Audios
-data class AudioDetails(
-    var idNota: Int = 0,
-    var uriAudio: String = ""
-)
-
-fun AudioNotaEntity.toImage():AudioNotaEntity=AudioNotaEntity(
-    idNota=idNota,
-    uriAudio = uriAudio
-)
-
-fun AudioNotaEntity.toImageDetails():AudioDetails= AudioDetails(
-    idNota=idNota,
-    uriAudio = uriAudio
-)*/
-

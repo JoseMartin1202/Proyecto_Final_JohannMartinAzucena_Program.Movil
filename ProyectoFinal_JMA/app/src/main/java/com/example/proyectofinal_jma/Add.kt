@@ -7,7 +7,6 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
 import android.util.Log
@@ -35,13 +34,13 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -50,7 +49,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TimePicker
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -69,9 +67,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.core.content.FileProvider
-import androidx.core.net.toFile
-import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -94,16 +89,9 @@ import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ui.PlayerView
 import kotlinx.coroutines.launch
 import java.io.File
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.time.Instant
-import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.Calendar
-import java.util.Locale
 
 
 @Composable
@@ -187,6 +175,7 @@ fun AddNoteHomework(
     viewModel: NoteEntryViewModel = viewModel(factory = AppViewModelProvider.Factory),
 ) {
     val windowsSize= rememberWindowInfo()
+    viewModel.updateOptionNote(stringResource(id = R.string.nota))
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -230,7 +219,7 @@ fun AddNoteHomework(
                         ){
                             Button(
                                 onClick = {
-                                    navController.navigate(route = AppScreens.SettingsScreen.route)
+                                    navController.navigate(route = AppScreens.LanguageScreen.route)
                                 },
                                 modifier = modifier
                                     .height(40.dp)
@@ -239,7 +228,7 @@ fun AddNoteHomework(
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                             ) {
                                 Icon(
-                                    painter = painterResource(id = R.drawable.settings),
+                                    painter = painterResource(id = R.drawable.translate),
                                     contentDescription =null,
                                     modifier = modifier
                                         .aspectRatio(1f),
@@ -247,7 +236,7 @@ fun AddNoteHomework(
                                 )
                             }
                             Text(
-                                text = stringResource(id = R.string.ajustes),
+                                text = stringResource(id = R.string.idioma),
                                 style = MaterialTheme.typography.bodyMedium)
                         }
                         Column (
@@ -573,21 +562,17 @@ fun TopNoteEstructureMedium(
             Row(
                 modifier =modifier.weight(.65f)
             ) {
-                Row(
-                    modifier =modifier.weight(.65f)
-                ) {
-                    Row ( modifier =modifier.weight(.25f)){
-                        ImageCapture(viewModel = viewModel, modifier = modifier)
-                    }
-                    Row ( modifier =modifier.weight(.25f)){
-                        VideoCapture(viewModel = viewModel, modifier = modifier)
-                    }
-                    Row ( modifier =modifier.weight(.25f)){
-                        AudioCapture(viewModel = viewModel, modifier = modifier)
-                    }
-                    Row ( modifier =modifier.weight(.25f)){
-                        Recordatorio(viewModel = viewModel, modifier = modifier)
-                    }
+                Row ( modifier =modifier.weight(.25f)){
+                    ImageCapture(viewModel = viewModel, modifier = modifier)
+                }
+                Row ( modifier =modifier.weight(.25f)){
+                    VideoCapture(viewModel = viewModel, modifier = modifier)
+                }
+                Row ( modifier =modifier.weight(.25f)){
+                    AudioCapture(viewModel = viewModel, modifier = modifier)
+                }
+                Row ( modifier =modifier.weight(.25f)){
+                    Recordatorio(viewModel = viewModel, modifier = modifier)
                 }
             }
             Spacer(Modifier.width(dimensionResource(id = R.dimen.padding_2)))
@@ -1072,6 +1057,7 @@ fun viewAudios(
                         enabled = viewModel.cantidadAudios!=0,
                         onClick = {
                             viewModel.deleteLastUriAudios()
+                            viewModel.updateFileNumb(viewModel.fileNumb-1)
                         },
                         contentPadding = PaddingValues(10.dp)) {
                         Text(text = stringResource(id = R.string.eliminarUltimoAudio))
@@ -1130,7 +1116,7 @@ fun Reproducir(
                     Text(text = stringResource(id = R.string.cancelar))
                 }
             },
-            title = { Text(stringResource(id = R.string.cancelar)) }
+            title = { Text(stringResource(id = R.string.opciones)) }
         )
 
     }
@@ -1256,8 +1242,11 @@ fun opcionesRecordatorios(
                             var time2=LocalTime.of(viewModel.hour,viewModel.minute,0)
                             val dif=time.until(time2, ChronoUnit.MILLIS)
                             Log.d("micros",""+dif)
-                            Notificaciones(dif,viewModel)
+                            if(dif>0){
+                                Notificaciones(dif,viewModel)
+                            }
                             viewModel.updateOptionsRecordatorios(false)
+                            viewModel.updateCalcular(false)
                         }
                     }
                 }
@@ -1317,7 +1306,8 @@ fun Notificaciones(
         LaunchedEffect(Unit){
             crearCanalNotificacion(idCanal,context)
         }
-        notificacionProgramada(context,milisegundos)
+        viewModel.updateIdNotificacion()
+        notificacionProgramada(context,milisegundos,viewModel.idNotificacion)
     }
 }
 
@@ -1341,13 +1331,14 @@ fun crearCanalNotificacion(
 }
 
 @SuppressLint("ScheduleExactAlarm")
-fun notificacionProgramada(context: Context, milisegundos:Long){
+fun notificacionProgramada(context: Context, milisegundos:Long,id:Int){
     val intent=Intent(context,NotificacionProgramada::class.java)
+    Log.d("micros",""+ id)
     val pendingIntent=PendingIntent.getBroadcast(
         context,
-        NOTIFICACION_ID,
+        id,
         intent,
-        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        PendingIntent.FLAG_IMMUTABLE
     )
 
     var alarmManager=context.getSystemService(Context.ALARM_SERVICE) as AlarmManager

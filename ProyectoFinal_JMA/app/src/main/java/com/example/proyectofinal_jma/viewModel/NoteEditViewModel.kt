@@ -143,6 +143,11 @@ class NoteEditViewModel(
     var hour by mutableStateOf(0)
     var minute by mutableStateOf(0)
     var fileNumb by mutableStateOf(0)
+    var idNotificacion by mutableStateOf(0)
+
+    fun updateIdNotificacion(){
+        idNotificacion+=1
+    }
 
     fun updateFileNumb(int: Int){
         fileNumb=int

@@ -9,15 +9,9 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.proyectofinal_jma.AddNoteHomework
 import com.example.proyectofinal_jma.App
-import com.example.proyectofinal_jma.Done
 import com.example.proyectofinal_jma.EditNoteHomework
 import com.example.proyectofinal_jma.LanguageSettings
-import com.example.proyectofinal_jma.MainActivity
-import com.example.proyectofinal_jma.SettingsApp
-import com.example.proyectofinal_jma.ThemesList
-import com.example.proyectofinal_jma.Trash
 import com.example.proyectofinal_jma.data.NotaEntity
-import com.example.proyectofinal_jma.viewModel.NoteDetails
 
 @Composable
 fun AppNavigation(){
@@ -45,20 +39,8 @@ fun AppNavigation(){
         ){
             EditNoteHomework(modifier = Modifier,navController)
         }
-        composable(route =AppScreens.DoneScreen.route){
-            Done(modifier = Modifier,navController)
-        }
         composable(route =AppScreens.LanguageScreen.route){
             LanguageSettings(modifier = Modifier,navController)
-        }
-        composable(route =AppScreens.TrashScreen.route){
-            Trash(modifier = Modifier,navController)
-        }
-        composable(route =AppScreens.ThemesScreen.route){
-            ThemesList(modifier = Modifier,navController)
-        }
-        composable(route =AppScreens.SettingsScreen.route){
-            SettingsApp(modifier = Modifier,navController)
         }
     }
 }

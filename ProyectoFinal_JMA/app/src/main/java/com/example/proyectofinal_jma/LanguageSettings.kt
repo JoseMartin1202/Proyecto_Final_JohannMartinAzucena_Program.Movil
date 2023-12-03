@@ -122,7 +122,7 @@ fun LanguageSettings(
                         ){
                             Button(
                                 onClick = {
-                                    navController.navigate(route = AppScreens.SettingsScreen.route)
+                                    navController.navigate(route = AppScreens.LanguageScreen.route)
                                 },
                                 modifier = modifier
                                     .height(40.dp)
@@ -131,15 +131,15 @@ fun LanguageSettings(
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                             ) {
                                 Icon(
-                                    painter = painterResource(id = R.drawable.settings),
+                                    painter = painterResource(id = R.drawable.translate),
                                     contentDescription =null,
                                     modifier = modifier
-                                        .aspectRatio(1f),
+                                        .aspectRatio(.8f),
                                     tint = MaterialTheme.colorScheme.secondary
                                 )
                             }
                             Text(
-                                text = stringResource(id = R.string.ajustes),
+                                text = stringResource(id = R.string.idioma),
                                 style = MaterialTheme.typography.bodyMedium)
                         }
                         Column (

@@ -391,7 +391,7 @@ fun App(
                                     painter = painterResource(id = R.drawable.translate),
                                     contentDescription =null,
                                     modifier = modifier
-                                        .aspectRatio(1f),
+                                        .aspectRatio(.8f),
                                     tint = MaterialTheme.colorScheme.secondary
                                 )
                             }

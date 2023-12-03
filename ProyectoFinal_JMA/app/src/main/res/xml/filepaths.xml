@@ -13,4 +13,11 @@
     <cache-path
         name="my_videos"
         path="videos/" />
+
+    <files-path
+        name="my_audios"
+        path="audios/" />
+    <cache-path
+        name="my_audios"
+        path="audios/" />
 </paths>

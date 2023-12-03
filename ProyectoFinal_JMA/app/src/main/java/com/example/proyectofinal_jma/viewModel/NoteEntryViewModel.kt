@@ -50,6 +50,7 @@ class NoteEntryViewModel(
             var id=notesRepository.insertNote(noteUiState.noteDetails.toNote())
             saveImages(id)
             saveVideos(id)
+            saveAudios(id)
         }
     }
 
@@ -67,6 +68,13 @@ class NoteEntryViewModel(
         }
     }
 
+    suspend fun saveAudios(id:Long){
+        urisAudiosList.forEach{uri->
+            var audioNota=AudioNotaEntity(0, id.toInt(),""+uri)
+            notesRepository.insertAudio(audioNota)
+        }
+    }
+
     private fun validateInput(uiState: NoteDetails = noteUiState.noteDetails): Boolean {
         return with(uiState) {
             titulo.isNotBlank() && contenido.isNotBlank() && fecha.isNotBlank()
@@ -79,13 +87,12 @@ class NoteEntryViewModel(
     var showCancel by mutableStateOf(false)
     var recordatorios by mutableStateOf(false)
     var showOptionRecordatorios by mutableStateOf(false)
-    var showCalendar by mutableStateOf(false)
     var showReloj by mutableStateOf(false)
-    var fecha by mutableStateOf("")
     var calcular by mutableStateOf(false)
     var hora by mutableStateOf("")
     var notificacion by mutableStateOf(false)
     var hour by mutableStateOf(0)
+    var fileNumb by mutableStateOf(0)
     var minute by mutableStateOf(0)
     var uriMostrar by mutableStateOf(Uri.EMPTY)
 
@@ -102,10 +109,9 @@ class NoteEntryViewModel(
     var hasVideo by mutableStateOf(false)
     var mostrarVideo by mutableStateOf(false)
     var cantidadVideos by mutableStateOf(0)
-    var videoUri by mutableStateOf<Uri?>(null)
     var urisVideoslist= mutableStateListOf<Uri>()
     //AUDIOS
-    val urisAudiosList = mutableStateListOf<Uri>()
+    val urisAudiosList = mutableStateListOf<Uri?>()
     var hasAudio by mutableStateOf(false)
     var cantidadAudios by mutableStateOf(0)
     var mostrarAudio by mutableStateOf(false)
@@ -113,6 +119,10 @@ class NoteEntryViewModel(
 
     fun updateShowOptionsAudio(boolean: Boolean){
         showOptionsAudio= boolean
+    }
+
+    fun updateFileNumb(int: Int){
+        fileNumb=int
     }
 
     fun updateMostrarAudio(boolean: Boolean){
@@ -127,9 +137,6 @@ class NoteEntryViewModel(
     }
     fun updateMinute(int: Int){
         minute= int
-    }
-    fun updateShowCalendar(boolean: Boolean){
-        showCalendar= boolean
     }
 
     fun updateCalcular(boolean: Boolean){
@@ -159,9 +166,6 @@ class NoteEntryViewModel(
         showReloj= boolean
     }
 
-    fun updateFecha(text: String){
-        fecha= text
-    }
     fun updateHora(text: String){
         hora= text
     }
@@ -193,10 +197,6 @@ class NoteEntryViewModel(
         hasVideo= boolean
     }
 
-    fun updateVideoUri(uri: Uri?){
-        videoUri= uri
-    }
-
     fun updateUrisVideosList(uri: Uri){
         urisVideoslist.add(uri)
         cantidadVideos=urisVideoslist.size
@@ -212,10 +212,10 @@ class NoteEntryViewModel(
     }
 
     //AUDIOS
-    fun updateUrisAudiosList(uri: Uri){
+    fun updateUrisAudiosList(uri: Uri?){
         urisAudiosList.add(uri)
         cantidadAudios=urisAudiosList.size
-    }
+}
 
     fun deleteLastUriAudios(){
         urisAudiosList.removeLast()

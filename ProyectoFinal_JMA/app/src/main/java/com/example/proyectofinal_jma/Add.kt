@@ -7,6 +7,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
 import android.util.Log
@@ -29,6 +30,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -44,6 +46,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TimePicker
@@ -66,6 +69,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.core.content.FileProvider
 import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -75,11 +79,12 @@ import com.example.proyectofinal_jma.Notification.NotificacionProgramada
 import com.example.proyectofinal_jma.Notification.NotificacionProgramada.Companion.NOTIFICACION_ID
 import com.example.proyectofinal_jma.data.DataSourceNotesOrHomework
 import com.example.proyectofinal_jma.navigation.AppScreens
+import com.example.proyectofinal_jma.playback.AndroidAudioPlayer
+import com.example.proyectofinal_jma.record.AndroidAudioRecorder
 import com.example.proyectofinal_jma.sizeScreen.WindowInfo
 import com.example.proyectofinal_jma.sizeScreen.rememberWindowInfo
 import com.example.proyectofinal_jma.ui.theme.Shapes
 import com.example.proyectofinal_jma.viewModel.AppViewModelProvider
-import com.example.proyectofinal_jma.viewModel.AudioViewModel
 import com.example.proyectofinal_jma.viewModel.NoteDetails
 import com.example.proyectofinal_jma.viewModel.NoteEntryViewModel
 import com.example.proyectofinal_jma.viewModel.NoteUiState
@@ -104,25 +109,22 @@ import java.util.Locale
 @Composable
 fun Add(
     contentPadding: PaddingValues,
-    viewModel: NoteEntryViewModel = viewModel(factory = AppViewModelProvider.Factory),
-    audioViewModel:AudioViewModel
+    viewModel: NoteEntryViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ){
-    val coroutineScope = rememberCoroutineScope()
+    val context= LocalContext.current
+    val audioRecorder = AndroidAudioRecorder(context)
     optionsAudio(
-        show = viewModel.showOptionsAudio ,
+        show =  viewModel.showOptionsAudio ,
         onDismiss = {
-            audioViewModel.recorder.stop()
+            audioRecorder.stop()
             viewModel.updateShowOptionsAudio(false)
         },
         onConfirm = {
-            coroutineScope.launch {
-                File(cache, "Grabacion.mp3").also{
-                    audioViewModel.recorder.start(it)
-                    audioViewModel.audioFile = it
-                    viewModel.updateUrisAudiosList(it.toUri())
-                    viewModel.updateHasAudio(true)
-                }
-            }
+            viewModel.updateFileNumb(viewModel.fileNumb+1)
+            Log.d("filename",""+viewModel.fileNumb)
+            audioRecorder.start(File("dummy"),viewModel.fileNumb)
+            viewModel.updateHasAudio(true)
+            viewModel.updateUrisAudiosList(audioRecorder.getContentUri())
         },
         titulo = stringResource(id = R.string.tituloAudio),
         text = stringResource(id = R.string.contenidoAudio)
@@ -134,8 +136,7 @@ fun Add(
             NoteEntryBody(
                 noteUiState = viewModel.noteUiState,
                 onNoteValueChange = viewModel::updateUiState,
-                viewModelPhoto=viewModel,
-                audioViewModel=audioViewModel)
+                viewModelPhoto=viewModel)
         }
     }
 }
@@ -144,14 +145,12 @@ fun Add(
 fun NoteEntryBody(
     noteUiState: NoteUiState,
     onNoteValueChange: (NoteDetails) -> Unit,
-    viewModelPhoto: NoteEntryViewModel,
-    audioViewModel: AudioViewModel
+    viewModelPhoto: NoteEntryViewModel
 ) {
     NoteInputForm(
         noteDetails = noteUiState.noteDetails,
         onValueChange =  onNoteValueChange,
-        viewModel = viewModelPhoto,
-        audioViewModel = audioViewModel)
+        viewModel = viewModelPhoto)
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -160,8 +159,7 @@ fun NoteEntryBody(
 fun NoteInputForm(
     noteDetails: NoteDetails,
     onValueChange: (NoteDetails) -> Unit = {},
-    viewModel: NoteEntryViewModel,
-    audioViewModel: AudioViewModel
+    viewModel: NoteEntryViewModel
 ) {
     TextField(
         value = noteDetails.contenido,
@@ -177,7 +175,7 @@ fun NoteInputForm(
         textStyle = MaterialTheme.typography.bodyMedium)
     viewImages(viewModel = viewModel)
     viewVideos(viewModel = viewModel)
-    viewAudios(viewModel = viewModel, audioViewModel = audioViewModel)
+    viewAudios(viewModel = viewModel)
 }
 
 
@@ -187,7 +185,6 @@ fun AddNoteHomework(
     modifier:  Modifier= Modifier,
     navController: NavController,
     viewModel: NoteEntryViewModel = viewModel(factory = AppViewModelProvider.Factory),
-    audioViewModel: AudioViewModel = viewModel()
 ) {
     val windowsSize= rememberWindowInfo()
     Scaffold(
@@ -310,7 +307,7 @@ fun AddNoteHomework(
             }
         }
     ) {
-        Add(contentPadding = it,viewModel, audioViewModel = audioViewModel)
+        Add(contentPadding = it,viewModel)
     }
 }
 
@@ -1019,6 +1016,7 @@ fun viewVideos(
                         enabled = viewModel.cantidadVideos!=0,
                         onClick = {
                             viewModel.deleteLastUriVideos()
+                            viewModel.updateFileNumb(viewModel.fileNumb--)
                         },
                         contentPadding = PaddingValues(10.dp)) {
                         Text(text = stringResource(id = R.string.eliminarUltimoVideo))
@@ -1052,7 +1050,6 @@ fun viewVideos(
 @Composable
 fun viewAudios(
     viewModel: NoteEntryViewModel,
-    audioViewModel: AudioViewModel,
     modifier:Modifier=Modifier
 ) {
     Row(
@@ -1096,30 +1093,46 @@ fun viewAudios(
                         ){
                             Icon(painter = painterResource(id = R.drawable.audio_port), contentDescription = "")
                         }
+                        Log.d("audiosPrueba",""+uri)
                     }
                 }
-                Reproducir(viewModel = viewModel, audioViewModel = audioViewModel, uri = viewModel.uriMostrar )
+                Reproducir(viewModel = viewModel, uri = viewModel.uriMostrar )
             }
         }
     }
 }
 
+
 @Composable
 fun Reproducir(
     viewModel: NoteEntryViewModel,
-    audioViewModel: AudioViewModel,
     uri: Uri
 ){
     if(viewModel.mostrarAudio){
-        Dialog(
-            properties = DialogProperties(dismissOnClickOutside = true),
+        val audioPlayer = AndroidAudioPlayer(LocalContext.current)
+        AlertDialog(
             onDismissRequest = {
-                audioViewModel.player.stop()
                 viewModel.updateMostrarAudio(false)
-            }
-        ) {
-            audioViewModel.player.playFile(uri.toFile())
-        }
+                audioPlayer.stop()
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    audioPlayer.playFile(uri)
+                }) {
+                    Text(text = stringResource(id = R.string.reproducir))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    audioPlayer.stop()
+                    viewModel.updateMostrarAudio(false)
+                }) {
+                    Text(text = stringResource(id = R.string.cancelar))
+                }
+            },
+            title = { Text(stringResource(id = R.string.cancelar)) }
+        )
+
     }
 }
 

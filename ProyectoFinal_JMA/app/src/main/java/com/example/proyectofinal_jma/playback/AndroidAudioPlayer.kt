@@ -2,22 +2,23 @@ package com.example.proyectofinal_jma.playback
 
 import android.content.Context
 import android.media.MediaPlayer
+import android.net.Uri
 import androidx.core.net.toUri
 import java.io.File
 
 class AndroidAudioPlayer(
     private val context: Context
-): AudioPlayer {
+) {
     private var player: MediaPlayer? = null
 
-    override fun playFile(file: File) {
-        MediaPlayer.create(context, file.toUri()).apply {
+    fun playFile(uri: Uri) {
+        MediaPlayer.create(context, uri).apply {
             player = this
             start()
         }
     }
 
-    override fun stop() {
+    fun stop() {
         player?.stop()
         player?.release()
         player = null

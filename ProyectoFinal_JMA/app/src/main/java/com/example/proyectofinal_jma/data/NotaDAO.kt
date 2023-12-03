@@ -54,4 +54,19 @@ interface NotaDAO {
     @Delete
     suspend fun delete(videoNotaEntity: VideoNotaEntity)
 
+    //Audios
+    @Query("SELECT uriAudio from audios WHERE idNota= :id")
+    fun getAllAudios(id: Int): Flow<List<String>>
+
+    @Query("DELETE from audios WHERE idNota= :id")
+    suspend fun deleteAllAudios(id: Int)
+
+    @Insert
+    suspend fun insert(audioNotaEntity: AudioNotaEntity)
+
+    @Update
+    suspend fun update(audioNotaEntity: AudioNotaEntity)
+
+    @Delete
+    suspend fun delete(audioNotaEntity: AudioNotaEntity)
 }

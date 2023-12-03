@@ -18,4 +18,9 @@ class OfflineNotesRepository(private val notaDao: NotaDAO) : NotesRepository{
     override suspend fun insertVideo(videoNotaEntity: VideoNotaEntity) = notaDao.insert(videoNotaEntity)
     override suspend fun deleteVideo(videoNotaEntity: VideoNotaEntity) = notaDao.delete(videoNotaEntity)
     override suspend fun updateVideo(videoNotaEntity: VideoNotaEntity) = notaDao.update(videoNotaEntity)
+    override fun getAllAudios(id: Int): Flow<List<String>> = notaDao.getAllAudios(id)
+    override suspend fun deleteAllAudios(id: Int)= notaDao.deleteAllAudios(id)
+    override suspend fun insertAudio(audioNotaEntity: AudioNotaEntity) = notaDao.insert(audioNotaEntity)
+    override suspend fun deleteAudio(audioNotaEntity: AudioNotaEntity) = notaDao.delete(audioNotaEntity)
+    override suspend fun updateAudio(audioNotaEntity: AudioNotaEntity) = notaDao.update(audioNotaEntity)
 }

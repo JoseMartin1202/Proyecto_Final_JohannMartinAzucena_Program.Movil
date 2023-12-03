@@ -13,6 +13,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.proyectofinal_jma.ItemEditDestination
+import com.example.proyectofinal_jma.data.AudioNotaEntity
 import com.example.proyectofinal_jma.data.ImageNotaEntity
 import com.example.proyectofinal_jma.data.NotaEntity
 import com.example.proyectofinal_jma.data.NotesRepository
@@ -52,6 +53,9 @@ class NoteEditViewModel(
             urisVideoslist.clear()
             urisVideoslist.addAll(getAllVideos())
             updateCantidadVideos()
+            urisAudioslist.clear()
+            urisAudioslist.addAll(getAllAudios())
+            updateCantidadAudios()
         }
     }
 
@@ -73,6 +77,15 @@ class NoteEditViewModel(
         return lista2
     }
 
+    suspend fun getAllAudios():SnapshotStateList<Uri>{
+        var lista=notesRepository.getAllAudios(itemId).first()
+        var lista2= mutableStateListOf<Uri>()
+        for((indice) in lista.withIndex()){
+            lista2.add(Uri.parse(lista[indice]))
+        }
+        return lista2
+    }
+
     fun updateUiStateEdit(noteDetails: NoteDetailsEdit) {
         noteUiStateEdit =
             NoteUiStateEdit(noteDetails = noteDetails, isEntryValid = validateInputEdit(noteDetails))
@@ -84,6 +97,7 @@ class NoteEditViewModel(
             notesRepository.updateNote(noteUiStateEdit.noteDetails.toNoteEdit())
             actualizarImagenes()
             actualizarVideos()
+            actualizarAudios()
         }
     }
 
@@ -103,6 +117,14 @@ class NoteEditViewModel(
         }
     }
 
+    suspend fun actualizarAudios(){
+        notesRepository.deleteAllAudios(itemId)
+        urisAudioslist.forEach{uri->
+            var audioNota= AudioNotaEntity(0, itemId,""+uri)
+            notesRepository.insertAudio(audioNota)
+        }
+    }
+
     private fun validateInputEdit(uiState: NoteDetailsEdit = noteUiStateEdit.noteDetails): Boolean {
         return with(uiState) {
             titulo.isNotBlank() && contenido.isNotBlank() && fecha.isNotBlank()
@@ -112,6 +134,49 @@ class NoteEditViewModel(
     var isExpanded by mutableStateOf(false)
     var showCancelEdit by mutableStateOf(false)
     var recordatorios by mutableStateOf(false)
+    var showOptionRecordatorios by mutableStateOf(false)
+    var uriMostrar by mutableStateOf(Uri.EMPTY)
+    var showReloj by mutableStateOf(false)
+    var calcular by mutableStateOf(false)
+    var hora by mutableStateOf("")
+    var notificacion by mutableStateOf(false)
+    var hour by mutableStateOf(0)
+    var minute by mutableStateOf(0)
+    var fileNumb by mutableStateOf(0)
+
+    fun updateFileNumb(int: Int){
+        fileNumb=int
+    }
+
+    fun updateHour(int: Int){
+        hour= int
+    }
+    fun updateMinute(int: Int){
+        minute= int
+    }
+    fun updateOptionsRecordatorios(boolean: Boolean){
+        showOptionRecordatorios= boolean
+    }
+    fun updateCalcular(boolean: Boolean){
+        calcular= boolean
+    }
+
+    fun updateNotificaciones(boolean: Boolean){
+        notificacion= boolean
+    }
+
+    fun updateHora(text: String){
+        hora= text
+    }
+
+    fun updateShowReloj(boolean: Boolean){
+        showReloj= boolean
+    }
+
+
+    fun updateUriMostrar(uri: Uri?){
+        uriMostrar=uri
+    }
 
     fun updateShowCancelEdit(boolean: Boolean){
         showCancelEdit= boolean
@@ -140,20 +205,20 @@ class NoteEditViewModel(
     var hasVideo by mutableStateOf(false)
     var mostrarVideo by mutableStateOf(false)
     var cantidadVideos by mutableStateOf(0)
-    //var videoUri by mutableStateOf<Uri?>(null)
+
     //AUDIOS
     var hasAudio by mutableStateOf(false)
     var cantidadAudios by mutableStateOf(0)
-    var audioUri by mutableStateOf<Uri?>(null)
+    var showOptionsAudio by mutableStateOf(false)
     var urisAudioslist= mutableStateListOf<Uri>()
+    var mostrarAudio by mutableStateOf(false)
 
     //IMAGENES
     fun updatehasImage(boolean: Boolean){
         hasImage= boolean
     }
-
-    fun updateIsEditar(boolean: Boolean){
-        isEditar=boolean
+    fun updateShowOptionsAudio(boolean: Boolean){
+        showOptionsAudio= boolean
     }
 
     fun updateImageUri(uri: Uri?){
@@ -206,10 +271,6 @@ class NoteEditViewModel(
         hasAudio= boolean
     }
 
-    fun updateAudioUri(uri: Uri?){
-        audioUri= uri
-    }
-
     fun updateUrisAudiosList(uri: Uri){
         urisAudioslist.add(uri)
         cantidadAudios=urisAudioslist.size
@@ -219,6 +280,19 @@ class NoteEditViewModel(
         urisAudioslist.removeLast()
         cantidadAudios=urisAudioslist.size
     }
+
+    fun updateMostrarAudio(boolean: Boolean){
+        mostrarAudio= boolean
+    }
+
+    fun updateCantidadAudios(){
+        cantidadAudios=urisAudioslist.size
+    }
+
+    fun updateHasAudio(boolean: Boolean){
+        hasAudio= boolean
+    }
+
 }
 
 data class NoteUiStateEdit(

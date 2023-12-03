@@ -25,4 +25,10 @@ interface NotesRepository {
     suspend fun insertVideo(videoNotaEntity: VideoNotaEntity)
     suspend fun deleteVideo(videoNotaEntity: VideoNotaEntity)
     suspend fun updateVideo(videoNotaEntity: VideoNotaEntity)
+
+    fun getAllAudios(id: Int): Flow<List<String>>
+    suspend fun deleteAllAudios(id: Int)
+    suspend fun insertAudio(audioNotaEntity: AudioNotaEntity)
+    suspend fun deleteAudio(audioNotaEntity: AudioNotaEntity)
+    suspend fun updateAudio(audioNotaEntity: AudioNotaEntity)
 }

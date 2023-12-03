@@ -22,10 +22,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -35,9 +37,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TimePicker
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,6 +57,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.core.net.toFile
+import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.NavController
@@ -59,6 +67,8 @@ import com.example.proyectofinal_jma.data.DataSourceNotesOrHomework
 import com.example.proyectofinal_jma.data.NotaEntity
 import com.example.proyectofinal_jma.navigation.AppScreens
 import com.example.proyectofinal_jma.navigation.NavigationDestination
+import com.example.proyectofinal_jma.playback.AndroidAudioPlayer
+import com.example.proyectofinal_jma.record.AndroidAudioRecorder
 import com.example.proyectofinal_jma.sizeScreen.WindowInfo
 import com.example.proyectofinal_jma.sizeScreen.rememberWindowInfo
 import com.example.proyectofinal_jma.ui.theme.ProyectoFinal_JMATheme
@@ -74,6 +84,9 @@ import com.example.proyectofinal_jma.viewModel.toNoteDetails
 import com.example.proyectofinal_jma.viewModel.toNoteDetailsEdit
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import kotlinx.coroutines.launch
+import java.io.File
+import java.time.LocalTime
+import java.time.temporal.ChronoUnit
 
 object ItemEditDestination : NavigationDestination {
     override val route = "item_details"
@@ -87,6 +100,23 @@ fun Edit(
     contentPadding: PaddingValues,
     viewModel: NoteEditViewModel
 ){
+    val context= LocalContext.current
+    val audioRecorder = AndroidAudioRecorder(context)
+    optionsAudio(
+        show =  viewModel.showOptionsAudio ,
+        onDismiss = {
+            audioRecorder.stop()
+            viewModel.updateShowOptionsAudio(false)
+        },
+        onConfirm = {
+            viewModel.updateFileNumb(viewModel.fileNumb+1)
+            Log.d("filename",""+viewModel.fileNumb)
+            audioRecorder.start(File("dummy"),viewModel.fileNumb)
+            viewModel.updateHasAudio(true)
+        },
+        titulo = stringResource(id = R.string.tituloAudio),
+        text = stringResource(id = R.string.contenidoAudio)
+    )
     LazyColumn(
         contentPadding=contentPadding,
         modifier = Modifier.padding(top = 10.dp, start = 8.dp, end = 8.dp )){
@@ -103,7 +133,7 @@ fun Edit(
 fun NoteEditBody(
     noteUiState: NoteUiStateEdit,
     onNoteValueChange: (NoteDetailsEdit) -> Unit,
-    viewModel: NoteEditViewModel,
+    viewModel: NoteEditViewModel
 ) {
     NoteInputEditForm(
         noteDetails = noteUiState.noteDetails,
@@ -117,7 +147,7 @@ fun NoteEditBody(
 fun NoteInputEditForm(
     noteDetails: NoteDetailsEdit,
     onValueChange: (NoteDetailsEdit) -> Unit = {},
-    viewModel: NoteEditViewModel,
+    viewModel: NoteEditViewModel
 ) {
     TextField(
         value = noteDetails.contenido,
@@ -873,7 +903,6 @@ fun VideoCaptureEdit(
         onResult = { success ->
             if(success){
                 viewModel.updatehasVideo(success)
-                viewModel.updateVideoUri(uri)
                 viewModel.updateUrisVideosList(uri)
             }
         }
@@ -929,7 +958,7 @@ fun RecordatorioEdit(
 ){
     Button(
         onClick = {
-
+            viewModel.updateOptionsRecordatorios(true)
         },
         enabled=viewModel.recordatorios,
         contentPadding = PaddingValues(0.dp),
@@ -952,6 +981,8 @@ fun RecordatorioEdit(
                 tint = MaterialTheme.colorScheme.secondary
             )
         }
+        RelojEdit(viewModel = viewModel)
+        opcionesRecordatoriosEdit(viewModel = viewModel)
     }
 }
 
@@ -996,6 +1027,7 @@ fun viewImagesEdit(
                         Surface(
                             onClick = {
                                 viewModel.updateMostrarImagen(true)
+                                viewModel.updateUriMostrar(uri)
                             },
                             modifier = modifier
                                 .size(width = 100.dp, height = 120.dp)
@@ -1006,7 +1038,7 @@ fun viewImagesEdit(
                                 contentDescription = "Selected image",
                             )
                         }
-                        mostrarImagenEdit(viewModel = viewModel, uri = uri)
+                        mostrarImagenEdit(viewModel = viewModel, uri = viewModel.uriMostrar)
                     }
                 }
             }
@@ -1073,13 +1105,14 @@ fun viewVideosEdit(
                         Surface(
                             onClick = {
                                 viewModel.updateMostrarVideo(true)
+                                viewModel.updateUriMostrar(uri)
                             },
                             modifier = modifier
                                 .size(width = 100.dp, height = 120.dp)
                         ){
                             Icon(painter = painterResource(id = R.drawable.video_logo), contentDescription = "")
                         }
-                        mostrarVideoEdit(viewModel = viewModel, uri = uri)
+                        mostrarVideoEdit(viewModel = viewModel, uri = viewModel.uriMostrar)
                     }
                 }
             }
@@ -1111,7 +1144,7 @@ fun AudioCaptureEdit(
 ){
     Button(
         onClick = {
-
+            viewModel.updateShowOptionsAudio(true)
         },
         contentPadding = PaddingValues(0.dp),
         colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
@@ -1151,28 +1184,190 @@ fun viewAudiosEdit(
                     Button(
                         enabled = viewModel.cantidadAudios!=0,
                         onClick = {
-                            viewModel.deleteLastUriVideos()
+                            viewModel.deleteLastUriAudios()
+                            viewModel.updateFileNumb(viewModel.fileNumb-1)
                         },
                         contentPadding = PaddingValues(10.dp)) {
                         Text(text = stringResource(id = R.string.eliminarUltimoAudio))
                     }
                 }
             }
-            if (viewModel.hasAudio){
+            if (viewModel.hasAudio || (viewModel.isEditar  && !viewModel.hasAudio)){
                 LazyRow(modifier = modifier
                     .fillMaxWidth()
                     .padding(top = 4.dp)) {
                     items(viewModel.urisAudioslist.toList()) { uri ->
                         Surface(
-                            onClick = {  },
+                            onClick = {
+                                viewModel.updateMostrarAudio(true)
+                                viewModel.updateUriMostrar(uri)
+                            },
                             modifier = modifier
                                 .size(width = 100.dp, height = 120.dp)
                         ){
+                            Icon(painter = painterResource(id = R.drawable.audio_port), contentDescription = "")
+                        }
+                    }
+                }
+                ReproducirEdit(viewModel = viewModel, uri = viewModel.uriMostrar )
+            }
+        }
+    }
+}
 
+@Composable
+fun ReproducirEdit(
+    viewModel: NoteEditViewModel,
+    uri: Uri
+){
+    if(viewModel.mostrarAudio){
+        val audioPlayer = AndroidAudioPlayer(LocalContext.current)
+        AlertDialog(
+            onDismissRequest = {
+                viewModel.updateMostrarAudio(false)
+                audioPlayer.stop()
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    audioPlayer.playFile(uri)
+                }) {
+                    Text(text = stringResource(id = R.string.reproducir))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    audioPlayer.stop()
+                    viewModel.updateMostrarAudio(false)
+                }) {
+                    Text(text = stringResource(id = R.string.cancelar))
+                }
+            },
+            title = { Text(stringResource(id = R.string.cancelar)) }
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun RelojEdit(
+    viewModel: NoteEditViewModel
+){
+    if(viewModel.showReloj){
+        val state= rememberTimePickerState()
+        DatePickerDialog(
+            onDismissRequest = { viewModel.updateShowReloj(false) },
+            confirmButton = {
+                Button(
+                    onClick = { viewModel.updateShowReloj(false)  }
+                ) {
+                    Text(text = stringResource(id = R.string.confirmar))
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = { viewModel.updateShowReloj(false)  }
+                ) {
+                    Text(text = stringResource(id = R.string.cancelar))
+                }
+            }
+        ) {
+            TimePicker(state = state, modifier = Modifier.fillMaxWidth())
+        }
+        val hour=state.hour
+        val minut=state.minute
+        hour?.let {
+            minut?.let{
+                viewModel.updateHora("$hour:$minut:00")
+                viewModel.updateHour(hour)
+                viewModel.updateMinute(minut)
+            }
+        }
+    }
+}
+
+@Composable
+fun opcionesRecordatoriosEdit(
+    viewModel: NoteEditViewModel,
+){
+    if(viewModel.showOptionRecordatorios){
+        Dialog(
+            properties = DialogProperties(dismissOnClickOutside = true),
+            onDismissRequest = {
+                viewModel.updateOptionsRecordatorios(false)
+                viewModel.updateCalcular(false)
+            }
+        ) {
+            Card(
+                modifier = Modifier.fillMaxWidth(.9f)
+            ) {
+                Column (
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .padding(5.dp)
+                        .fillMaxWidth()
+                ){
+                    Row (
+                        modifier = Modifier.fillMaxWidth()
+                    ){
+                        Row(
+                            modifier = Modifier
+                                .weight(.5f)
+                                .padding(2.dp)
+                        ) {
+                            Button(
+                                onClick = {
+                                    viewModel.updateShowReloj(true)},
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text(text = stringResource(id = R.string.definirHora))
+                            }
+                        }
+                    }
+                    Text(
+                        text = stringResource(id = R.string.Recordatorio),
+                        modifier = Modifier.padding(5.dp))
+                    Text(
+                        text = viewModel.hora,
+                        modifier = Modifier.padding(5.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Button(
+                            onClick = {
+                                viewModel.updateNotificaciones(true)
+                                viewModel.updateCalcular(true)
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(text = stringResource(id = R.string.confirmar))
+                        }
+                        if(viewModel.calcular){
+                            var time= LocalTime.now()
+                            var time2= LocalTime.of(viewModel.hour,viewModel.minute,0)
+                            val dif=time.until(time2, ChronoUnit.MILLIS)
+                            NotificacionesEdit(dif,viewModel)
+                            viewModel.updateOptionsRecordatorios(false)
                         }
                     }
                 }
             }
+
         }
+    }
+}
+
+@Composable
+fun NotificacionesEdit(
+    milisegundos: Long,
+    viewModel: NoteEditViewModel
+){
+    if(viewModel.notificacion){
+        val context= LocalContext.current
+        val idCanal= "CanalNotas"
+
+        LaunchedEffect(Unit){
+            crearCanalNotificacion(idCanal,context)
+        }
+        notificacionProgramada(context,milisegundos)
     }
 }
